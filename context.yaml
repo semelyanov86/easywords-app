@@ -1,0 +1,140 @@
+$schema: 'https://raw.githubusercontent.com/context-hub/generator/refs/heads/main/json-schema.json'
+documents:
+  -
+    description: 'Easywords App - laravel, filament'
+    outputPath: docs/laravel-structure.md
+    overwrite: true
+    sources:
+      -
+        type: tree
+        description: 'laravel Directory Structure'
+        sourcePaths:
+          - app
+          - config
+          - database
+          - routes
+          - resources
+        filePattern: '*'
+        renderFormat: ascii
+        enabled: true
+        showCharCount: true
+        maxDepth: 3
+        dirContext:
+          app: 'Application core - models, controllers, services, domain, aggregates'
+          database: 'Database migrations, seeders, and factories'
+          routes: 'Application route definitions'
+          config: 'Application configuration files'
+  -
+    description: 'Laravel Routes Configuration'
+    outputPath: docs/laravel-routes.md
+    overwrite: true
+    sources:
+      -
+        type: file
+        description: 'Laravel Routes'
+        sourcePaths:
+          - routes
+        filePattern: '*.php'
+        treeView:
+          enabled: true
+          showSize: false
+          showLastModified: false
+          showCharCount: false
+    tags:
+      - laravel
+      - routes
+
+  -
+    description: 'Basic Project Source'
+    outputPath: docs/project-source.md
+    overwrite: true
+    sources:
+      -
+        type: file
+        description: 'Backend part of project'
+        sourcePaths:
+          - app
+        filePattern: '*.php'
+        treeView:
+          enabled: true
+          showSize: true
+          showLastModified: true
+          showCharCount: true
+    tags:
+      - laravel
+
+  -
+    description: 'PHPUnit Tests for Easywords app'
+    outputPath: docs/project-test.md
+    overwrite: true
+    sources:
+      -
+        type: file
+        description: 'Backend part of project'
+        sourcePaths:
+          - tests
+        filePattern: '*.php'
+        treeView:
+          enabled: true
+          showSize: true
+          showLastModified: true
+          showCharCount: true
+    tags:
+      - phpunit
+
+  -
+    description: 'React.js application for praxis app'
+    outputPath: docs/project-frontend.md
+    overwrite: true
+    sources:
+      -
+        type: file
+        description: 'Backend part of project'
+        sourcePaths:
+          - resources/js
+        filePattern: '*.*'
+        treeView:
+          enabled: true
+          showSize: true
+          showLastModified: true
+          showCharCount: true
+    tags:
+      - vue.js
+
+  -
+    description: 'Project configuration'
+    outputPath: docs/project-composer.md
+    overwrite: true
+    sources:
+      -
+        type: file
+        description: 'composer.json'
+        sourcePaths:
+          - .
+        filePattern: 'composer.json'
+        treeView:
+          enabled: false
+          showSize: true
+          showLastModified: true
+          showCharCount: true
+    tags:
+      - config
+
+  -
+    description: 'Frontend configuration'
+    outputPath: docs/project-package.md
+    overwrite: true
+    sources:
+      -
+        type: file
+        description: 'package.json'
+        sourcePaths:
+          - .
+        filePattern: 'package.json'
+        treeView:
+          enabled: false
+          showSize: true
+          showLastModified: true
+          showCharCount: true
+    tags:
+      - config

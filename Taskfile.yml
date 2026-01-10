@@ -1,0 +1,260 @@
+version: '3'
+
+tasks:
+  vendor:
+    desc: "Compile vendor folder"
+    cmds:
+      - "{{.EXEC_PHP}} composer install"
+      - "{{.EXEC_PHP}} touch vendor"
+    sources:
+      - composer.json
+      - composer.lock
+    vars:
+      EXEC_PHP:
+        sh: 'if [ "{{.DOCKER}}" = "true" ]; then echo "docker-compose exec -it php"; else echo ""; fi'
+
+  var:
+    desc: "Make sure that folder var exists"
+    cmds:
+      - mkdir -p var
+
+  up:
+    desc: "Run application via docker"
+    cmds:
+      - docker-compose up --detach --remove-orphans
+      - task: vendor
+    deps: [var]
+
+  down:
+    desc: "Stop docker application"
+    cmds:
+      - docker-compose down --remove-orphans
+
+  php:
+    desc: "Run container in PHP"
+    cmds:
+      - "{{.EXEC_PHP}} {{.CMD}}"
+    vars:
+      EXEC_PHP:
+        sh: 'if [ "{{.DOCKER}}" = "true" ]; then echo "docker-compose exec -it php"; else echo ""; fi'
+      CMD:
+        sh: 'echo "{{.CMD}}"'
+
+  restart:
+    desc: "Restart application"
+    cmds:
+      - "sudo systemctl restart laravel-octane"
+
+  check:
+    desc: "Run all checkers"
+    cmds:
+      - task: composer-validate
+      - task: composer-audit
+      - task: rector
+      - task: phpstan
+      - task: audit
+      - npm run check
+
+  type-check:
+    desc: "Run checker in typescript"
+    cmds:
+      - npm run typecheck
+      - npm run lint
+
+  fix:
+    desc: "Run all fixers"
+    cmds:
+      - task: fixcs
+      - task: lintfix
+      - task: rector-fix
+      - task: composer-normalize
+
+  composer-validate:
+    desc: "Validate composer.json and composer.lock using composer validate"
+    cmds:
+      - "{{.EXEC_PHP}} composer validate --strict --no-check-publish"
+
+  composer-audit:
+    desc: "Try to find vulnerabilities in Composer using composer audit"
+    cmds:
+      - "{{.EXEC_PHP}} composer audit"
+
+  audit:
+    desc: "Find all vulnerabilities in front end and backend"
+    cmds:
+      - task: composer-audit
+      - npm audit
+
+  generate:
+    desc: "Generate helper ide mockups"
+    cmds:
+      - "php artisan wayfinder:generate --path=resources/js/wayfinder"
+
+  lint:
+    desc: "Check PHP code style using linter"
+    cmds:
+      - "{{.EXEC_PHP}} composer lint"
+    deps: [var, vendor]
+
+  lintfix:
+    desc: "Check JS code style using prettier"
+    cmds:
+      - "npm run format"
+
+  eslint:
+    desc: "Check JS code style using prettier"
+    cmds:
+      - "npm run lint:fix"
+
+  phpcs:
+    desc: "Check PHP code style using PHP CS Fixer"
+    cmds:
+      - "{{.EXEC_PHP}} composer phpcs-check"
+    deps: [var, vendor]
+
+  fixcs:
+    desc: "Fix PHP code style errors using PHP CS Fixer"
+    cmds:
+      - "{{.EXEC_PHP}} composer phpcs"
+    deps: [var, vendor]
+
+  phpstan:
+    desc: "Run full static PHP code analysis using PHPStan"
+    cmds:
+      - "{{.EXEC_PHP}} composer phpstan"
+    deps: [var, vendor]
+
+  rector:
+    desc: "Run php code analysis using Rector"
+    cmds:
+      - "{{.EXEC_PHP}} composer rector-check"
+    deps: [var, vendor]
+
+  rector-fix:
+    desc: "Run code fixing process using Rector"
+    cmds:
+      - "{{.EXEC_PHP}} composer rector"
+    deps: [var, vendor]
+
+  test:
+    desc: "Run phpunit tests"
+    cmds:
+      - "{{.EXEC_PHP}} composer test"
+      - "npm run test:run"
+
+  test-stop:
+    desc: "Run phpunit tests"
+    cmds:
+      - "./vendor/bin/phpunit --stop-on-error --stop-on-failure --colors=always"
+
+  testjs:
+    desc: "Run javascript tests"
+    cmd: "npm run test"
+
+  composer-normalize:
+    desc: "Normalize composer.json"
+    cmds:
+      - "{{.EXEC_PHP}} composer normalize"
+    deps: [vendor]
+
+  start:
+    desc: "Start application in octane"
+    cmd: "php artisan octane:start --server=swoole"
+
+  notstart:
+    desc: "Start Reverb notification server"
+    cmd: 'php artisan reverb:start --host="0.0.0.0" --port=8080'
+
+  start-dev:
+    desc: "Start application in dev mode"
+    cmd: "php artisan octane:start --watch"
+
+  clean:
+    desc: "Run all cleaning commands"
+    cmds:
+      - "php artisan optimize:clear"
+    vars:
+      IMPORT_LIMIT:
+        sh: 'echo "${IMPORT_LIMIT}"'
+
+  debug:
+    desc: "Run debug command"
+    cmd: "php artisan debug"
+
+  install:
+    desc: "Run installation process"
+    cmds:
+      - "composer install"
+      - "npm install"
+      - "npm run build"
+      - "php artisan key:generate"
+      - "php artisan config:clear"
+      - "php artisan migrate:fresh --seed"
+      - "php artisan storage:link"
+      - "php artisan octane:install --server=swoole"
+
+  dev:
+    desc: "Run in development mode"
+    cmd: "npm run dev"
+
+  build:
+    desc: "Run in production mode"
+    cmd: "npm run build"
+
+  deploy:
+    desc: "Run deployment process"
+    cmds:
+      - "sudo chown -R sergey /var/www/app.praxisconcierge.de"
+      - "composer install"
+      - "php artisan down"
+      - "git pull origin main"
+      - "php artisan migrate --force"
+      - "php artisan config:clear"
+      - "php artisan cache:clear"
+      - "php artisan route:clear"
+      - "php artisan view:clear"
+      - "php artisan config:cache"
+      - "php artisan route:cache"
+      - "php artisan view:cache"
+      - "npm run build"
+      - "php artisan dependency:versions"
+      - "php artisan queue:restart"
+      - "sudo systemctl restart laravel-octane"
+      - "sudo supervisorctl restart laravel-worker-high:*"
+      - "sudo supervisorctl restart laravel-worker-medium:*"
+      - "sudo supervisorctl restart laravel-worker-low:*"
+      - "sudo supervisorctl restart webhooks:*"
+      - "php artisan up"
+      - "sudo chown -R www-data /var/www/app.praxisconcierge.de"
+    env:
+      GIT_SSH_COMMAND: 'ssh -i /home/sergey/.ssh/pco_app_deploy_key -o IdentitiesOnly=yes'
+  work:
+    desc: "Run queue jobs"
+    cmd: "php artisan queue:work"
+
+  status:
+    desc: "Check status of queue"
+    cmd: "systemctl status laravel-octane"
+
+  logs:
+    desc: "Read logs of application"
+    cmd: "sudo journalctl -u laravel-octane -f"
+
+  reload:
+    desc: "Reload octane application"
+    cmd: "php artisan octane:reload"
+
+  all:
+    desc: "Run all deployment checks"
+    cmds:
+      - task: fix
+      - task: check
+      - task: test
+
+  ssh:
+    desc: "Connect to server via ssh"
+    cmd: "ssh -t sergey@91.98.153.146 'cd /var/www/llm.praxisconcierge.de && exec $SHELL -l'"
+
+  context:
+    desc: "Generate context files for LLM"
+    cmd: "ctx generate"

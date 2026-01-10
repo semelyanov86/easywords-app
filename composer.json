@@ -9,21 +9,30 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
-        "inertiajs/inertia-laravel": "^2.0",
-        "laravel/fortify": "^1.30",
-        "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1",
-        "laravel/wayfinder": "^0.1.9"
+        "php": "^8.4",
+        "inertiajs/inertia-laravel": "^2.0.18",
+        "laravel/fortify": "^1.33",
+        "laravel/framework": "^12.46",
+        "laravel/tinker": "^2.11.0",
+        "laravel/wayfinder": "^0.1.12",
+        "lorisleiva/laravel-actions": "^2.9",
+        "spatie/laravel-data": "^4.18"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.23",
-        "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.24",
-        "laravel/sail": "^1.41",
-        "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "bamarni/composer-bin-plugin": "^1.8",
+        "driftingly/rector-laravel": "^2.1",
+        "ergebnis/composer-normalize": "^2.48",
+        "fakerphp/faker": "^1.24.1",
+        "larastan/larastan": "^3.8",
+        "laravel/pail": "^1.2.4",
+        "laravel/pint": "^1.27",
+        "laravel/sail": "^1.52",
+        "mockery/mockery": "^1.6.12",
+        "nunomaduro/collision": "^8.8.3",
+        "phpunit/phpunit": "^12.5.4",
+        "rector/rector": "^2.3",
+        "roave/security-advisories": "dev-latest",
+        "spaze/phpstan-disallowed-calls": "^4.7"
     },
     "autoload": {
         "psr-4": {
@@ -76,7 +85,13 @@
         ],
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
-        ]
+        ],
+        "lint": "vendor-bin/phplint/vendor/overtrue/phplint/bin/phplint",
+        "phpcs": "./vendor/bin/pint --parallel",
+        "phpcs-check": "./vendor/bin/pint --test --parallel",
+        "phpstan": "./vendor/bin/phpstan analyse",
+        "rector": "vendor/bin/rector process",
+        "rector-check": "vendor/bin/rector process --dry-run"
     },
     "extra": {
         "laravel": {
@@ -88,6 +103,8 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
+            "bamarni/composer-bin-plugin": true,
+            "ergebnis/composer-normalize": true,
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
