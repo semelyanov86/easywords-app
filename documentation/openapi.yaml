@@ -31,6 +31,8 @@ tags:
     description: Операции со словами
   - name: Samples
     description: Операции с примерами слов
+  - name: Examples
+    description: Операции с примерами использования слов (AI-генерация)
   - name: Statistics
     description: Получение статистики
 
@@ -749,6 +751,58 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /examples/{word}:
+    get:
+      tags:
+        - Examples
+      summary: Получить примеры использования слова
+      description: |
+        Возвращает примеры использования слова, генерируемые через OpenAI API.
+        Примеры включают: классику, афоризм и разговорный пример.
+        Если примеры уже существуют, возвращает сохранённые. Иначе генерирует новые.
+        Проверяет, что слово принадлежит авторизованному пользователю.
+      operationId: getWordExamples
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: word
+          in: path
+          description: ID слова
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Примеры использования слова
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ExampleResponse'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Слово не найдено или не принадлежит пользователю
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Ошибка при генерации примеров через OpenAI API
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
   securitySchemes:
     BearerAuth:
@@ -1085,3 +1139,52 @@ components:
               - The email field is required.
             password:
               - The password field is required.
+
+    ExampleResource:
+      type: object
+      required:
+        - type
+        - id
+        - attributes
+      properties:
+        type:
+          type: string
+          enum: [examples]
+          example: examples
+        id:
+          type: string
+          example: "123"
+        attributes:
+          type: object
+          required:
+            - example_original
+            - example_translated
+          properties:
+            example_original:
+              type: array
+              description: Три примера на оригинальном языке (классика, афоризм, разговорный)
+              items:
+                type: string
+              maxItems: 3
+              minItems: 3
+              example:
+                - "The classic example demonstrates the concept clearly."
+                - "Knowledge is power - Francis Bacon."
+                - "Hey, do you want to grab coffee later?"
+            example_translated:
+              type: array
+              description: Три перевода на русский язык
+              items:
+                type: string
+              maxItems: 3
+              minItems: 3
+              example:
+                - "Классический пример наглядно демонстрирует концепцию."
+                - "Знание - сила - Фрэнсис Бэкон."
+                - "Привет, хочешь grab coffee позже?"
+
+    ExampleResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ExampleResource'

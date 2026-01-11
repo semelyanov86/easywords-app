@@ -65,7 +65,25 @@ class OpenAiConnector
             ],
             'temperature' => $temperature,
             'response_format' => [
-                'type' => 'json_object',
+                'type' => 'json_schema',
+                'json_schema' => [
+                    'name' => 'word_examples',
+                    'schema' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'example_original' => [
+                                'type' => 'array',
+                                'items' => ['type' => 'string'],
+                            ],
+                            'example_translated' => [
+                                'type' => 'array',
+                                'items' => ['type' => 'string'],
+                            ],
+                        ],
+                        'required' => ['example_original', 'example_translated'],
+                        'additionalProperties' => false,
+                    ],
+                ],
             ],
         ]);
 
