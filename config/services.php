@@ -37,4 +37,12 @@ return [
         ],
     ],
 
+    'openai' => [
+        'url' => env('OPENAI_API_URL', 'https://api.openai.com/v1'),
+        'key' => env('OPENAI_API_KEY'),
+        'model' => env('OPENAI_MODEL', 'gpt-4o'),
+        'temperature' => env('OPENAI_TEMPERATURE', '0.7'),
+        'timeout' => env('OPENAI_TIMEOUT', 120),
+    ],
+
 ];
