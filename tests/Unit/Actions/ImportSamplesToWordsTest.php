@@ -88,8 +88,11 @@ final class ImportSamplesToWordsTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Sample::factory()->count(2)->create(['language' => 'EN']);
-        Sample::factory()->count(3)->create(['language' => 'DE']);
+        Sample::factory()->create(['original' => 'hello', 'translated' => 'привет', 'language' => 'EN']);
+        Sample::factory()->create(['original' => 'world', 'translated' => 'мир', 'language' => 'EN']);
+        Sample::factory()->create(['original' => 'hallo', 'translated' => 'привет', 'language' => 'DE']);
+        Sample::factory()->create(['original' => 'welt', 'translated' => 'мир', 'language' => 'DE']);
+        Sample::factory()->create(['original' => 'tschüss', 'translated' => 'пока', 'language' => 'DE']);
 
         $action = resolve(ImportSamplesToWords::class);
         $createdWords = $action->handle($user, 'EN');

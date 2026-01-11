@@ -5,19 +5,24 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Actions\CreateWord;
+use App\Actions\DeleteWord;
 use App\Actions\GetUserRandomWords;
 use App\Actions\GetUserSettings;
+use App\Actions\GetUserWords;
+use App\Actions\GetWord;
 use App\Actions\IncrementWordViews;
 use App\Actions\MarkWordAsLearned;
 use App\Actions\ToggleWordStarred;
 use App\Data\WordData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\GetRandomWordsRequest;
+use App\Http\Requests\Api\GetUserWordsRequest;
 use App\Http\Requests\Api\StoreWordRequest;
 use App\Http\Requests\Api\UpdateWordRequest;
 use App\Models\Word;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Spatie\RouteAttributes\Attributes\Delete;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Middleware;
 use Spatie\RouteAttributes\Attributes\Post;
@@ -26,6 +31,100 @@ use Spatie\RouteAttributes\Attributes\Put;
 #[Middleware('auth:sanctum')]
 final class WordController extends Controller
 {
+    /**
+     * Возвращает слово по ID.
+     *
+     * Проверяет, что слово принадлежит авторизованному пользователю.
+     *
+     * @param  int  $word  ID слова (route model binding)
+     * @param  GetWord  $getWord  Action для получения слова
+     * @return JsonResponse JSON:API ответ со словом
+     */
+    #[Get('api/v1/words/{word}', name: 'api.v1.words.show')]
+    public function show(int $word, GetWord $getWord): JsonResponse
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth('sanctum')->user();
+
+        if ($user === null) {
+            return response()->json([
+                'errors' => [
+                    [
+                        'status' => '401',
+                        'title' => 'Unauthenticated',
+                    ],
+                ],
+            ], Response::HTTP_UNAUTHORIZED, ['Content-Type' => 'application/vnd.api+json']);
+        }
+
+        try {
+            $wordData = $getWord->handle(
+                wordId: $word,
+                userId: $user->id
+            );
+
+            return response()->json([
+                'data' => $wordData->toJsonArray(),
+            ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
+            return response()->json([
+                'errors' => [
+                    [
+                        'status' => '404',
+                        'title' => 'Not Found',
+                        'detail' => 'Word not found or does not belong to the user',
+                    ],
+                ],
+            ], Response::HTTP_NOT_FOUND, ['Content-Type' => 'application/vnd.api+json']);
+        }
+    }
+
+    /**
+     * Удаляет слово по ID.
+     *
+     * Проверяет, что слово принадлежит авторизованному пользователю.
+     *
+     * @param  int  $word  ID слова (route model binding)
+     * @param  DeleteWord  $deleteWord  Action для удаления слова
+     * @return JsonResponse Пустой ответ со статусом 204 No Content
+     */
+    #[Delete('api/v1/words/{word}', name: 'api.v1.words.destroy')]
+    public function destroy(int $word, DeleteWord $deleteWord): JsonResponse
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth('sanctum')->user();
+
+        if ($user === null) {
+            return response()->json([
+                'errors' => [
+                    [
+                        'status' => '401',
+                        'title' => 'Unauthenticated',
+                    ],
+                ],
+            ], Response::HTTP_UNAUTHORIZED, ['Content-Type' => 'application/vnd.api+json']);
+        }
+
+        try {
+            $deleteWord->handle(
+                wordId: $word,
+                userId: $user->id
+            );
+
+            return response()->json(null, Response::HTTP_NO_CONTENT, ['Content-Type' => 'application/vnd.api+json']);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
+            return response()->json([
+                'errors' => [
+                    [
+                        'status' => '404',
+                        'title' => 'Not Found',
+                        'detail' => 'Word not found or does not belong to the user',
+                    ],
+                ],
+            ], Response::HTTP_NOT_FOUND, ['Content-Type' => 'application/vnd.api+json']);
+        }
+    }
+
     /**
      * Возвращает случайные слова авторизованного пользователя.
      *
@@ -67,9 +166,59 @@ final class WordController extends Controller
     }
 
     /**
-     * Создаёт новое слово для авторизованного пользователя.
+     * Возвращает список слов авторизованного пользователя.
      *
-     * Принимает original, translated и language, создаёт слово с привязкой к текущему пользователю.
+     * Получает список слов с учётом настроек пользователя:
+     * - фильтрация по языку (обязательный параметр language)
+     * - режим сортировки (fresh_first или по просмотрам)
+     * - показ/скрытие изученных, импортированных и общих слов
+     *
+     * @param  GetUserWordsRequest  $request  Валидированный запрос с параметром language
+     * @param  GetUserWords  $getUserWords  Action для получения списка слов
+     * @return JsonResponse JSON:API ответ с пагинированным списком слов
+     */
+    #[Get('api/v1/words', name: 'api.v1.words.index')]
+    public function index(GetUserWordsRequest $request, GetUserWords $getUserWords): JsonResponse
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth('sanctum')->user();
+
+        if ($user === null) {
+            return response()->json([
+                'errors' => [
+                    [
+                        'status' => '401',
+                        'title' => 'Unauthenticated',
+                    ],
+                ],
+            ], Response::HTTP_UNAUTHORIZED, ['Content-Type' => 'application/vnd.api+json']);
+        }
+
+        $dataCollection = $getUserWords->handle(
+            userId: $user->id,
+            language: $request->validatedLanguage(),
+        );
+
+        $data = collect($dataCollection->all())
+            ->map(fn (mixed $wordData) => $wordData instanceof WordData ? $wordData->toJsonArray() : null)
+            ->filter(fn (?array $item) => $item !== null)
+            ->values();
+
+        return response()->json([
+            'data' => $data,
+            'meta' => [
+                'current_page' => 1,
+                'per_page' => $data->count(),
+                'total' => $data->count(),
+                'last_page' => 1,
+            ],
+        ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
+    }
+
+    /**
+     * Создает новое слово для авторизованного пользователя.
+     *
+     * Принимает original, translated и language, создает слово с привязкой к текущему пользователю.
      *
      * @param  StoreWordRequest  $request  Валидированный запрос с данными слова
      * @return JsonResponse JSON:API ответ с созданным словом

@@ -28,6 +28,7 @@ final class UserSettingsData extends Data
         public array $languages_list,
         public bool $starred_enabled,
         public string $default_language,
+        public bool $show_shared,
     ) {}
 
     /**
@@ -51,6 +52,7 @@ final class UserSettingsData extends Data
                 'languages_list' => $this->languages_list,
                 'starred_enabled' => $this->starred_enabled,
                 'default_language' => $this->default_language,
+                'show_shared' => $this->show_shared,
             ],
         ];
     }

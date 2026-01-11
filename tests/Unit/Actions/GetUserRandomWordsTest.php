@@ -44,6 +44,7 @@ final class GetUserRandomWordsTest extends TestCase
             languages_list: ['DE', 'EN'],
             starred_enabled: true,
             default_language: 'DE',
+            show_shared: true,
         )->toArray());
 
         $result = GetUserRandomWords::make()->handle($user->id, 20);
@@ -78,11 +79,12 @@ final class GetUserRandomWordsTest extends TestCase
             show_starred: true,
             latest_first: true,
             known_enabled: false,
-            main_language: 'RU',
+            main_language: 'DE',
             show_imported: true,
             languages_list: ['DE', 'EN'],
-            starred_enabled: true,
+            starred_enabled: false,
             default_language: 'DE',
+            show_shared: true,
         );
 
         $result = GetUserRandomWords::make()->handle($user->id, 20);
@@ -123,6 +125,7 @@ final class GetUserRandomWordsTest extends TestCase
             languages_list: ['DE', 'EN'],
             starred_enabled: true,
             default_language: 'DE',
+            show_shared: true,
         )->toArray());
 
         $result = GetUserRandomWords::make()->handle($user->id, 20);
@@ -150,6 +153,7 @@ final class GetUserRandomWordsTest extends TestCase
             languages_list: ['DE', 'EN'],
             starred_enabled: true,
             default_language: 'DE',
+            show_shared: true,
         )->toArray());
 
         $result = GetUserRandomWords::make()->handle($user->id, 10);
@@ -190,6 +194,7 @@ final class GetUserRandomWordsTest extends TestCase
             languages_list: ['DE', 'EN'],
             starred_enabled: true,
             default_language: 'DE',
+            show_shared: true,
         )->toArray());
 
         $result1 = GetUserRandomWords::make()->handle($user->id, 3);
@@ -225,6 +230,7 @@ final class GetUserRandomWordsTest extends TestCase
             languages_list: ['DE', 'EN'],
             starred_enabled: true,
             default_language: 'DE',
+            show_shared: true,
         )->toArray());
 
         $result = GetUserRandomWords::make()->handle($user->id, 20);

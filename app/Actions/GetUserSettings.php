@@ -30,7 +30,7 @@ final class GetUserSettings
         /** @var User $user */
         $user = User::query()->findOrFail($userId);
 
-        /** @var array{paginate?: int, fresh_first?: bool, show_starred?: bool, latest_first?: bool, known_enabled?: bool, main_language?: string, show_imported?: bool, languages_list?: string[], starred_enabled?: bool, default_language?: string} $settings */
+        /** @var array{paginate?: int, fresh_first?: bool, show_starred?: bool, latest_first?: bool, known_enabled?: bool, main_language?: string, show_imported?: bool, languages_list?: string[], starred_enabled?: bool, default_language?: string, show_shared?: bool} $settings */
         $settings = $user->settings()->all();
 
         return new UserSettingsData(
@@ -42,8 +42,9 @@ final class GetUserSettings
             main_language: $settings['main_language'] ?? 'RU',
             show_imported: $settings['show_imported'] ?? true,
             languages_list: $settings['languages_list'] ?? ['DE', 'EN'], // @phpstan-ignore-line
-            starred_enabled: $settings['starred_enabled'] ?? true,
+            starred_enabled: $settings['starred_enabled'] ?? false,
             default_language: $settings['default_language'] ?? 'DE',
+            show_shared: $settings['show_shared'] ?? true,
         );
     }
 }

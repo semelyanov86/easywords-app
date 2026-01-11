@@ -1,0 +1,20 @@
+meta {
+  name: Get Words For Learing
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{BASE_URL}}/words?language=DE
+  body: none
+  auth: inherit
+}
+
+params:query {
+  language: DE
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
