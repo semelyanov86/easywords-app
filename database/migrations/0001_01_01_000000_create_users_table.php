@@ -22,6 +22,7 @@ return new class () extends Migration {
             $table->timestamps();
             $table->boolean('is_admin')->default(false);
             $table->boolean('has_premium')->default(false);
+            $table->json('settings')->nullable()->default(null);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table): void {

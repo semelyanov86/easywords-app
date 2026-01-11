@@ -10,6 +10,7 @@
     "require": {
         "php": "^8.4",
         "filament/filament": "^4.0",
+        "glorand/laravel-model-settings": "^8.0",
         "inertiajs/inertia-laravel": "^2.0.18",
         "laravel/fortify": "^1.33",
         "laravel/framework": "^12.46",
