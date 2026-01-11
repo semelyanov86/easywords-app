@@ -1,0 +1,22 @@
+meta {
+  name: Star Word
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{BASE_URL}}/words/1014/starred
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "starred": true
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

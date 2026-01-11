@@ -1,0 +1,16 @@
+meta {
+  name: Mark as Learned
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{BASE_URL}}/words/1013/learned
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
