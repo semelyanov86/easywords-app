@@ -17,9 +17,13 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        User::factory()->createOne([
+            'name' => 'Sergei Emelianov',
+            'email' => 'se@sergeyem.ru',
+            'is_admin' => true,
+            'has_premium' => true,
         ]);
+        $this->call(WordSeeder::class);
+        $this->call(SampleSeeder::class);
     }
 }
