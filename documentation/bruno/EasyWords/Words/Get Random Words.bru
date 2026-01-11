@@ -1,0 +1,24 @@
+meta {
+  name: Get Random Words
+  type: http
+  seq: 1
+}
+
+get {
+  url: /random?limit=10
+  body: none
+  auth: inherit
+}
+
+params:query {
+  limit: 10
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Возвращает случайные слова авторизованного пользователя.
+}
