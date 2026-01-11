@@ -8,6 +8,9 @@ use App\Models\Sample;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
+/**
+ * @extends Factory<Sample>
+ */
 final class SampleFactory extends Factory
 {
     protected $model = Sample::class;
@@ -17,7 +20,7 @@ final class SampleFactory extends Factory
         return [
             'original' => $this->faker->word(),
             'translated' => $this->faker->word(),
-            'language' => $this->faker->text(5),
+            'language' => $this->faker->randomElement(['EN', 'DE', 'FR', 'ES']),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

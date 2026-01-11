@@ -10,6 +10,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * @property string $original
+ * @property string $translated
+ * @property string $language
+ * @property int $user_id
+ * @property bool $from_sample
+ * @property bool $starred
+ * @property int $views
  * @property string[]|null $example_original
  * @property string[]|null $example_translated
  */
