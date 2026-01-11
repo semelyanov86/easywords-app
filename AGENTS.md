@@ -4,29 +4,41 @@ This file is for coding agents working in this repo. Follow it literally.
 
 ## Project context
 
-- **Easywords App (`<easywordsapp.ru>`) is a SaaS app**: Allows you to learn words easily. Self-hosted application which you can use for quickly learn new words.
+- **Easywords App (`<easywordsapp.ru>`) is a SaaS vocabulary learning platform**: Users save words through mobile or web interface, study them using flashcards, and get AI-generated usage examples.
+- **Tech stack**: Laravel 12 + Inertia.js + React + TypeScript. API follows JSON:API specification. Admin panel built with Filament 4.
 - **Operate like a cofounder.** Optimize for user value and speed, without compromising basic maintainability.
+
+## Core features
+
+- **Word management**: Users save words with translations and definitions
+- **Flashcard learning**: Flip-card interface for active recall practice
+- **AI-powered examples**: Context-aware usage examples for each word
+- **Multi-platform**: Web interface and mobile app with shared backend
+- **Admin panel**: Filament 4-based administration interface
 
 ## Non‑negotiables
 
 - **Do not overwrite user edits.** The user may change code between messages. If something changed, understand *why* and build on it.
-- **Keep changes simple.** Implement the smallest change that solves the problem (unless you’re writing tests).
+- **Keep changes simple.** Implement the smallest change that solves the problem (unless you're writing tests).
 - **Fix root causes.** When debugging, gather enough info to understand the failure and fix it at the source (not via band-aids).
+- **Strict typing everywhere.** Maximum PHPStan level on backend, strict TypeScript on frontend.
 
-## Architecture & structure (Laravel)
+## Architecture & structure (Laravel + Inertia)
 
-- **Prefer small, verb-named Actions.** Avoid generic “Service/Manager/Handler” classes.
-- **Controllers stay thin.** Single-action controllers are preferred.
+- **Prefer small, verb-named Actions.** Avoid generic "Service/Manager/Handler" classes.
+- **Controllers stay thin.** Single-action controllers are preferred. Return Inertia responses for pages, JSON:API-compliant responses for API endpoints.
 - **Avoid events unless necessary.** Keep code flow obvious without jumping between files.
 - **Jobs are thin + idempotent.** Delegate business logic to Actions.
 - **If you create a model, also create a factory + seeder.**
+- **API must follow JSON:API specification** (`application/vnd.api+json`, proper resource objects, relationships, includes).
 
 ## Contribution Guidelines
-1. All new features must include tests
+1. All new features must include tests (strict coverage requirements)
 2. Use Laravel Actions for business logic
-3. Follow strict typing conventions
+3. Follow strict typing conventions (PHPStan max level, strict TypeScript)
 4. Update documentation for API changes
 5. Ensure all code quality checks pass before merging
+6. API changes must maintain JSON:API compliance
 
 ## Code style (PHP)
 
@@ -34,13 +46,15 @@ This file is for coding agents working in this repo. Follow it literally.
 - **Purpose docblocks are required.** Every class/trait/interface/enum under `app/` must have a top-level PHPDoc block explaining:
     - why the file exists,
     - why the logic was extracted there (vs inlining),
-    - what callers should rely on (the “contract”) when it’s non-obvious.
-- **Import namespaces.** Don’t rely on implicit/global imports.
+    - what callers should rely on (the "contract") when it's non-obvious.
+- **Import namespaces.** Don't rely on implicit/global imports.
 - **Avoid ambiguous names.** No one-letter variables unless extremely local and obvious.
 - **Use guard clauses** over deep nesting.
 - **No debugging helpers** in committed code (`dd()`, `dump()`, etc.).
 - **Never use `@`** (PHP error suppression). If you truly must, document why and prefer explicit alternatives.
-- **Default to `protected`** for non-public methods/properties unless there’s a strong reason.
+- **Default to `protected`** for non-public methods/properties unless there's a strong reason.
+- **Strict types declaration** (`declare(strict_types=1);`) in every PHP file.
+- **Type everything**: parameters, return types, properties. No mixed types without strong justification.
 
 ## Laravel conventions & dependency boundaries
 
@@ -50,50 +64,105 @@ This file is for coding agents working in this repo. Follow it literally.
 - **Prefer named routes** + `route()` over hardcoded URLs (including in app code).
 - **Prefer helpers over Facades** when available (e.g. `session()` over `Session::get()`).
 - **Avoid raw queries.** If unavoidable, parameterize and document why.
+- **Inertia responses** for page controllers, **JSON:API responses** for API controllers.
+
+## Admin Panel (Filament 4)
+
+- **Keep Resources clean**: extract form schemas and table schemas into separate classes.
+- **Form schema classes**: place in `app/Filament/Resources/{ResourceName}/Schemas/{SchemaName}FormSchema.php`
+- **Table schema classes**: place in `app/Filament/Resources/{ResourceName}/Schemas/{SchemaName}TableSchema.php`
+- **Extract complex fields**: if a field definition exceeds ~15 lines or contains complex logic, extract it into its own class in `app/Filament/Resources/{ResourceName}/Fields/{FieldName}Field.php`
+- **Keep field classes focused**: one field = one class with a static `make()` method returning the configured field.
+- **Document extraction reasoning**: when extracting fields, explain why (complexity, reusability, clarity).
+
+### Filament Conventions
+
+- **Schema classes must have a static `schema()` method** returning an array of fields/columns.
+- **Field classes must have a static `make()` method** returning the configured field instance.
+- **Type everything**: use PHPStan-compatible return types (`array<int, Field>`, etc.).
+- **Keep Resources as routers**: Resources should mostly delegate to schema/field classes.
+- **Avoid inline closures in schemas**: extract complex logic to Actions or dedicated methods.
+
+## API Design (JSON:API)
+
+- **Follow JSON:API spec strictly**: `application/vnd.api+json` content type, proper resource structure.
+- **Resource objects** must include `type` and `id` at minimum.
+- **Use relationships** for related data, support `include` parameter for eager loading.
+- **Pagination** via `page[number]` and `page[size]` query parameters.
+- **Filtering** via `filter[attribute]` query parameters.
+- **Sparse fieldsets** via `fields[type]` when beneficial.
+- **Error responses** must follow JSON:API error object format.
 
 ## Data & migrations
 
 - **Migrations should be reversible** when possible.
-- **Never edit old migrations** after they’ve been merged. Create a new migration.
+- **Never edit old migrations** after they've been merged. Create a new migration.
 
-## Frontend (React.js, typescript, shadcn)
+## Frontend (React + TypeScript + Inertia + shadcn/ui)
 
+- **Structure follows Feature-Sliced Design (FSD)**: organize by features, not by file types.
+- **Strict TypeScript**: no `any`, no `@ts-ignore` without documentation, enable all strict flags.
+- **Inertia integration**: use `useForm`, `router`, and typed page props.
 - **HTML must be tidy, valid, semantic, and accessible.**
-- **Close inline tags** (`<meta />`, `<img />`, `<br />`, …).
+- **Close inline tags** (`<meta />`, `<img />`, `<br />`, etc).
 - **Prefer landmarks** (`header`, `nav`, `main`, `footer`) over generic wrappers.
 - **Keep focus outlines.** Focus states should be visible and intentional.
-- **Every input needs a `<label>`** (via `for` + `id`) unless there’s a strong reason.
+- **Every input needs a `<label>`** (via `htmlFor` + `id`) unless there's a strong reason.
 - **Icons:** decorative icons get `aria-hidden="true"`; informative icons need an accessible name.
+
+### FSD Structure
+
+```
+src/
+├── app/           # App initialization, providers, routing
+├── pages/         # Inertia page components
+├── widgets/       # Complex composite features (e.g., WordCard, FlashcardViewer)
+├── features/      # User scenarios (e.g., SaveWord, StudyFlashcards, ViewExamples)
+├── entities/      # Business entities (e.g., Word, User, Example)
+├── shared/        # Reusable code (ui, lib, api, types)
+```
 
 ### Styling
 
-- Prefer shadcn utilities over custom CSS.
+- Use shadcn/ui components as foundation.
+- Prefer Tailwind utilities over custom CSS.
 - If custom CSS is necessary, keep it minimal and document why.
-- Extract repeated UI patterns into Blade components (don’t copy/paste huge class strings).
+- Extract repeated UI patterns into reusable components (don't copy/paste class strings).
 
-### Interactivity
+### State Management
 
-- Alpine code belongs in the Blade component.
-- Use Feature-Sliced pattern to structure project
-- Keep state small and local (avoid hidden global state).
+- Use Inertia's built-in state management for page data.
+- Keep component state small and local.
+- For shared state, prefer React Context or Zustand (document why if introduced).
 
 ## Testing (PHPUnit)
 
+- **Strict coverage requirements**: all Actions, Models, API endpoints must have tests.
 - Test files mirror `./app` structure 1:1 when possible.
     - If there is no matching `app/` file, only then place tests at the root (e.g. `./tests/Feature`) with a clear justification.
+- **API tests must verify JSON:API compliance**: structure, content types, relationships.
+- **Filament tests**: test custom field classes, form submissions, table filters/actions.
 - Avoid hardcoded hosts/URLs; prefer `route()` / `url()`.
 - Prefer strict fakes over permissive mocks.
 - Tests must be parallel-safe: avoid shared fixed file paths and clean up created files.
 - Use Real-Time Facades if you need to mock something resolved from the container.
+- **Test AI integrations** with proper mocks/fakes for external services.
 
 ## Tooling / definition of done
 
-- **Format:** `task fix`
-- **Tests:** `task test`
-- **Sanity:** no debug helpers left behind; migrations reversible; UI remains accessible; minimal change set.
+- use `task all` command, it will make:
+- **Format**
+- **Static analysis:** Code must pass maximum PHPStan level
+- **Type check:** for TypeScript
+- **Tests:** (all tests passing)
+- **Sanity:** no debug helpers left behind; migrations reversible; UI remains accessible; minimal change set; JSON:API compliance verified.
 
 ## Default review behavior (whenever you touch code)
 
-- **Existence check**: for every `app/` file you create or edit, confirm it earns its existence. If it’s redundant/unused/over-abstracted, prefer deleting/merging/moving it (and updating routes/usages/tests).
-- **Logic check**: inside kept files, remove or simplify any code that isn’t justified (dead branches, unused options, placeholder copy, unnecessary indirection).
+- **Existence check**: for every `app/` file you create or edit, confirm it earns its existence. If it's redundant/unused/over-abstracted, prefer deleting/merging/moving it (and updating routes/usages/tests).
+- **Logic check**: inside kept files, remove or simplify any code that isn't justified (dead branches, unused options, placeholder copy, unnecessary indirection).
+- **Type safety**: verify strict types are used everywhere, no escape hatches without justification.
 - **Test alignment**: keep tests mirrored to `app/` structure 1:1 when possible; update or delete tests alongside code changes.
+- **API compliance**: verify JSON:API spec adherence for all API endpoints.
+- **FSD compliance**: verify frontend code follows Feature-Sliced Design principles.
+- **Filament organization**: verify schemas and complex fields are properly extracted from Resources.
