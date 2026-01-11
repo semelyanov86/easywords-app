@@ -5,13 +5,13 @@ meta {
 }
 
 get {
-  url: {{BASE_URL}}/users?short_mode=true
+  url: {{BASE_URL}}/users?short_mode=false
   body: none
   auth: bearer
 }
 
 params:query {
-  short_mode: true
+  short_mode: false
 }
 
 headers {

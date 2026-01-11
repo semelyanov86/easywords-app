@@ -1,0 +1,32 @@
+meta {
+  name: Store Settings
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{BASE_URL}}/settings
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+body:json {
+  {
+    "name": "pagination",
+    "value": 30
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
