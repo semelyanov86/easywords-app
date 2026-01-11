@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
@@ -49,8 +51,9 @@ class TwoFactorChallengeTest extends TestCase
 
         $this->get(route('two-factor.login'))
             ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page
-                ->component('auth/two-factor-challenge')
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('auth/two-factor-challenge')
             );
     }
 }

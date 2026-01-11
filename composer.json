@@ -94,6 +94,10 @@
         "rector-check": "vendor/bin/rector process --dry-run"
     },
     "extra": {
+        "bamarni-bin": {
+            "bin-links": true,
+            "forward-command": false
+        },
         "laravel": {
             "dont-discover": []
         }

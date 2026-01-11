@@ -58,7 +58,7 @@ tasks:
   type-check:
     desc: "Run checker in typescript"
     cmds:
-      - npm run typecheck
+      - npm run types
       - npm run lint
 
   fix:
@@ -88,7 +88,7 @@ tasks:
   generate:
     desc: "Generate helper ide mockups"
     cmds:
-      - "php artisan wayfinder:generate --path=resources/js/wayfinder"
+      - "php artisan wayfinder:generate"
 
   lint:
     desc: "Check PHP code style using linter"
