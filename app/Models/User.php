@@ -20,6 +20,7 @@ class User extends Authenticatable implements FilamentUser
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
+
     use HasSettingsField;
     use Notifiable;
     use TwoFactorAuthenticatable;
@@ -63,6 +64,7 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'settings',
     ];
 
     /**
@@ -83,7 +85,7 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
-     * Get the attributes that should be cast.
+     * Get attributes that should be cast.
      *
      * @return array<string, string>
      */

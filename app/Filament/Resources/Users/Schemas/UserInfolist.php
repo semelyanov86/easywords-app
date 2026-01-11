@@ -39,6 +39,7 @@ class UserInfolist
                     ->boolean(),
                 IconEntry::make('has_premium')
                     ->boolean(),
+                UserSettingsInfolist::make(),
             ]);
     }
 }
