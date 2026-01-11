@@ -13,3 +13,69 @@ get {
 settings {
   encodeUrl: true
 }
+
+docs {
+  Возвращает список слов текущего пользователя с фильтрацией по GET-параметрам.
+
+  **Query параметры (необязательные):**
+  - `done`: "true" - только изученные слова (done_at не null), "false" - только неизученные
+  - `shared`: "true" - только общие слова (shared_by не null), "false" - только личные
+  - `from_sample`: "true" - только импортированные слова, "false" - только созданные вручную
+  - `starred`: "true" - только избранные слова, "false" - только неизбранные
+
+  **Пример ответа (200 OK):**
+
+  ```json
+  {
+    "data": [
+      {
+        "type": "words",
+        "id": "1",
+        "attributes": {
+          "original": "das Haus",
+          "translated": "дом",
+          "language": "DE",
+          "done_at": "2026-01-10T15:30:00.000000Z",
+          "starred": true,
+          "views": 50,
+          "from_sample": false,
+          "created_at": "2026-01-05T10:00:00.000000Z",
+          "updated_at": "2026-01-10T15:30:00.000000Z"
+        }
+      }
+    ],
+    "links": {
+      "first": "http://localhost/api/words/with-filters?page=1",
+      "last": "http://localhost/api/words/with-filters?page=5",
+      "prev": null,
+      "next": "http://localhost/api/words/with-filters?page=2"
+    },
+    "meta": {
+      "current_page": 1,
+      "from": 1,
+      "last_page": 5,
+      "links": [
+        {
+          "url": null,
+          "label": "&laquo; Previous",
+          "active": false
+        },
+        {
+          "url": "http://localhost/api/words/with-filters?page=1",
+          "label": "1",
+          "active": true
+        },
+        {
+          "url": "http://localhost/api/words/with-filters?page=2",
+          "label": "2",
+          "active": false
+        }
+      ],
+      "path": "http://localhost/api/words/with-filters",
+      "per_page": 15,
+      "to": 15,
+      "total": 75
+    }
+  }
+  ```
+}

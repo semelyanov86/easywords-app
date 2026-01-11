@@ -18,3 +18,17 @@ settings {
   encodeUrl: true
   timeout: 0
 }
+
+docs {
+  Выход из системы - удаляет текущий токен авторизации.
+
+  **Требуется авторизация:** Bearer токен в заголовке Authorization
+
+  **Пример ответа (200 OK):**
+
+  ```json
+  {
+    "message": "Successfully signed out"
+  }
+  ```
+}

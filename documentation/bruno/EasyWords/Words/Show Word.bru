@@ -14,3 +14,32 @@ settings {
   encodeUrl: true
   timeout: 0
 }
+
+docs {
+  Возвращает детали одного слова по его ID.
+
+  **Параметры URL:**
+  - `{WORD_ID}`: ID слова для получения
+
+  **Пример ответа (200 OK):**
+
+  ```json
+  {
+    "data": {
+      "type": "words",
+      "id": "1002",
+      "attributes": {
+        "original": "das Auto",
+        "translated": "автомобиль",
+        "language": "DE",
+        "done_at": "2026-01-10T15:30:00.000000Z",
+        "starred": true,
+        "views": 75,
+        "from_sample": false,
+        "created_at": "2026-01-05T10:00:00.000000Z",
+        "updated_at": "2026-01-10T15:30:00.000000Z"
+      }
+    }
+  }
+  ```
+}

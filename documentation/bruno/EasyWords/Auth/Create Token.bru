@@ -28,5 +28,46 @@ settings {
 }
 
 docs {
-  Creates an access token to access application
+  Создаёт токен авторизации для доступа к API.
+
+  **Требуемые параметры:**
+  - `email`: Email пользователя
+  - `password`: Пароль пользователя
+
+  **Пример ответа (201 Created):**
+
+  ```json
+  {
+    "data": {
+      "type": "auth-token",
+      "id": "1",
+      "attributes": {
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+        "token_type": "Bearer"
+      },
+      "relationships": {
+        "user": {
+          "data": {
+            "type": "user",
+            "id": "1"
+          }
+        }
+      }
+    },
+    "included": [
+      {
+        "type": "user",
+        "id": "1",
+        "attributes": {
+          "name": "John Doe",
+          "email": "john@example.com",
+          "is_admin": false,
+          "has_premium": true,
+          "created_at": "2026-01-11T20:00:00.000000Z",
+          "updated_at": "2026-01-11T20:00:00.000000Z"
+        }
+      }
+    ]
+  }
+  ```
 }

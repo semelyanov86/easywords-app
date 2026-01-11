@@ -23,3 +23,33 @@ settings {
   encodeUrl: true
   timeout: 0
 }
+
+docs {
+  Возвращает настройки текущего авторизованного пользователя.
+
+  **Требуется авторизация:** Bearer токен в заголовке Authorization
+
+  **Пример ответа (200 OK):**
+
+  ```json
+  {
+    "data": {
+      "type": "user-settings",
+      "id": "1",
+      "attributes": {
+        "paginate": 20,
+        "fresh_first": true,
+        "show_starred": false,
+        "latest_first": true,
+        "known_enabled": false,
+        "main_language": "DE",
+        "show_imported": true,
+        "languages_list": ["DE", "EN", "FR"],
+        "starred_enabled": true,
+        "default_language": "DE",
+        "show_shared": false
+      }
+    }
+  }
+  ```
+}

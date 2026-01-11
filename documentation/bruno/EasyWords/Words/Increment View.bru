@@ -14,3 +14,32 @@ settings {
   encodeUrl: true
   timeout: 0
 }
+
+docs {
+  Увеличивает счётчик просмотров слова на 1.
+
+  **Параметры URL:**
+  - `{WORD_ID}`: ID слова для увеличения просмотров
+
+  **Пример ответа (200 OK):**
+
+  ```json
+  {
+    "data": {
+      "type": "words",
+      "id": "1014",
+      "attributes": {
+        "original": "das Buch",
+        "translated": "книга",
+        "language": "DE",
+        "done_at": null,
+        "starred": false,
+        "views": 51,
+        "from_sample": false,
+        "created_at": "2026-01-05T10:00:00.000000Z",
+        "updated_at": "2026-01-11T20:00:00.000000Z"
+      }
+    }
+  }
+  ```
+}

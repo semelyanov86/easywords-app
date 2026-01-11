@@ -14,3 +14,32 @@ settings {
   encodeUrl: true
   timeout: 0
 }
+
+docs {
+  Помечает слово как изученное (устанавливает дату в поле done_at).
+
+  **Параметры URL:**
+  - `{WORD_ID}`: ID слова для пометки как изученное
+
+  **Пример ответа (200 OK):**
+
+  ```json
+  {
+    "data": {
+      "type": "words",
+      "id": "1013",
+      "attributes": {
+        "original": "der Tisch",
+        "translated": "стол",
+        "language": "DE",
+        "done_at": "2026-01-11T20:00:00.000000Z",
+        "starred": false,
+        "views": 25,
+        "from_sample": false,
+        "created_at": "2026-01-05T10:00:00.000000Z",
+        "updated_at": "2026-01-11T20:00:00.000000Z"
+      }
+    }
+  }
+  ```
+}

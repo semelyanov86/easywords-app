@@ -5,7 +5,7 @@ meta {
 }
 
 get {
-  url: {{BASE_URL}}/examples/1002
+  url: {{BASE_URL}}/examples/999
   body: none
   auth: inherit
 }
@@ -13,4 +13,34 @@ get {
 settings {
   encodeUrl: true
   timeout: 0
+}
+
+docs {
+  Получает примеры использования слова на оригинальном языке и их переводы.
+
+  **Параметры URL:**
+  - `{WORD_ID}`: ID слова для получения примеров
+
+  **Пример ответа (200 OK):**
+
+  ```json
+  {
+    "data": {
+      "id": "999",
+      "type": "examples",
+      "attributes": {
+        "example_original": [
+          "Das ist ein schönes Haus.",
+          "Wir bauen ein neues Haus.",
+          "Das Haus hat viele Fenster."
+        ],
+        "example_translated": [
+          "Это красивый дом.",
+          "Мы строим новый дом.",
+          "У дома много окон."
+        ]
+      }
+    }
+  }
+  ```
 }

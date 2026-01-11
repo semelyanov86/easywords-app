@@ -21,4 +21,46 @@ settings {
 
 docs {
   Возвращает случайные слова авторизованного пользователя.
+
+  **Query параметры:**
+  - `limit`: Количество слов для возврата (по умолчанию 10, максимум 100)
+
+  **Пример ответа (200 OK):**
+
+  ```json
+  {
+    "data": [
+      {
+        "type": "words",
+        "id": "1",
+        "attributes": {
+          "original": "das Haus",
+          "translated": "дом",
+          "language": "DE",
+          "done_at": null,
+          "starred": false,
+          "views": 5,
+          "from_sample": true,
+          "created_at": "2026-01-05T10:00:00.000000Z",
+          "updated_at": "2026-01-05T10:00:00.000000Z"
+        }
+      },
+      {
+        "type": "words",
+        "id": "2",
+        "attributes": {
+          "original": "die Katze",
+          "translated": "кошка",
+          "language": "DE",
+          "done_at": null,
+          "starred": false,
+          "views": 3,
+          "from_sample": true,
+          "created_at": "2026-01-05T10:00:00.000000Z",
+          "updated_at": "2026-01-05T10:00:00.000000Z"
+        }
+      }
+    ]
+  }
+  ```
 }
