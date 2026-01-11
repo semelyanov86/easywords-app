@@ -88,7 +88,7 @@ tasks:
   generate:
     desc: "Generate helper ide mockups"
     cmds:
-      - "php artisan wayfinder:generate"
+      - "php artisan wayfinder:generate --with-form"
 
   lint:
     desc: "Check PHP code style using linter"
