@@ -17,13 +17,14 @@ class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
-    use HasSettingsField;
 
+    use HasSettingsField;
     use Notifiable;
     use TwoFactorAuthenticatable;
 
     public string $settingsFieldName = 'settings';
 
+    /** @var array<string, scalar|string[]> */
     public array $defaultSettings = [
         'paginate' => 20,
         'fresh_first' => true,
@@ -37,6 +38,7 @@ class User extends Authenticatable implements FilamentUser
         'default_language' => 'DE',
     ];
 
+    /** @var string[] */
     public array $settingsRules = [
         'paginate' => 'integer',
         'fresh_first' => 'boolean',

@@ -32,6 +32,94 @@ This file is for coding agents working in this repo. Follow it literally.
 - **If you create a model, also create a factory + seeder.**
 - **API must follow JSON:API specification** (`application/vnd.api+json`, proper resource objects, relationships, includes).
 
+## Routing (spatie/laravel-route-attributes)
+
+- **Do not define routes in route files.** Use PHP 8 attributes on controller methods via `spatie/laravel-route-attributes`.
+- **Attribute placement**: place route attributes directly above controller methods.
+- **Middleware attributes**: use `#[Middleware]` on class level for all methods, or on method level for specific routes.
+- **Named routes**: always specify route names via `name:` parameter.
+
+### Route Attribute Examples
+
+```php
+use Spatie\RouteAttributes\Attributes\Get;
+use Spatie\RouteAttributes\Attributes\Post;
+use Spatie\RouteAttributes\Attributes\Middleware;
+
+#[Middleware('auth')]
+class WordController
+{
+    #[Get('words', name: 'words.index')]
+    public function index(): Response
+    {
+        // ...
+    }
+
+    #[Post('words', name: 'words.store')]
+    #[Middleware('throttle:60,1')]
+    public function store(StoreWordRequest $request): Response
+    {
+        // ...
+    }
+
+    #[Get('api/words/{word}', name: 'api.words.show')]
+    public function show(Word $word): JsonResponse
+    {
+        // ...
+    }
+}
+```
+
+## API Responses (Laravel Data)
+
+- **Always return Laravel Data objects, never raw models** in API responses.
+- **Data classes**: place in `app/Data/{Entity}Data.php`.
+- **Type everything**: use strict types in Data constructors.
+- **Use transformers**: leverage `toArray()`, `toJson()`, `toResponse()` methods.
+- **Collections**: use regular array with generic types.
+- **Validation**: use Data validation attributes when appropriate.
+
+### Laravel Data Examples
+
+```php
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\Max;
+
+class WordData extends Data
+{
+    public function __construct(
+        public int $id,
+        #[Required, Max(255)]
+        public string $word,
+        public string $translation,
+        public ?string $definition,
+        public string $language,
+        public Carbon $created_at,
+    ) {}
+}
+
+// In controller
+#[Get('api/words/{word}', name: 'api.words.show')]
+public function show(Word $word): JsonResponse
+{
+    return WordData::from($word)->toResponse();
+}
+
+// For collections
+#[Get('api/words', name: 'api.words.index')]
+public function index(): \Spatie\LaravelData\PaginatedDataCollection
+{
+    return WordData::collection(Word::paginate(), \Spatie\LaravelData\PaginatedDataCollection::class);
+}
+```
+
+### Data Structure Guidelines
+
+- **One Data class per entity**: `WordData`, `ExampleData`, `UserData`, etc.
+- **Nested Data objects**: use Data objects for relationships (e.g., `public UserData $user`).
+- **Factory methods**: add static `fromModel()` or `fromArray()` when transformation logic is complex.
+
 ## Contribution Guidelines
 1. All new features must include tests (strict coverage requirements)
 2. Use Laravel Actions for business logic
@@ -39,6 +127,8 @@ This file is for coding agents working in this repo. Follow it literally.
 4. Update documentation for API changes
 5. Ensure all code quality checks pass before merging
 6. API changes must maintain JSON:API compliance
+7. Always use route attributes, never route files
+8. Always return Data objects from API endpoints
 
 ## Code style (PHP)
 
@@ -64,24 +154,23 @@ This file is for coding agents working in this repo. Follow it literally.
 - **Prefer named routes** + `route()` over hardcoded URLs (including in app code).
 - **Prefer helpers over Facades** when available (e.g. `session()` over `Session::get()`).
 - **Avoid raw queries.** If unavoidable, parameterize and document why.
-- **Inertia responses** for page controllers, **JSON:API responses** for API controllers.
+- **Inertia responses** for page controllers, **Data objects** for API controllers.
 
 ## Admin Panel (Filament 4)
 
-- **Keep Resources clean**: extract form schemas and table schemas into separate classes.
-- **Form schema classes**: place in `app/Filament/Resources/{ResourceName}/Schemas/{SchemaName}FormSchema.php`
-- **Table schema classes**: place in `app/Filament/Resources/{ResourceName}/Schemas/{SchemaName}TableSchema.php`
+- **Keep Resources clean**: extract form schemas and table schemas into separate classes. See UserResource for example
 - **Extract complex fields**: if a field definition exceeds ~15 lines or contains complex logic, extract it into its own class in `app/Filament/Resources/{ResourceName}/Fields/{FieldName}Field.php`
 - **Keep field classes focused**: one field = one class with a static `make()` method returning the configured field.
 - **Document extraction reasoning**: when extracting fields, explain why (complexity, reusability, clarity).
 
 ### Filament Conventions
 
-- **Schema classes must have a static `schema()` method** returning an array of fields/columns.
+- **Schema classes must have static methods** (`schema()`, `columns()`, `filters()`, etc.) returning arrays.
 - **Field classes must have a static `make()` method** returning the configured field instance.
 - **Type everything**: use PHPStan-compatible return types (`array<int, Field>`, etc.).
-- **Keep Resources as routers**: Resources should mostly delegate to schema/field classes.
+- **Keep Resources as coordinators**: Resources should mostly delegate to schema/field classes and define pages/navigation.
 - **Avoid inline closures in schemas**: extract complex logic to Actions or dedicated methods.
+- **Document schema purpose**: explain why schema was extracted (complexity, reusability).
 
 ## API Design (JSON:API)
 
@@ -92,6 +181,7 @@ This file is for coding agents working in this repo. Follow it literally.
 - **Filtering** via `filter[attribute]` query parameters.
 - **Sparse fieldsets** via `fields[type]` when beneficial.
 - **Error responses** must follow JSON:API error object format.
+- **Always use Laravel Data objects** for responses, never return raw Eloquent models.
 
 ## Data & migrations
 
@@ -155,7 +245,7 @@ src/
 - **Static analysis:** Code must pass maximum PHPStan level
 - **Type check:** for TypeScript
 - **Tests:** (all tests passing)
-- **Sanity:** no debug helpers left behind; migrations reversible; UI remains accessible; minimal change set; JSON:API compliance verified.
+- **Sanity:** no debug helpers left behind; migrations reversible; UI remains accessible; minimal change set; JSON:API compliance verified; Data objects used for API responses; routes defined via attributes.
 
 ## Default review behavior (whenever you touch code)
 
@@ -164,5 +254,7 @@ src/
 - **Type safety**: verify strict types are used everywhere, no escape hatches without justification.
 - **Test alignment**: keep tests mirrored to `app/` structure 1:1 when possible; update or delete tests alongside code changes.
 - **API compliance**: verify JSON:API spec adherence for all API endpoints.
+- **Data object usage**: verify API controllers return Data objects, not raw models.
+- **Route attributes**: verify routes are defined via attributes on controller methods, not in route files.
 - **FSD compliance**: verify frontend code follows Feature-Sliced Design principles.
 - **Filament organization**: verify schemas and complex fields are properly extracted from Resources.
