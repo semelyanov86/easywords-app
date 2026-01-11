@@ -1,0 +1,33 @@
+meta {
+  name: All Users
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{BASE_URL}}/users?short_mode=true
+  body: none
+  auth: bearer
+}
+
+params:query {
+  short_mode: true
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Выводит список всех пользователей в полном или сокращённом режиме
+}
