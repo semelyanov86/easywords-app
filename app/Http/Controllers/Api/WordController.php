@@ -9,16 +9,21 @@ use App\Actions\DeleteWord;
 use App\Actions\GetUserRandomWords;
 use App\Actions\GetUserSettings;
 use App\Actions\GetUserWords;
+use App\Actions\GetUserWordsWithFilters;
 use App\Actions\GetWord;
 use App\Actions\IncrementWordViews;
 use App\Actions\MarkWordAsLearned;
+use App\Actions\ShareWord;
 use App\Actions\ToggleWordStarred;
 use App\Data\WordData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\GetRandomWordsRequest;
 use App\Http\Requests\Api\GetUserWordsRequest;
+use App\Http\Requests\Api\GetUserWordsWithFiltersRequest;
+use App\Http\Requests\Api\ShareWordRequest;
 use App\Http\Requests\Api\StoreWordRequest;
 use App\Http\Requests\Api\UpdateWordRequest;
+use App\Models\User;
 use App\Models\Word;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -31,6 +36,58 @@ use Spatie\RouteAttributes\Attributes\Put;
 #[Middleware('auth:sanctum')]
 final class WordController extends Controller
 {
+    /**
+     * Возвращает список слов авторизованного пользователя с фильтрацией.
+     *
+     * Получает список слов с фильтрацией по GET-параметрам:
+     * - done: фильтрация по статусу изучения (true/false)
+     * - shared: фильтрация по общим словам (true/false)
+     * - from_sample: фильтрация по источнику (true/false)
+     * - starred: фильтрация по избранным (true/false)
+     * Игнорирует настройки пользователя из UserSettingsData.
+     *
+     * @param  GetUserWordsWithFiltersRequest  $request  Валидированный запрос с фильтрами
+     * @param  GetUserWordsWithFilters  $getUserWordsWithFilters  Action для получения списка слов с фильтрами
+     * @return JsonResponse JSON:API ответ с пагинированным списком слов
+     */
+    #[Get('api/v1/words/with-filters', name: 'api.v1.words.filtered')]
+    public function filtered(GetUserWordsWithFiltersRequest $request, GetUserWordsWithFilters $getUserWordsWithFilters): JsonResponse
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth('sanctum')->user();
+
+        if ($user === null) {
+            return response()->json([
+                'errors' => [
+                    [
+                        'status' => '401',
+                        'title' => 'Unauthenticated',
+                    ],
+                ],
+            ], Response::HTTP_UNAUTHORIZED, ['Content-Type' => 'application/vnd.api+json']);
+        }
+
+        $dataCollection = $getUserWordsWithFilters->handle(
+            userId: $user->id,
+            filters: $request->filters()
+        );
+
+        $data = collect($dataCollection->all())
+            ->map(fn (mixed $wordData) => $wordData instanceof WordData ? $wordData->toJsonArray() : null)
+            ->filter(fn (?array $item) => $item !== null)
+            ->values();
+
+        return response()->json([
+            'data' => $data,
+            'meta' => [
+                'current_page' => '1',
+                'per_page' => (string) $data->count(),
+                'total' => (string) $data->count(),
+                'last_page' => '1',
+            ],
+        ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
+    }
+
     /**
      * Возвращает слово по ID.
      *
@@ -72,7 +129,7 @@ final class WordController extends Controller
                     [
                         'status' => '404',
                         'title' => 'Not Found',
-                        'detail' => 'Word not found or does not belong to the user',
+                        'detail' => 'Word not found or does not belong to user',
                     ],
                 ],
             ], Response::HTTP_NOT_FOUND, ['Content-Type' => 'application/vnd.api+json']);
@@ -118,7 +175,7 @@ final class WordController extends Controller
                     [
                         'status' => '404',
                         'title' => 'Not Found',
-                        'detail' => 'Word not found or does not belong to the user',
+                        'detail' => 'Word not found or does not belong to user',
                     ],
                 ],
             ], Response::HTTP_NOT_FOUND, ['Content-Type' => 'application/vnd.api+json']);
@@ -361,5 +418,62 @@ final class WordController extends Controller
         return response()->json([
             'data' => $wordData->toJsonArray(),
         ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
+    }
+
+    /**
+     * Делится словом с другим пользователем.
+     *
+     * Создает копию слова для указанного пользователя на основе оригинального слова.
+     * Проверяет, что слово принадлежит авторизованному пользователю.
+     *
+     * @param  ShareWordRequest  $request  Валидированный запрос с word_id и user_id
+     * @param  ShareWord  $shareWord  Action для шаринга слова
+     * @return JsonResponse JSON:API ответ с созданным словом
+     */
+    #[Post('api/v1/words/share', name: 'api.v1.words.share')]
+    public function share(ShareWordRequest $request, ShareWord $shareWord): JsonResponse
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth('sanctum')->user();
+
+        if ($user === null) {
+            return response()->json([
+                'errors' => [
+                    [
+                        'status' => '401',
+                        'title' => 'Unauthenticated',
+                    ],
+                ],
+            ], Response::HTTP_UNAUTHORIZED, ['Content-Type' => 'application/vnd.api+json']);
+        }
+
+        /** @var array{word_id: int, user_id: int} $validated */
+        $validated = $request->validated();
+
+        $originalWord = Word::findOrFail($validated['word_id']);
+
+        if ($originalWord->user_id !== $user->id) {
+            return response()->json([
+                'errors' => [
+                    [
+                        'status' => '403',
+                        'title' => 'Forbidden',
+                        'detail' => 'Word does not belong to user',
+                    ],
+                ],
+            ], Response::HTTP_FORBIDDEN, ['Content-Type' => 'application/vnd.api+json']);
+        }
+
+        $targetUser = User::findOrFail($validated['user_id']);
+
+        $sharedWord = $shareWord->handle(
+            word: $originalWord,
+            targetUser: $targetUser,
+            author: $user
+        );
+
+        return response()->json([
+            'data' => WordData::from($sharedWord)->toJsonArray(),
+        ], Response::HTTP_CREATED, ['Content-Type' => 'application/vnd.api+json']);
     }
 }

@@ -479,4 +479,324 @@ final class WordControllerTest extends TestCase
             ->assertJsonPath('meta.last_page', 1)
             ->assertJsonCount(20, 'data');
     }
+
+    public function test_share_creates_copy_for_target_user(): void
+    {
+        $author = User::factory()->create();
+        $targetUser = User::factory()->create();
+        Sanctum::actingAs($author);
+
+        $originalWord = Word::factory()->create([
+            'user_id' => $author->id,
+            'original' => 'share',
+            'translated' => 'поделиться',
+            'language' => 'EN',
+            'starred' => true,
+            'views' => 10,
+            'from_sample' => true,
+        ]);
+
+        $response = $this->postJson(route('api.v1.words.share'), [
+            'word_id' => $originalWord->id,
+            'user_id' => $targetUser->id,
+        ]);
+
+        $response->assertStatus(201)
+            ->assertHeader('content-type', 'application/vnd.api+json')
+            ->assertJsonPath('data.attributes.original', 'share')
+            ->assertJsonPath('data.attributes.translated', 'поделиться')
+            ->assertJsonPath('data.attributes.starred', false)
+            ->assertJsonPath('data.attributes.views', 0)
+            ->assertJsonPath('data.attributes.from_sample', false);
+
+        $this->assertDatabaseHas(Word::class, [
+            'user_id' => $targetUser->id,
+            'original' => 'share',
+            'translated' => 'поделиться',
+            'shared_by' => $author->id,
+            'starred' => false,
+            'views' => 0,
+            'from_sample' => false,
+        ]);
+
+        // Оригинальное слово не должно измениться
+        $originalWord->refresh();
+        $this->assertEquals($author->id, $originalWord->user_id);
+        $this->assertNull($originalWord->shared_by);
+    }
+
+    public function test_share_fails_without_authentication(): void
+    {
+        $author = User::factory()->create();
+        $targetUser = User::factory()->create();
+        $word = Word::factory()->create(['user_id' => $author->id]);
+
+        $response = $this->postJson(route('api.v1.words.share'), [
+            'word_id' => $word->id,
+            'user_id' => $targetUser->id,
+        ]);
+
+        $response->assertStatus(401);
+    }
+
+    public function test_share_fails_when_word_does_not_belong_to_user(): void
+    {
+        $author = User::factory()->create();
+        $user2 = User::factory()->create();
+        $targetUser = User::factory()->create();
+        Sanctum::actingAs($author);
+
+        $word = Word::factory()->create(['user_id' => $user2->id]);
+
+        $response = $this->postJson(route('api.v1.words.share'), [
+            'word_id' => $word->id,
+            'user_id' => $targetUser->id,
+        ]);
+
+        $response->assertStatus(403)
+            ->assertHeader('content-type', 'application/vnd.api+json')
+            ->assertJsonPath('errors.0.status', '403')
+            ->assertJsonPath('errors.0.title', 'Forbidden');
+    }
+
+    public function test_share_fails_when_sharing_with_same_user(): void
+    {
+        $author = User::factory()->create();
+        Sanctum::actingAs($author);
+
+        $word = Word::factory()->create(['user_id' => $author->id]);
+
+        $response = $this->postJson(route('api.v1.words.share'), [
+            'word_id' => $word->id,
+            'user_id' => $author->id,
+        ]);
+
+        $response->assertStatus(422);
+    }
+
+    public function test_filtered_returns_all_words_without_filters(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        Word::factory()->count(3)->create(['user_id' => $user->id]);
+
+        $response = $this->getJson(route('api.v1.words.filtered'));
+
+        $response->assertStatus(200)
+            ->assertHeader('content-type', 'application/vnd.api+json')
+            ->assertJsonPath('meta.total', '3');
+    }
+
+    public function test_filtered_filters_by_done_true(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $doneWord = Word::factory()->create([
+            'user_id' => $user->id,
+            'done_at' => now(),
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'done_at' => null,
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.filtered', ['done' => 'true']));
+
+        $response->assertStatus(200)
+            ->assertJsonPath('meta.total', '1')
+            ->assertJsonPath('data.0.id', (string) $doneWord->id);
+    }
+
+    public function test_filtered_filters_by_done_false(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'done_at' => now(),
+        ]);
+        $notDoneWord = Word::factory()->create([
+            'user_id' => $user->id,
+            'done_at' => null,
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.filtered', ['done' => 'false']));
+
+        $response->assertStatus(200)
+            ->assertJsonPath('meta.total', '1')
+            ->assertJsonPath('data.0.id', (string) $notDoneWord->id);
+    }
+
+    public function test_filtered_filters_by_shared_true(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $sharedWord = Word::factory()->create([
+            'user_id' => $user->id,
+            'shared_by' => 1,
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'shared_by' => null,
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.filtered', ['shared' => 'true']));
+
+        $response->assertStatus(200)
+            ->assertJsonPath('meta.total', '1')
+            ->assertJsonPath('data.0.id', (string) $sharedWord->id);
+    }
+
+    public function test_filtered_filters_by_shared_false(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'shared_by' => 1,
+        ]);
+        $notSharedWord = Word::factory()->create([
+            'user_id' => $user->id,
+            'shared_by' => null,
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.filtered', ['shared' => 'false']));
+
+        $response->assertStatus(200)
+            ->assertJsonPath('meta.total', '1')
+            ->assertJsonPath('data.0.id', (string) $notSharedWord->id);
+    }
+
+    public function test_filtered_filters_by_from_sample_true(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $sampleWord = Word::factory()->create([
+            'user_id' => $user->id,
+            'from_sample' => true,
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'from_sample' => false,
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.filtered', ['from_sample' => 'true']));
+
+        $response->assertStatus(200)
+            ->assertJsonPath('meta.total', '1')
+            ->assertJsonPath('data.0.id', (string) $sampleWord->id);
+    }
+
+    public function test_filtered_filters_by_starred_true(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $starredWord = Word::factory()->create([
+            'user_id' => $user->id,
+            'starred' => true,
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'starred' => false,
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.filtered', ['starred' => 'true']));
+
+        $response->assertStatus(200)
+            ->assertJsonPath('meta.total', '1')
+            ->assertJsonPath('data.0.id', (string) $starredWord->id);
+    }
+
+    public function test_filtered_returns_only_user_words(): void
+    {
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+        Sanctum::actingAs($user1);
+
+        Word::factory()->count(3)->create(['user_id' => $user1->id]);
+        Word::factory()->count(2)->create(['user_id' => $user2->id]);
+
+        $response = $this->getJson(route('api.v1.words.filtered'));
+
+        $response->assertStatus(200)
+            ->assertJsonPath('meta.total', '3');
+    }
+
+    public function test_statistics_returns_user_statistics(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'starred' => true,
+            'done_at' => now(),
+            'views' => 10,
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'starred' => false,
+            'done_at' => null,
+            'views' => 5,
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'starred' => true,
+            'done_at' => now(),
+            'views' => 15,
+        ]);
+
+        $response = $this->getJson(route('api.v1.statistics'));
+
+        $response->assertStatus(200)
+            ->assertHeader('content-type', 'application/vnd.api+json')
+            ->assertJsonStructure([
+                'data' => [
+                    'type',
+                    'attributes' => [
+                        'total_words',
+                        'starred_words',
+                        'not_done_words',
+                        'done_words',
+                        'total_views',
+                        'total_users',
+                        'top_viewed_words',
+                        'words_added_today',
+                        'words_updated_today',
+                        'words_updated_this_month',
+                    ],
+                ],
+            ])
+            ->assertJsonPath('data.attributes.total_words', 3)
+            ->assertJsonPath('data.attributes.starred_words', 2)
+            ->assertJsonPath('data.attributes.not_done_words', 1)
+            ->assertJsonPath('data.attributes.done_words', 2)
+            ->assertJsonPath('data.attributes.total_views', 30);
+    }
+
+    public function test_statistics_includes_total_users(): void
+    {
+        User::factory()->count(5)->create();
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $response = $this->getJson(route('api.v1.statistics'));
+
+        $response->assertStatus(200)
+            ->assertJsonPath('data.attributes.total_users', 6);
+    }
+
+    public function test_statistics_fails_without_authentication(): void
+    {
+        $response = $this->getJson(route('api.v1.statistics'));
+
+        $response->assertStatus(401);
+    }
 }
