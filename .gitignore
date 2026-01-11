@@ -26,3 +26,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/.context
+/var
+/.phplint.cache
+/.task

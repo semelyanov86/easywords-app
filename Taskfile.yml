@@ -140,7 +140,6 @@ tasks:
     desc: "Run phpunit tests"
     cmds:
       - "{{.EXEC_PHP}} composer test"
-      - "npm run test:run"
 
   test-stop:
     desc: "Run phpunit tests"
