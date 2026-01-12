@@ -6,6 +6,7 @@ This file is for coding agents working in this repo. Follow it literally.
 
 - **Easywords App (`<easywordsapp.ru>`) is a SaaS vocabulary learning platform**: Users save words through mobile or web interface, study them using flashcards, and get AI-generated usage examples.
 - **Tech stack**: Laravel 12 + Inertia.js + React + TypeScript. API follows JSON:API specification. Admin panel built with Filament 4.
+- **Multi-language support**: Russian, English, German. All UI text must be translatable.
 - **Operate like a cofounder.** Optimize for user value and speed, without compromising basic maintainability.
 
 ## Core features
@@ -22,6 +23,7 @@ This file is for coding agents working in this repo. Follow it literally.
 - **Keep changes simple.** Implement the smallest change that solves the problem (unless you're writing tests).
 - **Fix root causes.** When debugging, gather enough info to understand the failure and fix it at the source (not via band-aids).
 - **Strict typing everywhere.** Maximum PHPStan level on backend, strict TypeScript on frontend.
+- **Everything must be translatable.** No hardcoded UI text. Support ru/en/de languages.
 
 ## Architecture & structure (Laravel + Inertia)
 
@@ -129,6 +131,7 @@ public function index(): \Spatie\LaravelData\PaginatedDataCollection
 6. API changes must maintain JSON:API compliance
 7. Always use route attributes, never route files
 8. Always return Data objects from API endpoints
+9. All UI text must be translatable (no hardcoded strings)
 
 ## Code style (PHP)
 
@@ -192,13 +195,145 @@ public function index(): \Spatie\LaravelData\PaginatedDataCollection
 
 - **Structure follows Feature-Sliced Design (FSD)**: organize by features, not by file types.
 - **Strict TypeScript**: no `any`, no `@ts-ignore` without documentation, enable all strict flags.
-- **Inertia integration**: use `useForm`, `router`, and typed page props.
+- **Inertia-first communication**: use Inertia's built-in mechanisms for all server communication.
 - **HTML must be tidy, valid, semantic, and accessible.**
 - **Close inline tags** (`<meta />`, `<img />`, `<br />`, etc).
 - **Prefer landmarks** (`header`, `nav`, `main`, `footer`) over generic wrappers.
 - **Keep focus outlines.** Focus states should be visible and intentional.
 - **Every input needs a `<label>`** (via `htmlFor` + `id`) unless there's a strong reason.
 - **Icons:** decorative icons get `aria-hidden="true"`; informative icons need an accessible name.
+
+### Inertia Communication Patterns
+
+- **Sending data to server**: always use `useForm` hook from `@inertiajs/react` [web:23][web:26].
+- **Receiving data from server**: always via props typed in component signature.
+- **Never use axios/fetch** for standard operations - Inertia handles it.
+- **Form submission**: use `form.post()`, `form.put()`, `form.patch()`, `form.delete()`.
+- **File uploads**: `useForm` handles `multipart/form-data` automatically when form includes files.
+
+### Inertia Form Examples
+
+```tsx
+import { Form } from '@inertiajs/react'
+import { store } from 'App/Http/Controllers/UserController'
+
+export default () => (
+    <Form action={store()}>
+        <input type="text" name="name" />
+        <input type="email" name="email" />
+        <button type="submit">Create User</button>
+    </Form>
+)
+```
+
+### TypeScript Typing
+
+- **Type all component props**: create interface for every component's props.
+- **Type all form data**: create interface for `useForm` data structure.
+- **Type Inertia page props**: extend `PageProps` type from `@inertiajs/react`.
+- **No implicit any**: all variables, parameters, returns must be explicitly typed.
+- **Use strict mode**: enable all strict TypeScript compiler options.
+
+```tsx
+import { PageProps } from '@inertiajs/react';
+
+interface WordData {
+  id: number;
+  word: string;
+  translation: string;
+  language: string;
+  created_at: string;
+}
+
+interface WordIndexProps extends PageProps {
+  words: {
+    data: WordData[];
+    meta: {
+      current_page: number;
+      total: number;
+    };
+  };
+}
+
+export default function WordIndex({ words }: WordIndexProps) {
+  // Component implementation
+}
+```
+
+### Internationalization (i18n)
+
+- **All UI text must be translatable** - no hardcoded strings in components [web:27][web:30].
+- **Supported languages**: Russian (ru), English (en), German (de).
+- **Laravel translations**: store in `lang/{locale}.json` files.
+- **Pass translations via Inertia**: share translations in HandleInertiaRequests middleware.
+- **Use translation function**: create `useTranslation()` hook or access via props.
+
+#### i18n Implementation Example
+
+```php
+// app/Http/Middleware/HandleInertiaRequests.php
+public function share(Request $request): array
+{
+    return [
+        ...parent::share($request),
+        'locale' => app()->getLocale(),
+        'translations' => [
+            'common' => __('common'),
+            'words' => __('words'),
+        ],
+    ];
+}
+```
+
+```tsx
+// Component usage
+import { usePage } from '@inertiajs/react';
+
+interface SharedProps {
+  locale: string;
+  translations: {
+    common: Record<string, string>;
+    words: Record<string, string>;
+  };
+}
+
+export default function WordCard() {
+  const { translations } = usePage<SharedProps>().props;
+  
+  return (
+    <button>{translations.words.save}</button>
+  );
+}
+```
+
+```json
+// lang/en.json
+{
+  "words": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "add_word": "Add Word"
+  }
+}
+
+// lang/ru.json
+{
+  "words": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "add_word": "Добавить слово"
+  }
+}
+
+// lang/de.json
+{
+  "words": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "add_word": "Wort hinzufügen"
+  }
+}
+```
 
 ### FSD Structure
 
@@ -210,20 +345,89 @@ src/
 ├── features/      # User scenarios (e.g., SaveWord, StudyFlashcards, ViewExamples)
 ├── entities/      # Business entities (e.g., Word, User, Example)
 ├── shared/        # Reusable code (ui, lib, api, types)
+│   ├── ui/        # shadcn/ui components
+│   ├── lib/       # Utilities, hooks (useTranslation, etc.)
+│   ├── types/     # TypeScript types/interfaces
+│   └── config/    # Constants, configurations
 ```
 
-### Styling
+### Brand Colors & Styling
+
+Based on the Easywords logo, use this color palette:
+
+```javascript
+// tailwind.config.js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        // Primary - Blue (from logo box and icon)
+        primary: {
+          DEFAULT: '#1E5F8C',  // Dark blue
+          50: '#E8F1F7',
+          100: '#D1E4EF',
+          200: '#A3C9DF',
+          300: '#75AECF',
+          400: '#4793BF',
+          500: '#1E5F8C',  // Main
+          600: '#184C70',
+          700: '#123954',
+          800: '#0C2638',
+          900: '#06131C',
+        },
+        // Secondary - Green (from logo text)
+        secondary: {
+          DEFAULT: '#7CB342',  // Lime green
+          50: '#F3F8EC',
+          100: '#E7F1D9',
+          200: '#CFE3B3',
+          300: '#B7D58D',
+          400: '#9FC467',
+          500: '#7CB342',  // Main
+          600: '#638F35',
+          700: '#4A6B28',
+          800: '#31471A',
+          900: '#19240D',
+        },
+        // Accent - Dark Green (from "EASY" text)
+        accent: {
+          DEFAULT: '#33691E',
+          50: '#EBF2E6',
+          100: '#D7E5CD',
+          200: '#AFCB9B',
+          300: '#87B169',
+          400: '#5F9737',
+          500: '#33691E',  // Main
+          600: '#295418',
+          700: '#1F3F12',
+          800: '#142A0C',
+          900: '#0A1506',
+        },
+      },
+    },
+  },
+};
+```
+
+### Styling Guidelines
 
 - Use shadcn/ui components as foundation.
-- Prefer Tailwind utilities over custom CSS.
-- If custom CSS is necessary, keep it minimal and document why.
+- **Use only built-in Tailwind utilities** - no custom CSS, no inline styles, no custom classNames.
+- **Brand colors**: use `primary` (blue) for main actions, `secondary` (green) for highlights, `accent` (dark green) for emphasis.
+- **If you need a color not in the palette** - add it to `tailwind.config.js` first, then use via utility classes.
+- **Never write custom CSS** unless there's an exceptional case that cannot be solved with Tailwind utilities (document why in such rare cases).
 - Extract repeated UI patterns into reusable components (don't copy/paste class strings).
+- **Color usage examples**:
+  - Primary buttons: `bg-primary hover:bg-primary-600`
+  - Success states: `bg-secondary text-white`
+  - Links/emphasis: `text-accent hover:text-accent-600`
 
 ### State Management
 
 - Use Inertia's built-in state management for page data.
 - Keep component state small and local.
 - For shared state, prefer React Context or Zustand (document why if introduced).
+- **Never bypass Inertia** - don't use external state management for server data.
 
 ## Testing (PHPUnit)
 
@@ -231,7 +435,9 @@ src/
 - Test files mirror `./app` structure 1:1 when possible.
     - If there is no matching `app/` file, only then place tests at the root (e.g. `./tests/Feature`) with a clear justification.
 - **API tests must verify JSON:API compliance**: structure, content types, relationships.
+- **Test Data objects**: verify transformations, validation, and JSON structure.
 - **Filament tests**: test custom field classes, form submissions, table filters/actions.
+- **Test translations**: verify all supported languages have required keys.
 - Avoid hardcoded hosts/URLs; prefer `route()` / `url()`.
 - Prefer strict fakes over permissive mocks.
 - Tests must be parallel-safe: avoid shared fixed file paths and clean up created files.
@@ -245,7 +451,7 @@ src/
 - **Static analysis:** Code must pass maximum PHPStan level
 - **Type check:** for TypeScript
 - **Tests:** (all tests passing)
-- **Sanity:** no debug helpers left behind; migrations reversible; UI remains accessible; minimal change set; JSON:API compliance verified; Data objects used for API responses; routes defined via attributes.
+- **Sanity:** no debug helpers left behind; migrations reversible; UI remains accessible; minimal change set; JSON:API compliance verified; Data objects used for API responses; routes defined via attributes; all UI text translatable.
 
 ## Default review behavior (whenever you touch code)
 
@@ -256,5 +462,9 @@ src/
 - **API compliance**: verify JSON:API spec adherence for all API endpoints.
 - **Data object usage**: verify API controllers return Data objects, not raw models.
 - **Route attributes**: verify routes are defined via attributes on controller methods, not in route files.
+- **Inertia patterns**: verify forms use `useForm`, data comes via props, no axios/fetch for standard operations.
+- **TypeScript strictness**: verify all types are explicit, no `any`, no `@ts-ignore` without justification.
+- **i18n compliance**: verify no hardcoded UI text, all strings translatable, all three languages supported.
 - **FSD compliance**: verify frontend code follows Feature-Sliced Design principles.
 - **Filament organization**: verify schemas and complex fields are properly extracted from Resources.
+- **Brand consistency**: verify colors follow defined palette (primary/secondary/accent).
