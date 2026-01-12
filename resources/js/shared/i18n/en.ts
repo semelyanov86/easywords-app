@@ -3,9 +3,10 @@ import type { TranslationStructure } from './types';
 export const translations: TranslationStructure = {
     // Navigation
     nav: {
-        login: 'Log in',
+        login: 'Login',
         register: 'Register',
         dashboard: 'Dashboard',
+        logout: 'Logout',
     },
     // Hero Section
     hero: {

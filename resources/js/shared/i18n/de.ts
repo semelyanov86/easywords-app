@@ -6,6 +6,7 @@ export const translations: TranslationStructure = {
         login: 'Anmelden',
         register: 'Registrieren',
         dashboard: 'Dashboard',
+        logout: 'Abmelden',
     },
     // Hero Section
     hero: {

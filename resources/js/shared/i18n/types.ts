@@ -3,6 +3,7 @@ export interface TranslationStructure {
         login: string;
         register: string;
         dashboard: string;
+        logout: string;
     };
     hero: {
         title: string;
