@@ -39,6 +39,76 @@ export interface TranslationStructure {
         tagline: string;
         rights: string;
     };
+    auth: {
+        login: {
+            title: string;
+            description: string;
+            email: string;
+            email_placeholder: string;
+            password: string;
+            password_placeholder: string;
+            remember_me: string;
+            submit: string;
+            forgot_password: string;
+            no_account: string;
+            sign_up: string;
+        };
+        forgot_password: {
+            title: string;
+            description: string;
+            email: string;
+            email_placeholder: string;
+            submit: string;
+            return_to_login: string;
+            log_in: string;
+        };
+        reset_password: {
+            title: string;
+            description: string;
+            password: string;
+            password_placeholder: string;
+            password_confirmation: string;
+            password_confirmation_placeholder: string;
+            submit: string;
+        };
+        register: {
+            title: string;
+            description: string;
+            name: string;
+            name_placeholder: string;
+            email: string;
+            email_placeholder: string;
+            password: string;
+            password_placeholder: string;
+            password_confirmation: string;
+            password_confirmation_placeholder: string;
+            submit: string;
+            has_account: string;
+            log_in: string;
+        };
+        verify_email: {
+            title: string;
+            description: string;
+            submit: string;
+            resend: string;
+        };
+        common: {
+            or: string;
+            back: string;
+            next: string;
+            cancel: string;
+            save: string;
+            delete: string;
+            edit: string;
+            loading: string;
+            success: string;
+            error: string;
+            required: string;
+            invalid_email: string;
+            password_min_length: string;
+            password_mismatch: string;
+        };
+    };
 }
 
 export type Translations = TranslationStructure;

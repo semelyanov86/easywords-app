@@ -19,12 +19,15 @@ export function Navigation({ canRegister = true }: NavigationProps) {
         >
             <nav className="container mx-auto flex items-center justify-between px-4 py-4 lg:px-8">
                 {/* Logo */}
-                <Link href="/" className="flex items-center gap-2">
+                <Link href="/" className="flex items-center gap-3">
                     <img
                         src="/images/easywords-s.png"
                         alt="EasyWords"
                         className="h-8 w-auto"
                     />
+                    <span className="text-xl font-semibold text-[var(--foreground)] dark:text-white">
+                        EasyWords
+                    </span>
                 </Link>
 
                 {/* Right side: Language + Auth Links */}

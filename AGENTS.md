@@ -264,7 +264,7 @@ export default function WordIndex({ words }: WordIndexProps) {
 
 - **All UI text must be translatable** - no hardcoded strings in components [web:27][web:30].
 - **Supported languages**: Russian (ru), English (en), German (de).
-- **Laravel translations**: store in `lang/{locale}.json` files.
+- **Laravel translations**: store in `resources/js/shared/i18n/{locale}.ts` files.
 - **Pass translations via Inertia**: share translations in HandleInertiaRequests middleware.
 - **Use translation function**: create `useTranslation()` hook or access via props.
 
@@ -307,7 +307,7 @@ export default function WordCard() {
 ```
 
 ```json
-// lang/en.json
+// resources/js/shared/i18n/en.ts
 {
   "words": {
     "save": "Save",
@@ -316,7 +316,7 @@ export default function WordCard() {
   }
 }
 
-// lang/ru.json
+// resources/js/shared/i18n/ru.ts
 {
   "words": {
     "save": "Сохранить",
@@ -325,7 +325,7 @@ export default function WordCard() {
   }
 }
 
-// lang/de.json
+// resources/js/shared/i18n/de.ts
 {
   "words": {
     "save": "Speichern",
