@@ -47,6 +47,9 @@ jobs:
       - name: Run Pint
         run: composer lint
 
+      - name: Generate Wayfinder
+        run: php artisan wayfinder:generate --with-form
+        
       - name: Lint Frontend
         run: npm run check
 
