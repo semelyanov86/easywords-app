@@ -21,6 +21,7 @@ import { useLanguage, type Language } from '@/shared/i18n/LanguageContext';
 import { useDashboardTranslation } from '@/shared/i18n/useDashboardTranslation';
 import AppLogoIcon from '@/shared/ui/AppLogoIcon';
 import { LanguageSwitcher } from '@/shared/ui/LanguageSwitcher';
+import { router } from '@inertiajs/react';
 import { LogOut, Plus, Settings, User } from 'lucide-react';
 
 interface AuthHeaderProps {
@@ -37,6 +38,10 @@ export function AuthHeader({ userName }: AuthHeaderProps) {
         { code: 'ru', label: 'Русский', flag: '🇷🇺' },
         { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
     ];
+
+    const handleLogout = () => {
+        router.post('/logout');
+    };
 
     return (
         <header className="border-b border-sidebar-border/80">
@@ -156,10 +161,14 @@ export function AuthHeader({ userName }: AuthHeaderProps) {
                             </a>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                            <a href="/logout" className="cursor-pointer">
+                            <button
+                                type="button"
+                                onClick={handleLogout}
+                                className="flex w-full cursor-pointer items-center"
+                            >
                                 <LogOut className="mr-2 h-4 w-4" />
                                 {t.logout}
-                            </a>
+                            </button>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
