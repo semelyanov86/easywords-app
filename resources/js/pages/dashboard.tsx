@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { dashboardTranslations } from '@/shared/i18n/dashboard';
 import { useDashboardTranslation } from '@/shared/i18n/useDashboardTranslation';
 import { AuthHeader } from '@/widgets/auth/AuthHeader';
+import { StatisticCard } from '@/widgets/dashboard/StatisticCard';
 import { ArrowRight, BookOpen, TrendingUp, Zap } from 'lucide-react';
 
 interface User {
@@ -40,7 +41,6 @@ export default function Dashboard({
             <AuthHeader userName={user.name} />
 
             <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-                {/* Primary Action Section - Language Pairs */}
                 <div className="mb-6">
                     <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <div>
@@ -68,7 +68,6 @@ export default function Dashboard({
                             key={language}
                             className="group rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm transition-all hover:shadow-xl"
                         >
-                            {/* Language Pair Header */}
                             <div className="mb-6 flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-xl font-bold text-white">
@@ -85,7 +84,6 @@ export default function Dashboard({
                                 </div>
                             </div>
 
-                            {/* Direction Buttons */}
                             <div className="space-y-3">
                                 <Button
                                     variant="outline"
@@ -141,7 +139,6 @@ export default function Dashboard({
                     ))}
                 </div>
 
-                {/* Secondary Section - Quick Stats */}
                 <div className="mb-6">
                     <h2 className="mb-4 text-xl font-bold text-neutral-900 sm:text-2xl">
                         {t.yourProgress || 'Your Progress'}
@@ -149,56 +146,29 @@ export default function Dashboard({
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-3 sm:gap-6">
-                    <div className="group rounded-xl border border-neutral-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
-                        <div className="mb-3 flex items-center gap-3">
-                            <div className="rounded-lg bg-secondary/10 p-2">
-                                <BookOpen className="h-5 w-5 text-secondary" />
-                            </div>
-                            <h3 className="font-semibold text-neutral-700">
-                                {t.totalWords || 'Total Words'}
-                            </h3>
-                        </div>
-                        <p className="text-3xl font-bold text-neutral-900">
-                            {statistics.done_words}
-                        </p>
-                        <p className="mt-1 text-sm text-neutral-500">
-                            {t.wordsLearned || 'words learned'}
-                        </p>
-                    </div>
+                    <StatisticCard
+                        icon={BookOpen}
+                        iconBgColor="secondary"
+                        title={t.totalWords || 'Total Words'}
+                        value={statistics.done_words}
+                        description={t.wordsLearned || 'words learned'}
+                    />
 
-                    <div className="group rounded-xl border border-neutral-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
-                        <div className="mb-3 flex items-center gap-3">
-                            <div className="rounded-lg bg-primary/10 p-2">
-                                <TrendingUp className="h-5 w-5 text-primary" />
-                            </div>
-                            <h3 className="font-semibold text-neutral-700">
-                                {t.todayProgress || 'Today Progress'}
-                            </h3>
-                        </div>
-                        <p className="text-3xl font-bold text-neutral-900">
-                            {statistics.progress_today_percent}%
-                        </p>
-                        <p className="mt-1 text-sm text-neutral-500">
-                            {t.dailyGoal || 'of daily goal'}
-                        </p>
-                    </div>
+                    <StatisticCard
+                        icon={TrendingUp}
+                        iconBgColor="primary"
+                        title={t.todayProgress || 'Today Progress'}
+                        value={`${statistics.progress_today_percent}%`}
+                        description={t.dailyGoal || 'of daily goal'}
+                    />
 
-                    <div className="group rounded-xl border border-neutral-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
-                        <div className="mb-3 flex items-center gap-3">
-                            <div className="rounded-lg bg-accent/10 p-2">
-                                <Zap className="h-5 w-5 text-accent" />
-                            </div>
-                            <h3 className="font-semibold text-neutral-700">
-                                {t.streak || 'Streak'}
-                            </h3>
-                        </div>
-                        <p className="text-3xl font-bold text-neutral-900">
-                            {statistics.streak_days}
-                        </p>
-                        <p className="mt-1 text-sm text-neutral-500">
-                            {t.daysInRow || 'days in a row'}
-                        </p>
-                    </div>
+                    <StatisticCard
+                        icon={Zap}
+                        iconBgColor="accent"
+                        title={t.streak || 'Streak'}
+                        value={statistics.streak_days}
+                        description={t.daysInRow || 'days in a row'}
+                    />
                 </div>
             </main>
         </div>
