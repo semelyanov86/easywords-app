@@ -12,6 +12,8 @@ Route::get('/', fn () => Inertia::render('welcome', [
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('dashboard', \App\Http\Controllers\DashboardController::class)->name('dashboard');
+    Route::get('words/create', [\App\Http\Controllers\WordController::class, 'create'])->name('words.create');
+    Route::post('words', [\App\Http\Controllers\WordController::class, 'store'])->name('words.store');
 });
 
 require __DIR__ . '/settings.php';

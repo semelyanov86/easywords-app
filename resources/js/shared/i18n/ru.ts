@@ -53,6 +53,30 @@ export const translations: TranslationStructure = {
         tagline: 'Пополните свой словарный запас, одно слово за другим.',
         rights: 'Все права защищены.',
     },
+    // Words
+    words: {
+        page_title: 'Добавить слово',
+        page_description:
+            'Заполните форму для добавления нового слова в ваш словарь',
+        add_new_word: 'Добавить новое слово',
+        original_label: 'Оригинальное значение слова',
+        original_placeholder: 'Введите слово',
+        translated_label: 'Перевод слова',
+        translated_placeholder: 'Введите перевод или используйте ИИ',
+        language_label: 'Язык',
+        language_placeholder: 'Выберите язык',
+        ai_translate: 'ИИ',
+        translating: 'Перевод...',
+        save_word: 'Сохранить слово',
+        saving: 'Сохранение...',
+        cancel: 'Отмена',
+        go_to_word: 'Перейти в карточку',
+        add_another: 'Добавить еще слово',
+        success_title: 'Слово создано успешно!',
+        success_description: 'Идентификатор:',
+        word_exists: 'Это слово уже есть в вашем словаре для выбранного языка.',
+        translation_error: 'Не удалось получить перевод. Попробуйте снова.',
+    },
     // Auth
     auth: {
         login: {

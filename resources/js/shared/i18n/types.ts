@@ -40,6 +40,28 @@ export interface TranslationStructure {
         tagline: string;
         rights: string;
     };
+    words: {
+        page_title: string;
+        page_description: string;
+        add_new_word: string;
+        original_label: string;
+        original_placeholder: string;
+        translated_label: string;
+        translated_placeholder: string;
+        language_label: string;
+        language_placeholder: string;
+        ai_translate: string;
+        translating: string;
+        save_word: string;
+        saving: string;
+        cancel: string;
+        go_to_word: string;
+        add_another: string;
+        success_title: string;
+        success_description: string;
+        word_exists: string;
+        translation_error: string;
+    };
     auth: {
         login: {
             title: string;

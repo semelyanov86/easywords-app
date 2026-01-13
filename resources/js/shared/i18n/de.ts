@@ -54,6 +54,32 @@ export const translations: TranslationStructure = {
         tagline: 'Bauen Sie Ihren Wortschatz auf, ein Wort nach dem anderen.',
         rights: 'Alle Rechte vorbehalten.',
     },
+    // Words
+    words: {
+        page_title: 'Wort hinzufügen',
+        page_description:
+            'Füllen Sie das Formular aus, um ein neues Wort zu Ihrem Wortschatz hinzuzufügen',
+        add_new_word: 'Neues Wort hinzufügen',
+        original_label: 'Originalwort',
+        original_placeholder: 'Wort eingeben',
+        translated_label: 'Übersetzung',
+        translated_placeholder: 'Übersetzung eingeben oder KI verwenden',
+        language_label: 'Sprache',
+        language_placeholder: 'Sprache auswählen',
+        ai_translate: 'KI',
+        translating: 'Übersetzung...',
+        save_word: 'Wort speichern',
+        saving: 'Speichern...',
+        cancel: 'Abbrechen',
+        go_to_word: 'Zur Karte',
+        add_another: 'Weiteres Wort hinzufügen',
+        success_title: 'Wort erfolgreich erstellt!',
+        success_description: 'ID:',
+        word_exists:
+            'Dieses Wort existiert bereits in Ihrem Wortschatz für die ausgewählte Sprache.',
+        translation_error:
+            'Übersetzung konnte nicht abgerufen werden. Bitte versuchen Sie es erneut.',
+    },
     // Auth
     auth: {
         login: {

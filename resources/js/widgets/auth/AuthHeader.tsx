@@ -7,10 +7,12 @@ import {
 } from '@/components/ui/tooltip';
 import { UserMenu } from '@/features/user-menu';
 import { dashboard } from '@/routes';
+import words from '@/routes/words';
 import { dashboardTranslations } from '@/shared/i18n/dashboard';
 import { useDashboardTranslation } from '@/shared/i18n/useDashboardTranslation';
 import AppLogoIcon from '@/shared/ui/AppLogoIcon';
 import { LanguageSwitcher } from '@/shared/ui/LanguageSwitcher';
+import { Link } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 
 interface AuthHeaderProps {
@@ -47,13 +49,15 @@ export function AuthHeader({ userName }: AuthHeaderProps) {
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button
-                                    variant="default"
-                                    size="icon"
-                                    className="h-9 w-9 bg-gradient-to-r from-primary to-primary/90 shadow-md transition-all hover:scale-105 hover:shadow-lg md:hidden"
-                                >
-                                    <Plus className="h-4 w-4" />
-                                </Button>
+                                <Link href={words.create.url()}>
+                                    <Button
+                                        variant="default"
+                                        size="icon"
+                                        className="h-9 w-9 bg-gradient-to-r from-primary to-primary/90 shadow-md transition-all hover:scale-105 hover:shadow-lg md:hidden"
+                                    >
+                                        <Plus className="h-4 w-4" />
+                                    </Button>
+                                </Link>
                             </TooltipTrigger>
                             <TooltipContent side="bottom">
                                 <p>{t.add_word}</p>
@@ -65,13 +69,15 @@ export function AuthHeader({ userName }: AuthHeaderProps) {
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button
-                                    variant="default"
-                                    className="hidden bg-gradient-to-r from-primary to-primary/90 shadow-md transition-all hover:scale-105 hover:shadow-lg md:flex"
-                                >
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    {t.add_word}
-                                </Button>
+                                <Link href={words.create.url()}>
+                                    <Button
+                                        variant="default"
+                                        className="hidden bg-gradient-to-r from-primary to-primary/90 shadow-md transition-all hover:scale-105 hover:shadow-lg md:flex"
+                                    >
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        {t.add_word}
+                                    </Button>
+                                </Link>
                             </TooltipTrigger>
                             <TooltipContent side="bottom">
                                 <p>{t.add_word}</p>

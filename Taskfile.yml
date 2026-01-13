@@ -249,6 +249,7 @@ tasks:
       - task: fix
       - task: check
       - task: test
+      - task: build
 
   ssh:
     desc: "Connect to server via ssh"

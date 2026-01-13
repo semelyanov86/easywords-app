@@ -52,6 +52,30 @@ export const translations: TranslationStructure = {
         tagline: 'Build your vocabulary, one word at a time.',
         rights: 'All rights reserved.',
     },
+    // Words
+    words: {
+        page_title: 'Add Word',
+        page_description: 'Fill the form to add a new word to your vocabulary',
+        add_new_word: 'Add New Word',
+        original_label: 'Original Word',
+        original_placeholder: 'Enter word',
+        translated_label: 'Translation',
+        translated_placeholder: 'Enter translation or use AI',
+        language_label: 'Language',
+        language_placeholder: 'Select language',
+        ai_translate: 'AI',
+        translating: 'Translating...',
+        save_word: 'Save Word',
+        saving: 'Saving...',
+        cancel: 'Cancel',
+        go_to_word: 'Go to Card',
+        add_another: 'Add Another Word',
+        success_title: 'Word Created Successfully!',
+        success_description: 'ID:',
+        word_exists:
+            'This word already exists in your vocabulary for the selected language.',
+        translation_error: 'Failed to get translation. Please try again.',
+    },
     // Auth
     auth: {
         login: {
