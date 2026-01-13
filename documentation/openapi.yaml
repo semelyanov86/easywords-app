@@ -35,8 +35,74 @@ tags:
     description: Операции с примерами использования слов (AI-генерация)
   - name: Statistics
     description: Получение статистики
+  - name: Translation
+    description: Получение перевода слов (AI-генерация)
 
 paths:
+  /translate:
+    get:
+      tags:
+        - Translation
+      summary: Получить перевод слова
+      description: |
+        Возвращает перевод для указанного слова на русский язык.
+
+        Система сначала ищет слово во внутренней базе данных пользователей.
+        Если слово не найдено, запрашивает перевод через OpenAI API.
+
+        Перевод ограничен 100 символами и возвращается в краткой форме.
+      operationId: getWordTranslation
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: word
+          in: query
+          description: Слово для перевода
+          required: true
+          schema:
+            type: string
+            maxLength: 255
+            example: hello
+        - name: language
+          in: query
+          description: Код языка слова (en, de, и т.д.)
+          required: true
+          schema:
+            type: string
+            maxLength: 2
+            example: en
+      responses:
+        '200':
+          description: Перевод успешно получен
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/WordTranslationResponse'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Ошибка валидации
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Ошибка при получении перевода через OpenAI API
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /token:
     post:
       tags:
@@ -1188,3 +1254,25 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/ExampleResource'
+
+    WordTranslationResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [word-translations]
+              example: word-translations
+            id:
+              type: string
+              example: temp
+            attributes:
+              type: object
+              properties:
+                translation:
+                  type: string
+                  description: Перевод слова на русский язык (максимум 100 символов)
+                  maxLength: 100
+                  example: привет
