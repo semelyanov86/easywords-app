@@ -21,6 +21,8 @@ final class WordStatisticsData extends Data
      * @param  WordData[]  $words_added_today  Список добавленных сегодня слов
      * @param  int  $words_updated_today  Количество обновлённых сегодня слов (updated_at)
      * @param  int  $words_updated_this_month  Количество обновлённых слов в этом месяце
+     * @param  int  $progress_today_percent  Процент прогресса сегодня от дневной цели (50 слов)
+     * @param  int  $streak_days  Серия: количество дней подряд с обновлениями
      */
     public function __construct(
         public int $total_words,
@@ -33,6 +35,8 @@ final class WordStatisticsData extends Data
         public array $words_added_today,
         public int $words_updated_today,
         public int $words_updated_this_month,
+        public int $progress_today_percent,
+        public int $streak_days,
     ) {}
 
     /**
@@ -53,6 +57,8 @@ final class WordStatisticsData extends Data
                 'words_added_today' => $this->words_added_today,
                 'words_updated_today' => $this->words_updated_today,
                 'words_updated_this_month' => $this->words_updated_this_month,
+                'progress_today_percent' => $this->progress_today_percent,
+                'streak_days' => $this->streak_days,
             ],
         ];
     }

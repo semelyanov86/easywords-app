@@ -15,12 +15,23 @@ interface UserSettings {
     languages_list: string[];
 }
 
+interface Statistics {
+    done_words: number;
+    progress_today_percent: number;
+    streak_days: number;
+}
+
 interface DashboardPageProps {
     user: User;
     settings: UserSettings;
+    statistics: Statistics;
 }
 
-export default function Dashboard({ user, settings }: DashboardPageProps) {
+export default function Dashboard({
+    user,
+    settings,
+    statistics,
+}: DashboardPageProps) {
     const t = useDashboardTranslation(dashboardTranslations);
     const { main_language, languages_list } = settings;
 
@@ -147,7 +158,9 @@ export default function Dashboard({ user, settings }: DashboardPageProps) {
                                 {t.totalWords || 'Total Words'}
                             </h3>
                         </div>
-                        <p className="text-3xl font-bold text-neutral-900">0</p>
+                        <p className="text-3xl font-bold text-neutral-900">
+                            {statistics.done_words}
+                        </p>
                         <p className="mt-1 text-sm text-neutral-500">
                             {t.wordsLearned || 'words learned'}
                         </p>
@@ -163,7 +176,7 @@ export default function Dashboard({ user, settings }: DashboardPageProps) {
                             </h3>
                         </div>
                         <p className="text-3xl font-bold text-neutral-900">
-                            0%
+                            {statistics.progress_today_percent}%
                         </p>
                         <p className="mt-1 text-sm text-neutral-500">
                             {t.dailyGoal || 'of daily goal'}
@@ -179,7 +192,9 @@ export default function Dashboard({ user, settings }: DashboardPageProps) {
                                 {t.streak || 'Streak'}
                             </h3>
                         </div>
-                        <p className="text-3xl font-bold text-neutral-900">0</p>
+                        <p className="text-3xl font-bold text-neutral-900">
+                            {statistics.streak_days}
+                        </p>
                         <p className="mt-1 text-sm text-neutral-500">
                             {t.daysInRow || 'days in a row'}
                         </p>

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\GetUserSettings;
+use App\Actions\GetUserStatistics;
 use Inertia\Inertia;
 
 /**
@@ -21,7 +22,7 @@ final class DashboardController
      * Возвращает Inertia-ответ с данными пользователя и его настройками.
      * На странице отображаются кнопки для выбора направления изучения языков.
      */
-    public function __invoke(GetUserSettings $getUserSettings): \Inertia\Response
+    public function __invoke(GetUserSettings $getUserSettings, GetUserStatistics $getUserStatistics): \Inertia\Response
     {
         /** @var \App\Models\User $user */
         $user = auth()->user();
@@ -29,6 +30,7 @@ final class DashboardController
         return Inertia::render('dashboard', [
             'user' => $user,
             'settings' => $getUserSettings->handle($user->id),
+            'statistics' => $getUserStatistics->handle($user),
         ]);
     }
 }
