@@ -80,6 +80,10 @@ export const translations: TranslationStructure = {
         copy_token: 'Copy',
         token_copied: 'Copied!',
         delete_token: 'Delete',
+        delete: 'Delete',
+        delete_token_title: 'Delete API Token',
+        delete_token_description:
+            'Are you sure you want to delete this token? This action cannot be undone.',
         delete_token_confirm: 'Are you sure you want to delete this token?',
         delete_confirmation: 'Are you sure you want to delete?',
         last_used: 'Last Used',

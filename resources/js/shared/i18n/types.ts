@@ -89,6 +89,9 @@ export interface TranslationStructure {
         copy_token: string;
         token_copied: string;
         delete_token: string;
+        delete: string;
+        delete_token_title: string;
+        delete_token_description: string;
         delete_token_confirm: string;
         delete_confirmation: string;
         last_used: string;
