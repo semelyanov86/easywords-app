@@ -1,16 +1,21 @@
-import { translate as translateRoute } from '@/routes/api/v1';
+import { translate as translateRoute } from '@/routes/words';
 import { useState } from 'react';
 
 interface TranslationResponse {
     data: {
-        translation: string;
+        type: string;
+        id: string;
+        attributes: {
+            translation: string;
+        };
     };
 }
 
 /**
  * Хук для получения перевода слова через ИИ.
  *
- * Использует Inertia для выполнения GET-запроса к API перевода.
+ * Использует веб-эндпоинт с cookie-based авторизацией.
+ * Получает ответ в формате JSON:API.
  * Управляет состояниями загрузки и ошибок.
  */
 export function useWordTranslation() {
@@ -39,7 +44,7 @@ export function useWordTranslation() {
                 {
                     method: 'GET',
                     headers: {
-                        Accept: 'application/json',
+                        Accept: 'application/vnd.api+json',
                         'X-Requested-With': 'XMLHttpRequest',
                     },
                 },
@@ -51,7 +56,7 @@ export function useWordTranslation() {
 
             const data = (await response.json()) as TranslationResponse;
             setIsTranslating(false);
-            return data.data.translation;
+            return data.data.attributes.translation;
         } catch {
             setError('Не удалось получить перевод. Попробуйте снова.');
             setIsTranslating(false);
