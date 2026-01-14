@@ -62,6 +62,40 @@ export interface TranslationStructure {
         word_exists: string;
         translation_error: string;
     };
+    profile: {
+        title: string;
+        user_info: string;
+        user_id: string;
+        name: string;
+        user_name: string;
+        email: string;
+        created_at: string;
+        updated_at: string;
+        api_keys: string;
+        api_keys_description: string;
+        no_tokens: string;
+        add_token: string;
+        create_token: string;
+        create_token_title: string;
+        token_name: string;
+        token_name_placeholder: string;
+        token: string;
+        token_created_title: string;
+        token_created_description: string;
+        cancel: string;
+        save: string;
+        creating: string;
+        done: string;
+        token_created: string;
+        copy_token: string;
+        token_copied: string;
+        delete_token: string;
+        delete_token_confirm: string;
+        delete_confirmation: string;
+        last_used: string;
+        never_used: string;
+        created: string;
+    };
     auth: {
         login: {
             title: string;
@@ -121,6 +155,7 @@ export interface TranslationStructure {
             next: string;
             cancel: string;
             save: string;
+            done: string;
             delete: string;
             edit: string;
             loading: string;

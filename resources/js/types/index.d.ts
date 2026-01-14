@@ -1,4 +1,7 @@
-import { InertiaLinkProps } from '@inertiajs/react';
+import {
+    InertiaLinkProps,
+    PageProps as InertiaPageProps,
+} from '@inertiajs/react';
 import { LucideIcon } from 'lucide-react';
 
 export interface Auth {
@@ -37,7 +40,26 @@ export interface User {
     avatar?: string;
     email_verified_at: string | null;
     two_factor_enabled?: boolean;
+    is_admin?: boolean;
+    has_premium?: boolean;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface NewToken {
+    name: string;
+    token: string;
+    created_at: string;
+}
+
+export interface FlashData {
+    new_token?: NewToken;
+    [key: string]: unknown;
+}
+
+export type PageProps = InertiaPageProps & {
+    auth?: Auth;
+    flash?: FlashData;
+    [key: string]: unknown;
+};

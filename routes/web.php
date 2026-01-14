@@ -15,6 +15,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('words/create', [\App\Http\Controllers\WordController::class, 'create'])->name('words.create');
     Route::post('words', [\App\Http\Controllers\WordController::class, 'store'])->name('words.store');
     Route::get('words/translate', [\App\Http\Controllers\WordTranslationController::class, 'translate'])->name('words.translate');
+    Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
+    Route::post('profile', [\App\Http\Controllers\ProfileController::class, 'storeToken'])->name('profile.tokens.store');
+    Route::delete('profile/api-tokens/{token}', [\App\Http\Controllers\ProfileController::class, 'destroyToken'])->name('profile.tokens.destroy');
 });
 
 require __DIR__ . '/settings.php';
