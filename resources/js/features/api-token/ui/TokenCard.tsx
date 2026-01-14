@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { copyToClipboard } from '@/shared/lib/clipboard';
 import { Check, Copy, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -22,9 +23,11 @@ export function TokenCard({ token, onDelete, translations }: TokenCardProps) {
     const [copiedTokenId, setCopiedTokenId] = useState<string | null>(null);
 
     const handleCopyToken = async (tokenId: string, plainTextToken: string) => {
-        await navigator.clipboard.writeText(plainTextToken);
-        setCopiedTokenId(tokenId);
-        setTimeout(() => setCopiedTokenId(null), 2000);
+        const success = await copyToClipboard(plainTextToken);
+        if (success) {
+            setCopiedTokenId(tokenId);
+            setTimeout(() => setCopiedTokenId(null), 2000);
+        }
     };
 
     return (
