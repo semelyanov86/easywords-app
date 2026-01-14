@@ -68,13 +68,11 @@ export const translations: TranslationStructure = {
         add_token: 'Добавить новый токен',
         create_token: 'Создать токен',
         create_token_title: 'Создать новый токен',
+        create_token_description: 'Введите имя для вашего нового API токена',
         user_name: 'Имя пользователя',
         token_name: 'Название токена',
         token_name_placeholder: 'Например: Мобильное приложение',
         token: 'Токен',
-        token_created_title: 'Токен успешно создан',
-        token_created_description:
-            'Скопируйте ваш токен сейчас. Вы больше не сможете его увидеть.',
         cancel: 'Отмена',
         save: 'Сохранить',
         creating: 'Создание...',
@@ -88,6 +86,9 @@ export const translations: TranslationStructure = {
         last_used: 'Последнее использование',
         never_used: 'Не использовался',
         created: 'Создан',
+        token_warning:
+            'Сохраните этот токен сейчас. Он больше не будет показан.',
+        create: 'Создать',
     },
     // Words
     words: {

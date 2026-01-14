@@ -77,11 +77,10 @@ export interface TranslationStructure {
         add_token: string;
         create_token: string;
         create_token_title: string;
+        create_token_description: string;
         token_name: string;
         token_name_placeholder: string;
         token: string;
-        token_created_title: string;
-        token_created_description: string;
         cancel: string;
         save: string;
         creating: string;
@@ -95,6 +94,8 @@ export interface TranslationStructure {
         last_used: string;
         never_used: string;
         created: string;
+        token_warning: string;
+        create: string;
     };
     auth: {
         login: {

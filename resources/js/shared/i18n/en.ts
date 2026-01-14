@@ -68,12 +68,10 @@ export const translations: TranslationStructure = {
         add_token: 'Add new token',
         create_token: 'Create Token',
         create_token_title: 'Create New Token',
+        create_token_description: 'Enter a name for your new API token',
         token_name: 'Token Name',
         token_name_placeholder: 'e.g. Mobile App',
         token: 'Token',
-        token_created_title: 'Token Created Successfully',
-        token_created_description:
-            "Copy your token now. You won't be able to see it again.",
         cancel: 'Cancel',
         save: 'Save',
         creating: 'Creating...',
@@ -87,6 +85,8 @@ export const translations: TranslationStructure = {
         last_used: 'Last Used',
         never_used: 'Never',
         created: 'Created',
+        token_warning: 'Save this token now. It will not be shown again.',
+        create: 'Create',
     },
     // Words
     words: {

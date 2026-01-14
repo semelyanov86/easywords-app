@@ -70,12 +70,11 @@ export const translations: TranslationStructure = {
         add_token: 'Neues Token hinzufügen',
         create_token: 'Token erstellen',
         create_token_title: 'Neues Token erstellen',
+        create_token_description:
+            'Geben Sie einen Namen für Ihr neues API-Token ein',
         token_name: 'Token-Name',
         token_name_placeholder: 'z. B. Mobile App',
         token: 'Token',
-        token_created_title: 'Token erfolgreich erstellt',
-        token_created_description:
-            'Kopieren Sie Ihr Token jetzt. Sie werden es nicht mehr sehen können.',
         cancel: 'Abbrechen',
         save: 'Speichern',
         creating: 'Erstelle...',
@@ -89,6 +88,9 @@ export const translations: TranslationStructure = {
         last_used: 'Zuletzt verwendet',
         never_used: 'Nie',
         created: 'Erstellt',
+        token_warning:
+            'Speichern Sie dieses Token jetzt. Es wird nicht mehr angezeigt.',
+        create: 'Erstellen',
     },
     // Words
     words: {
