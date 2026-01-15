@@ -74,6 +74,62 @@ final class GetWordTranslationTest extends TestCase
         });
     }
 
+    public function test_removes_citation_marks_from_translation(): void
+    {
+        // Arrange
+        Config::set('services.openai.key', 'test-key');
+        Config::set('services.openai.url', 'https://api.openai.test');
+        Config::set('services.openai.model', 'test-model');
+
+        Http::fake([
+            'https://api.openai.test/chat/completions' => Http::response([
+                'choices' => [
+                    [
+                        'message' => [
+                            'content' => 'инвесторы[1][2][3]',
+                        ],
+                    ],
+                ],
+            ]),
+        ]);
+
+        $action = new GetWordTranslation();
+
+        // Act
+        $result = $action->handle('investors', 'en');
+
+        // Assert
+        $this->assertEquals('инвесторы', $result->translation);
+    }
+
+    public function test_removes_multiple_citation_marks_from_middle_of_text(): void
+    {
+        // Arrange
+        Config::set('services.openai.key', 'test-key');
+        Config::set('services.openai.url', 'https://api.openai.test');
+        Config::set('services.openai.model', 'test-model');
+
+        Http::fake([
+            'https://api.openai.test/chat/completions' => Http::response([
+                'choices' => [
+                    [
+                        'message' => [
+                            'content' => 'финансовые[1] инвесторы[2][3] и партнеры[10]',
+                        ],
+                    ],
+                ],
+            ]),
+        ]);
+
+        $action = new GetWordTranslation();
+
+        // Act
+        $result = $action->handle('investors', 'en');
+
+        // Assert
+        $this->assertEquals('финансовые инвесторы и партнеры', $result->translation);
+    }
+
     public function test_truncates_long_translations_to_100_characters(): void
     {
         // Arrange
@@ -163,6 +219,38 @@ final class GetWordTranslationTest extends TestCase
 
         // Assert
         $this->assertEquals('перевод с пробелами', $result->translation);
+    }
+
+    public function test_removes_citations_and_then_truncates_if_needed(): void
+    {
+        // Arrange
+        Config::set('services.openai.key', 'test-key');
+        Config::set('services.openai.url', 'https://api.openai.test');
+        Config::set('services.openai.model', 'test-model');
+
+        $longTranslation = str_repeat('слово[1] ', 20) . '[2][3][4]';
+
+        Http::fake([
+            'https://api.openai.test/chat/completions' => Http::response([
+                'choices' => [
+                    [
+                        'message' => [
+                            'content' => $longTranslation,
+                        ],
+                    ],
+                ],
+            ]),
+        ]);
+
+        $action = new GetWordTranslation();
+
+        // Act
+        $result = $action->handle('testword', 'en');
+
+        // Assert
+        $this->assertLessThanOrEqual(100, mb_strlen($result->translation));
+        $this->assertStringNotContainsString('[1]', $result->translation);
+        $this->assertStringNotContainsString('[2]', $result->translation);
     }
 
     public function test_sends_correct_system_prompt_for_english(): void

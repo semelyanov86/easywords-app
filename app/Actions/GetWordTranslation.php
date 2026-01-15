@@ -15,7 +15,8 @@ use Lorisleiva\Actions\Concerns\AsAction;
  * Этот Action инкапсулирует логику автоматического перевода слова:
  * 1. Сначала ищет слово во внутренней базе данных (среди сохраненных слов)
  * 2. Если не найдено, запрашивает перевод через OpenAI API
- * 3. Возвращает краткий перевод (до 100 символов)
+ * 3. Очищает перевод от ссылок-цитат вида [1][2][3]
+ * 4. Возвращает краткий перевод (до 100 символов)
  *
  * Вынесен в отдельный класс для повторного использования и тестируемости.
  */
@@ -104,6 +105,7 @@ final readonly class GetWordTranslation
         }
 
         $translation = trim($data['choices'][0]['message']['content']);
+        $translation = $this->removeCitationMarks($translation);
 
         // Убеждаемся, что перевод не длиннее 100 символов
         if (mb_strlen($translation) > 100) {
@@ -111,6 +113,20 @@ final readonly class GetWordTranslation
         }
 
         return $translation;
+    }
+
+    /**
+     * Удаляет ссылки-цитаты из текста.
+     *
+     * Некоторые AI (например, Perplexity) добавляют ссылки на источники в формате [1][2][3].
+     * Этот метод удаляет все такие вхождения из текста.
+     *
+     * @param  string  $text  Текст для очистки
+     * @return string Очищенный текст
+     */
+    private function removeCitationMarks(string $text): string
+    {
+        return (string) preg_replace('/\[\d+\]/', '', $text);
     }
 
     /**
