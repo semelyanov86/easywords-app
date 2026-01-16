@@ -1,4 +1,5 @@
 import { DeleteTokenDialog } from '@/features/api-token/ui/DeleteTokenDialog';
+import profile from '@/routes/profile';
 import { profileTranslations } from '@/shared/i18n/profile';
 import { useNestedTranslation } from '@/shared/i18n/useNestedTranslation';
 import { AuthHeader } from '@/widgets/auth/AuthHeader';
@@ -94,6 +95,9 @@ export default function Show({
                 <div className="mb-8">
                     <UserInfoCard
                         user={user}
+                        onChangePassword={() =>
+                            router.visit(profile.password.edit().url)
+                        }
                         translations={{
                             userInfo: t.userInfo || 'User Information',
                             userId: t.userId || 'User ID',
@@ -101,6 +105,8 @@ export default function Show({
                             email: t.email || 'Email',
                             createdAt: t.createdAt || 'Registration Date',
                             updatedAt: t.updatedAt || 'Last Updated',
+                            changePassword:
+                                t.changePassword || 'Change Password',
                         }}
                     />
                 </div>

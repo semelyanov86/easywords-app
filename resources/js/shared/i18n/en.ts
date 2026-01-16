@@ -62,6 +62,7 @@ export const translations: TranslationStructure = {
         email: 'Email',
         created_at: 'Created At',
         updated_at: 'Updated At',
+        change_password: 'Change Password',
         api_keys: 'API Keys',
         api_keys_description: 'Manage your API tokens',
         no_tokens: "You don't have any tokens yet",
@@ -91,6 +92,20 @@ export const translations: TranslationStructure = {
         created: 'Created',
         token_warning: 'Save this token now. It will not be shown again.',
         create: 'Create',
+    },
+    // Password
+    password: {
+        title: 'Change Password',
+        subtitle: 'Enter your current password and new password to update',
+        current_password: 'Current Password',
+        current_password_placeholder: 'Enter current password',
+        new_password: 'New Password',
+        new_password_placeholder: 'Enter new password',
+        confirm_password: 'Confirm Password',
+        confirm_password_placeholder: 'Repeat new password',
+        save_button: 'Save Password',
+        saving: 'Saving...',
+        success_message: 'Password updated successfully',
     },
     // Words
     words: {

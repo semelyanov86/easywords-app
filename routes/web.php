@@ -18,6 +18,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::post('profile', [\App\Http\Controllers\ProfileController::class, 'storeToken'])->name('profile.tokens.store');
     Route::delete('profile/api-tokens/{token}', [\App\Http\Controllers\ProfileController::class, 'destroyToken'])->name('profile.tokens.destroy');
+    Route::get('profile/password/edit', [\App\Http\Controllers\PasswordController::class, 'edit'])->name('profile.password.edit');
+    Route::post('profile/password', [\App\Http\Controllers\PasswordController::class, 'updatePassword'])->name('profile.password.update');
 });
 
 require __DIR__ . '/settings.php';

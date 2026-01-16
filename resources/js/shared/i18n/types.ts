@@ -40,6 +40,19 @@ export interface TranslationStructure {
         tagline: string;
         rights: string;
     };
+    password: {
+        title: string;
+        subtitle: string;
+        current_password: string;
+        current_password_placeholder: string;
+        new_password: string;
+        new_password_placeholder: string;
+        confirm_password: string;
+        confirm_password_placeholder: string;
+        save_button: string;
+        saving: string;
+        success_message: string;
+    };
     words: {
         page_title: string;
         page_description: string;
@@ -71,6 +84,7 @@ export interface TranslationStructure {
         email: string;
         created_at: string;
         updated_at: string;
+        change_password: string;
         api_keys: string;
         api_keys_description: string;
         no_tokens: string;

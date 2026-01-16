@@ -59,9 +59,11 @@ export const translations: TranslationStructure = {
         user_info: 'Информация о пользователе',
         user_id: 'ID пользователя',
         name: 'Имя',
+        user_name: 'Имя',
         email: 'Email',
         created_at: 'Дата создания',
         updated_at: 'Дата обновления',
+        change_password: 'Изменить пароль',
         api_keys: 'API ключи',
         api_keys_description: 'Управляйте вашими токенами доступа к API',
         no_tokens: 'У вас пока нет токенов доступа',
@@ -69,7 +71,6 @@ export const translations: TranslationStructure = {
         create_token: 'Создать токен',
         create_token_title: 'Создать новый токен',
         create_token_description: 'Введите имя для вашего нового API токена',
-        user_name: 'Имя пользователя',
         token_name: 'Название токена',
         token_name_placeholder: 'Например: Мобильное приложение',
         token: 'Токен',
@@ -93,6 +94,20 @@ export const translations: TranslationStructure = {
         token_warning:
             'Сохраните этот токен сейчас. Он больше не будет показан.',
         create: 'Создать',
+    },
+    // Password
+    password: {
+        title: 'Изменить пароль',
+        subtitle: 'Введите ваш текущий пароль и новый пароль для изменения',
+        current_password: 'Текущий пароль',
+        current_password_placeholder: 'Введите текущий пароль',
+        new_password: 'Новый пароль',
+        new_password_placeholder: 'Введите новый пароль',
+        confirm_password: 'Подтвердите пароль',
+        confirm_password_placeholder: 'Повторите новый пароль',
+        save_button: 'Сохранить пароль',
+        saving: 'Сохранение...',
+        success_message: 'Пароль успешно изменён',
     },
     // Words
     words: {

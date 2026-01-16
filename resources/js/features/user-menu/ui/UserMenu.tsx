@@ -21,6 +21,7 @@ import {
     Settings,
     User,
 } from 'lucide-react';
+import profile from '@/routes/profile';
 
 interface UserMenuProps {
     userName: string;
@@ -111,7 +112,7 @@ export function UserMenu({ userName }: UserMenuProps) {
                 <div className="py-1">
                     <DropdownMenuItem asChild>
                         <a
-                            href="/profile"
+                            href={profile.show().url}
                             className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-neutral-700 transition-all hover:bg-primary/5 hover:text-primary focus:bg-primary/5 focus:text-primary"
                         >
                             <div className="rounded-lg bg-primary/10 p-1.5">
@@ -153,7 +154,7 @@ export function UserMenu({ userName }: UserMenuProps) {
 
                     <DropdownMenuItem asChild>
                         <a
-                            href="/password/change"
+                            href={profile.password.edit().url}
                             className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-neutral-700 transition-all hover:bg-primary/5 hover:text-primary focus:bg-primary/5 focus:text-primary"
                         >
                             <div className="rounded-lg bg-primary/10 p-1.5">

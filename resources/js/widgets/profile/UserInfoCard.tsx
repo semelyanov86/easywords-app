@@ -1,5 +1,7 @@
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { Lock } from 'lucide-react';
 
 interface User {
     id: number;
@@ -18,10 +20,16 @@ interface UserInfoCardProps {
         email: string;
         createdAt: string;
         updatedAt: string;
+        changePassword: string;
     };
+    onChangePassword?: () => void;
 }
 
-export function UserInfoCard({ user, translations }: UserInfoCardProps) {
+export function UserInfoCard({
+    user,
+    translations,
+    onChangePassword,
+}: UserInfoCardProps) {
     return (
         <Card className="border-2 shadow-sm transition-shadow hover:shadow-md">
             <CardHeader>
@@ -71,6 +79,16 @@ export function UserInfoCard({ user, translations }: UserInfoCardProps) {
                             {new Date(user.updated_at).toLocaleDateString()}
                         </p>
                     </div>
+                </div>
+                <div className="mt-4 border-t pt-4">
+                    <Button
+                        onClick={onChangePassword}
+                        className="w-full"
+                        variant="outline"
+                    >
+                        <Lock className="mr-2 h-4 w-4" />
+                        {translations.changePassword}
+                    </Button>
                 </div>
             </CardContent>
         </Card>
