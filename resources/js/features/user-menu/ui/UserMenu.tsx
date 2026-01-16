@@ -9,6 +9,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useInitials } from '@/hooks/use-initials';
+import profile from '@/routes/profile';
 import { dashboardTranslations } from '@/shared/i18n/dashboard';
 import { useLanguage, type Language } from '@/shared/i18n/LanguageContext';
 import { useDashboardTranslation } from '@/shared/i18n/useDashboardTranslation';
@@ -21,7 +22,6 @@ import {
     Settings,
     User,
 } from 'lucide-react';
-import profile from '@/routes/profile';
 
 interface UserMenuProps {
     userName: string;

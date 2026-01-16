@@ -26,7 +26,7 @@ final class PasswordController
         $user = auth()->user();
 
         return Inertia::render('password/Edit', [
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
