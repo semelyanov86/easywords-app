@@ -13,7 +13,7 @@ Route::get('/', fn () => Inertia::render('welcome', [
 Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('dashboard', \App\Http\Controllers\DashboardController::class)->name('dashboard');
     Route::get('words/create', [\App\Http\Controllers\WordController::class, 'create'])->name('words.create');
-    Route::post('words', [\App\Http\Controllers\WordController::class, 'store'])->name('words.store');
+    Route::post('words/create', [\App\Http\Controllers\WordController::class, 'store'])->name('words.store');
     Route::get('words/translate', [\App\Http\Controllers\WordTranslationController::class, 'translate'])->name('words.translate');
     Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::post('profile', [\App\Http\Controllers\ProfileController::class, 'storeToken'])->name('profile.tokens.store');

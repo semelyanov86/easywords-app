@@ -9,7 +9,8 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { dashboard } from '@/routes/index';
+import { dashboard } from '@/routes';
+import { store } from '@/routes/words';
 import { useTranslation } from '@/shared/i18n/useTranslation';
 import { router, useForm } from '@inertiajs/react';
 import { Check, Loader2, Sparkles, X } from 'lucide-react';
@@ -65,7 +66,7 @@ export function AddWordForm({ languages, createdWordId }: AddWordFormProps) {
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        post('/words', {
+        post(store().url, {
             preserveScroll: true,
             onSuccess: (page) => {
                 const responseData = page.props as {
