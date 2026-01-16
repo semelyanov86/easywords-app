@@ -137,6 +137,33 @@ export const translations: TranslationStructure = {
         translation_error:
             'Übersetzung konnte nicht abgerufen werden. Bitte versuchen Sie es erneut.',
     },
+    // Settings
+    settings: {
+        title: 'App-Einstellungen',
+        subtitle: 'Passen Sie Ihre App-Anzeige und Ihr Verhalten an',
+        save: 'Speichern',
+        saving: 'Speichern...',
+        updated_successfully: 'Einstellungen erfolgreich aktualisiert',
+        import_words: 'Wörter importieren',
+        import_description:
+            'Zu faul, Wörter manuell hinzuzufügen? Importieren Sie die am häufigsten verwendeten Wörter für Ihre Standardsprache',
+        importing: 'Importieren...',
+        fields: {
+            paginate: 'Karten pro Lernsitzung',
+            main_language: 'Standardsprache zum Lernen',
+            show_starred: 'Nur Favoriten anzeigen',
+            known_enabled: 'Bereits gelernte anzeigen',
+            latest_first: 'Nach kürzlich hinzugefügten filtern',
+            show_imported: 'Importierte Wörter anzeigen',
+            show_shared: 'Von anderen geteilte Wörter anzeigen',
+            fresh_first: 'Zuerst frische',
+        },
+    },
+    // Import
+    import: {
+        words_imported: '{count} Wörter erfolgreich importiert',
+        no_words_imported: 'Keine neuen Wörter zum Importieren',
+    },
     // Auth
     auth: {
         login: {

@@ -114,6 +114,30 @@ export interface TranslationStructure {
         token_warning: string;
         create: string;
     };
+    settings: {
+        title: string;
+        subtitle: string;
+        save: string;
+        saving: string;
+        updated_successfully: string;
+        import_words: string;
+        import_description: string;
+        importing: string;
+        fields: {
+            paginate: string;
+            main_language: string;
+            show_starred: string;
+            known_enabled: string;
+            latest_first: string;
+            show_imported: string;
+            show_shared: string;
+            fresh_first: string;
+        };
+    };
+    import: {
+        words_imported: string;
+        no_words_imported: string;
+    };
     auth: {
         login: {
             title: string;

@@ -131,6 +131,33 @@ export const translations: TranslationStructure = {
             'This word already exists in your vocabulary for selected language.',
         translation_error: 'Failed to get translation. Please try again.',
     },
+    // Settings
+    settings: {
+        title: 'App Settings',
+        subtitle: 'Customize your app display and behavior',
+        save: 'Save',
+        saving: 'Saving...',
+        updated_successfully: 'Settings updated successfully',
+        import_words: 'Import Words',
+        import_description:
+            'Too lazy to add words manually? Import the most commonly used words for your default language',
+        importing: 'Importing...',
+        fields: {
+            paginate: 'Cards per Study Session',
+            main_language: 'Default Learning Language',
+            show_starred: 'Show Only Favorites',
+            known_enabled: 'Show Already Learned',
+            latest_first: 'Filter by Recently Added',
+            show_imported: 'Show Imported Words',
+            show_shared: 'Show Words Shared by Others',
+            fresh_first: 'Fresh First',
+        },
+    },
+    // Import
+    import: {
+        words_imported: 'Successfully imported {count} words',
+        no_words_imported: 'No new words to import',
+    },
     // Auth
     auth: {
         login: {
