@@ -6,6 +6,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 import { LanguageProvider } from './shared/i18n/LanguageContext';
+import { Toaster } from './shared/ui/Toaster';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -23,6 +24,7 @@ createInertiaApp({
             <StrictMode>
                 <LanguageProvider>
                     <App {...props} />
+                    <Toaster />
                 </LanguageProvider>
             </StrictMode>,
         );

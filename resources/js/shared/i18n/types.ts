@@ -123,6 +123,19 @@ export interface TranslationStructure {
         import_words: string;
         import_description: string;
         importing: string;
+        success_title: string;
+        success_message: string;
+        error_title: string;
+        error_message: string;
+        import_success_title: string;
+        import_success_message: string;
+        import_error_message: string;
+        general: string;
+        general_description: string;
+        visibility: string;
+        visibility_description: string;
+        sorting: string;
+        sorting_description: string;
         fields: {
             paginate: string;
             main_language: string;
