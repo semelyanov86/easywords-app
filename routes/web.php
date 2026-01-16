@@ -23,6 +23,7 @@ Route::middleware(['auth'])->group(function (): void {
     Route::get('settings', [\App\Http\Controllers\SettingsController::class, 'show'])->name('settings.show');
     Route::post('settings', [\App\Http\Controllers\SettingsController::class, 'update'])->name('settings.update');
     Route::post('import-words', \App\Http\Controllers\ImportWordsController::class)->name('import-words');
+    Route::get('statistics', \App\Http\Controllers\StatisticsController::class)->name('statistics.index');
 });
 
 require __DIR__ . '/settings.php';
