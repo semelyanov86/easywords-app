@@ -16,6 +16,7 @@ Route::middleware(['auth'])->group(function (): void {
     Route::post('words/create', [\App\Http\Controllers\WordController::class, 'store'])->name('words.store');
     Route::get('words/{id}', [\App\Http\Controllers\WordController::class, 'show'])->name('words.show');
     Route::get('words/translate', [\App\Http\Controllers\WordTranslationController::class, 'translate'])->name('words.translate');
+    Route::get('words/{id}/examples', \App\Http\Controllers\ShowWordExamplesController::class)->name('words.examples');
 
     // Word actions
     Route::post('words/{id}/mark-learned', [\App\Http\Controllers\WordActionController::class, 'markLearned'])->name('words.mark-learned');

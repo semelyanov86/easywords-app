@@ -165,6 +165,11 @@ export const translations: TranslationStructure = {
         error_sharing: 'Error sharing word',
         error_marking_learned: 'Error marking word as learned',
         error_toggling_starred: 'Error toggling favorite status',
+        premium_required: 'Available for premium users',
+        examples_title: 'Usage Examples',
+        examples_original: 'Original',
+        examples_translated: 'Translation',
+        back_to_word: 'Back to Word',
     },
     // Settings
     settings: {

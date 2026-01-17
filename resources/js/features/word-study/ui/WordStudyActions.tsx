@@ -1,5 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { TranslationStructure } from '@/shared/i18n/types';
+import { Link } from '@inertiajs/react';
+import { examples } from '@/routes/words';
 
 interface WordStudyActionsProps {
     isLearned: boolean;
@@ -11,6 +13,8 @@ interface WordStudyActionsProps {
     onPrev: () => void;
     onNext: () => void;
     t: TranslationStructure;
+    wordId: number;
+    hasPremium: boolean;
 }
 
 export function WordStudyActions({
@@ -23,6 +27,8 @@ export function WordStudyActions({
     onPrev,
     onNext,
     t,
+    wordId,
+    hasPremium,
 }: WordStudyActionsProps) {
     return (
         <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -73,15 +79,30 @@ export function WordStudyActions({
                 {t.words.next} →
             </Button>
 
-            <Button
-                size="lg"
-                variant="outline"
-                disabled
-                title={t.words.show_example}
-                className="cursor-not-allowed opacity-40"
-            >
-                💡 {t.words.show_example}
-            </Button>
+            {hasPremium ? (
+                <Link
+                    href={examples(wordId).url}
+                    className="inline-block"
+                >
+                    <Button
+                        size="lg"
+                        variant="outline"
+                        className="hover:bg-secondary-50 hover:text-secondary-700 border-secondary text-secondary transition-all duration-200 hover:scale-105 hover:shadow-md"
+                    >
+                        💡 {t.words.show_example}
+                    </Button>
+                </Link>
+            ) : (
+                <Button
+                    size="lg"
+                    variant="outline"
+                    disabled
+                    title={t.words.premium_required}
+                    className="cursor-not-allowed opacity-40"
+                >
+                    💡 {t.words.show_example}
+                </Button>
+            )}
         </div>
     );
 }

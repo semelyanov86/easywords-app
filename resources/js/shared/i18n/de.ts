@@ -172,6 +172,11 @@ export const translations: TranslationStructure = {
         error_sharing: 'Fehler beim Teilen des Wortes',
         error_marking_learned: 'Fehler beim Markieren des Wortes als gelernt',
         error_toggling_starred: 'Fehler beim Ändern des Favoritenstatus',
+        premium_required: 'Verfügbar für Premium-Benutzer',
+        examples_title: 'Verwendungsbeispiele',
+        examples_original: 'Original',
+        examples_translated: 'Übersetzung',
+        back_to_word: 'Zurück zum Wort',
     },
     // Settings
     settings: {

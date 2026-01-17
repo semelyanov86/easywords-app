@@ -106,6 +106,11 @@ export interface TranslationStructure {
         error_sharing: string;
         error_marking_learned: string;
         error_toggling_starred: string;
+        premium_required: string;
+        examples_title: string;
+        examples_original: string;
+        examples_translated: string;
+        back_to_word: string;
     };
     profile: {
         title: string;

@@ -167,6 +167,11 @@ export const translations: TranslationStructure = {
         error_sharing: 'Ошибка при шаринге слова',
         error_marking_learned: 'Ошибка при отметке слова как выученного',
         error_toggling_starred: 'Ошибка при изменении статуса избранного',
+        premium_required: 'Доступно для премиум-пользователей',
+        examples_title: 'Примеры использования',
+        examples_original: 'Оригинал',
+        examples_translated: 'Перевод',
+        back_to_word: 'Вернуться к слову',
     },
     // Settings
     settings: {

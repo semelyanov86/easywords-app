@@ -330,6 +330,8 @@ export default function WordStudyPage({
                         onPrev={handleGoToPrev}
                         onNext={handleGoToNext}
                         t={t}
+                        wordId={word.id}
+                        hasPremium={user.has_premium ?? false}
                     />
 
                     {/* Keyboard shortcuts */}
