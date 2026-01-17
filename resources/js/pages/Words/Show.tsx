@@ -15,6 +15,8 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { useWordStudy } from '@/features/word-study/model/useWordStudy';
+import { WordCardActions } from '@/features/word-study/ui/WordCardActions';
+import { WordCardMeta } from '@/features/word-study/ui/WordCardMeta';
 import { WordStudyActions } from '@/features/word-study/ui/WordStudyActions';
 import { WordStudyCard } from '@/features/word-study/ui/WordStudyCard';
 import { WordStudyKeyboardShortcuts } from '@/features/word-study/ui/WordStudyKeyboardShortcuts';
@@ -78,7 +80,7 @@ export default function WordStudyPage({
 
     const isLearned = word.done_at !== null;
     const canGoPrev = meta?.prev_id !== null && meta?.prev_id !== undefined;
-    const canGoNext = meta?.next_id !== null && meta?.prev_id !== undefined;
+    const canGoNext = meta?.next_id !== null && meta?.next_id !== undefined;
 
     const handleShare = () => {
         shareForm.setData('user_id', selectedUserId);
@@ -96,7 +98,6 @@ export default function WordStudyPage({
         const handleKeyDown = (e: KeyboardEvent) => {
             if (isShareModalOpen) return;
 
-            // Prevent shortcuts in input fields
             if (
                 e.target instanceof HTMLInputElement ||
                 e.target instanceof HTMLTextAreaElement
@@ -156,67 +157,115 @@ export default function WordStudyPage({
         handleGoToNext,
     ]);
 
-    // Word content components
+    // Word content components - теперь с метаданными и действиями ВНУТРИ
     const frontContent = (
-        <div className="flex min-h-[300px] items-center justify-center text-center">
-            <div className="space-y-4">
-                <p className="text-primary-900 dark:text-primary-100 text-6xl leading-tight font-bold">
-                    {word.original}
-                </p>
-                <p className="text-primary-600 dark:text-primary-400 text-2xl font-medium">
-                    {word.language.toUpperCase()}
-                </p>
-                {isLearned && (
-                    <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="3"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        >
-                            <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                        Выучено
-                    </div>
-                )}
+        <>
+            <WordCardMeta
+                wordId={word.id}
+                currentIndex={meta?.current_index ?? null}
+                total={meta?.total ?? null}
+            />
+
+            <div className="flex min-h-[300px] items-center justify-center text-center">
+                <div className="space-y-4">
+                    <p className="text-primary-900 dark:text-primary-100 text-6xl leading-tight font-bold">
+                        {word.original}
+                    </p>
+                    <p className="text-primary-600 dark:text-primary-400 text-2xl font-medium">
+                        {word.language.toUpperCase()}
+                    </p>
+                    {isLearned && (
+                        <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Выучено
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
+
+            <WordCardActions
+                onShare={(e) => {
+                    e.stopPropagation();
+                    setIsShareModalOpen(true);
+                }}
+                onToggleStar={(e) => {
+                    e.stopPropagation();
+                    handleToggleStarred();
+                }}
+                onDelete={(e) => {
+                    e.stopPropagation();
+                    handleDelete();
+                }}
+                isStarred={word.starred}
+            />
+        </>
     );
 
     const backContent = (
-        <div className="flex min-h-[300px] items-center justify-center text-center">
-            <div className="space-y-4">
-                <p className="text-primary-900 dark:text-primary-100 text-6xl leading-tight font-bold">
-                    {word.translated}
-                </p>
-                <p className="text-primary-600 dark:text-primary-400 text-2xl font-medium">
-                    RU
-                </p>
-                {isLearned && (
-                    <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="3"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        >
-                            <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                        Выучено
-                    </div>
-                )}
+        <>
+            <WordCardMeta
+                wordId={word.id}
+                currentIndex={meta?.current_index ?? null}
+                total={meta?.total ?? null}
+            />
+
+            <div className="flex min-h-[300px] items-center justify-center text-center">
+                <div className="space-y-4">
+                    <p className="text-primary-900 dark:text-primary-100 text-6xl leading-tight font-bold">
+                        {word.translated}
+                    </p>
+                    <p className="text-primary-600 dark:text-primary-400 text-2xl font-medium">
+                        RU
+                    </p>
+                    {isLearned && (
+                        <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Выучено
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
+
+            <WordCardActions
+                onShare={(e) => {
+                    e.stopPropagation();
+                    setIsShareModalOpen(true);
+                }}
+                onToggleStar={(e) => {
+                    e.stopPropagation();
+                    handleToggleStarred();
+                }}
+                onDelete={(e) => {
+                    e.stopPropagation();
+                    handleDelete();
+                }}
+                isStarred={word.starred}
+            />
+        </>
     );
 
     return (
@@ -236,25 +285,15 @@ export default function WordStudyPage({
                     </div>
 
                     {/* Flashcard */}
-                    <div className="mx-auto max-w-2xl">
-                        <WordStudyCard
-                            wordId={word.id}
-                            currentIndex={meta?.current_index ?? null}
-                            total={meta?.total ?? null}
-                            onShare={() => setIsShareModalOpen(true)}
-                            onToggleStar={handleToggleStarred}
-                            onDelete={handleDelete}
-                            isStarred={word.starred}
-                        >
-                            <FlipCard
-                                isFlipped={isFlipped}
-                                onFlip={() => setIsFlipped(!isFlipped)}
-                                frontContent={frontContent}
-                                backContent={backContent}
-                                isLearned={isLearned}
-                            />
-                        </WordStudyCard>
-                    </div>
+                    <WordStudyCard>
+                        <FlipCard
+                            isFlipped={isFlipped}
+                            onFlip={() => setIsFlipped(!isFlipped)}
+                            frontContent={frontContent}
+                            backContent={backContent}
+                            isLearned={isLearned}
+                        />
+                    </WordStudyCard>
 
                     {/* Action buttons */}
                     <WordStudyActions

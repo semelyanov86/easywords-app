@@ -20,10 +20,11 @@ export function FlipCard({
     return (
         <div className={`perspective-1000 relative ${className}`}>
             <div
-                className={`flip-card-container relative min-h-[400px] cursor-pointer transition-transform duration-700 ease-in-out ${
-                    isFlipped ? '[transform:rotateY(180deg)]' : ''
-                }`}
-                style={{ transformStyle: 'preserve-3d' }}
+                className={`flip-card-container relative min-h-[400px] cursor-pointer transition-transform duration-700 ease-in-out`}
+                style={{
+                    transformStyle: 'preserve-3d',
+                    transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                }}
                 onClick={onFlip}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -45,7 +46,6 @@ export function FlipCard({
                     style={{
                         backfaceVisibility: 'hidden',
                         WebkitBackfaceVisibility: 'hidden',
-                        transform: 'rotateY(0deg)',
                     }}
                 >
                     {frontContent}
