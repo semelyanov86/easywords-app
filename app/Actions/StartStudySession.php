@@ -39,76 +39,67 @@ final readonly class StartStudySession
      */
     public function handle(int $userId, int $limit = 20, bool $reverse = false): array
     {
-        $startKey = "words.start.{$userId}";
-        $currentKey = "words.current.{$userId}";
-        $nextKey = "words.next.{$userId}";
-        $prevKey = "words.prev.{$userId}";
+        $session = $this->loadExistingSession($userId);
 
-        // Проверяем, существует ли уже активная сессия
-        /** @var int[]|null $existingStart */
-        $existingStart = Cache::get($startKey);
-        /** @var ?int $existingCurrent */
-        $existingCurrent = Cache::get($currentKey);
-        /** @var ?int $existingNext */
-        $existingNext = Cache::get($nextKey);
-
-        if (is_array($existingStart) && is_int($existingCurrent) && is_int($existingNext)) {
-            $word = $this->getWord->handle($existingCurrent, $userId);
-
-            $this->incrementWordViews->handle($existingCurrent, $userId);
-
-            $wordData = $word;
-
-            if ($reverse) {
-                $wordData = new WordData(
-                    id: $wordData->id,
-                    original: $wordData->translated,
-                    translated: $wordData->original,
-                    language: $wordData->language,
-                    done_at: $wordData->done_at,
-                    starred: $wordData->starred,
-                    views: $wordData->views + 1, // Уже инкрементировано
-                    from_sample: $wordData->from_sample,
-                    user_id: $wordData->user_id,
-                    created_at: $wordData->created_at,
-                    updated_at: $wordData->updated_at,
-                );
-            } else {
-                $wordData = new WordData(
-                    id: $wordData->id,
-                    original: $wordData->original,
-                    translated: $wordData->translated,
-                    language: $wordData->language,
-                    done_at: $wordData->done_at,
-                    starred: $wordData->starred,
-                    views: $wordData->views + 1, // Уже инкрементировано
-                    from_sample: $wordData->from_sample,
-                    user_id: $wordData->user_id,
-                    created_at: $wordData->created_at,
-                    updated_at: $wordData->updated_at,
-                );
-            }
-
-            $currentIndex = array_search($existingCurrent, $existingStart, true);
-            if ($currentIndex === false) {
-                $currentIndex = 0;
-            }
-
-            /** @var ?int $existingPrev */
-            $existingPrev = Cache::get($prevKey);
-
-            /** @var int $currentIndexInt */
-            $currentIndexInt = $currentIndex;
-
-            return [
-                'word_data' => $wordData,
-                'total' => count($existingStart),
-                'next_id' => $existingNext,
-                'prev_id' => is_int($existingPrev) ? $existingPrev : null,
-                'current_index' => $currentIndexInt + 1,
-            ];
+        if ($session !== null) {
+            return $this->resumeSession($session, $userId, $reverse);
         }
 
+        return $this->startNewSession($userId, $limit, $reverse);
+    }
+
+    /**
+     * @return array{wordIds: array<int>, currentId: int, nextId: ?int, prevId: ?int}|null
+     */
+    private function loadExistingSession(int $userId): ?array
+    {
+        /** @var array<int>|null $wordIds */
+        $wordIds = Cache::get($this->cacheKey('start', $userId));
+        /** @var int|null $currentId */
+        $currentId = Cache::get($this->cacheKey('current', $userId));
+        /** @var int|null $nextId */
+        $nextId = Cache::get($this->cacheKey('next', $userId));
+
+        if (! is_array($wordIds) || ! is_int($currentId) || ! is_int($nextId)) {
+            return null;
+        }
+
+        /** @var int|null $prevId */
+        $prevId = Cache::get($this->cacheKey('prev', $userId));
+
+        return [
+            'wordIds' => $wordIds,
+            'currentId' => $currentId,
+            'nextId' => $nextId,
+            'prevId' => $prevId,
+        ];
+    }
+
+    /**
+     * @param  array{wordIds: array<int>, currentId: int, nextId: ?int, prevId: ?int}  $session
+     * @return array{word_data: WordData, total: int, next_id: ?int, prev_id: ?int, current_index: int}
+     */
+    private function resumeSession(array $session, int $userId, bool $reverse): array
+    {
+        $word = $this->getWord->handle($session['currentId'], $userId);
+        $this->incrementWordViews->handle($session['currentId'], $userId);
+        /** @var int|false $currentIndex */
+        $currentIndex = array_search($session['currentId'], $session['wordIds'], true);
+
+        return [
+            'word_data' => $this->prepareWordData($word, $reverse),
+            'total' => count($session['wordIds']),
+            'next_id' => $session['nextId'],
+            'prev_id' => $session['prevId'],
+            'current_index' => ($currentIndex !== false ? $currentIndex : 0) + 1,
+        ];
+    }
+
+    /**
+     * @return array{word_data: WordData, total: int, next_id: ?int, prev_id: ?int, current_index: int}
+     */
+    private function startNewSession(int $userId, int $limit, bool $reverse): array
+    {
         $words = $this->getUserRandomWords->handle($userId, $limit);
 
         if ($words->isEmpty()) {
@@ -122,59 +113,54 @@ final readonly class StartStudySession
             $wordIds = array_reverse($wordIds);
         }
 
-        Cache::put($startKey, $wordIds);
+        $this->saveSession($userId, $wordIds);
 
-        $currentId = $wordIds[0];
-        Cache::put($currentKey, $currentId);
-
-        $nextId = $wordIds[1] ?? null;
-        Cache::put($nextKey, $nextId);
-
-        Cache::put($prevKey, null);
-
-        $word = $this->getWord->handle($currentId, $userId);
-
-        // Инкрементируем просмотры
-        $this->incrementWordViews->handle($currentId, $userId);
-
-        $wordData = $word;
-
-        if ($reverse) {
-            $wordData = new WordData(
-                id: $wordData->id,
-                original: $wordData->translated,
-                translated: $wordData->original,
-                language: $wordData->language,
-                done_at: $wordData->done_at,
-                starred: $wordData->starred,
-                views: $wordData->views + 1, // Уже инкрементировано
-                from_sample: $wordData->from_sample,
-                user_id: $wordData->user_id,
-                created_at: $wordData->created_at,
-                updated_at: $wordData->updated_at,
-            );
-        } else {
-            $wordData = new WordData(
-                id: $wordData->id,
-                original: $wordData->original,
-                translated: $wordData->translated,
-                language: $wordData->language,
-                done_at: $wordData->done_at,
-                starred: $wordData->starred,
-                views: $wordData->views + 1, // Уже инкрементировано
-                from_sample: $wordData->from_sample,
-                user_id: $wordData->user_id,
-                created_at: $wordData->created_at,
-                updated_at: $wordData->updated_at,
-            );
-        }
+        $word = $this->getWord->handle($wordIds[0], $userId);
+        $this->incrementWordViews->handle($wordIds[0], $userId);
 
         return [
-            'word_data' => $wordData,
+            'word_data' => $this->prepareWordData($word, $reverse),
             'total' => count($wordIds),
-            'next_id' => $nextId,
+            'next_id' => $wordIds[1] ?? null,
             'prev_id' => null,
             'current_index' => 1,
         ];
+    }
+
+    /**
+     * @param  array<int>  $wordIds
+     */
+    private function saveSession(int $userId, array $wordIds): void
+    {
+        Cache::put($this->cacheKey('start', $userId), $wordIds);
+        Cache::put($this->cacheKey('current', $userId), $wordIds[0]);
+        Cache::put($this->cacheKey('next', $userId), $wordIds[1] ?? null);
+        Cache::put($this->cacheKey('prev', $userId), null);
+    }
+
+    private function prepareWordData(WordData $word, bool $reverse): WordData
+    {
+        if (! $reverse) {
+            return $word;
+        }
+
+        return new WordData(
+            id: $word->id,
+            original: $word->translated,
+            translated: $word->original,
+            language: $word->language,
+            done_at: $word->done_at,
+            starred: $word->starred,
+            views: $word->views,
+            from_sample: $word->from_sample,
+            user_id: $word->user_id,
+            created_at: $word->created_at,
+            updated_at: $word->updated_at,
+        );
+    }
+
+    private function cacheKey(string $type, int $userId): string
+    {
+        return "words.{$type}.{$userId}";
     }
 }
