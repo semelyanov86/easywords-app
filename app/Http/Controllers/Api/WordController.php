@@ -22,7 +22,6 @@ use App\Http\Requests\Api\GetUserWordsRequest;
 use App\Http\Requests\Api\GetUserWordsWithFiltersRequest;
 use App\Http\Requests\Api\ShareWordRequest;
 use App\Http\Requests\Api\StoreWordRequest;
-use App\Http\Requests\Api\UpdateWordRequest;
 use App\Models\User;
 use App\Models\Word;
 use Illuminate\Http\JsonResponse;
@@ -347,17 +346,16 @@ final class WordController extends Controller
     }
 
     /**
-     * Обновляет статус избранного у слова.
+     * Переключает статус избранного у слова.
      *
-     * Принимает параметр starred (true или false) и меняет статус слова.
+     * Автоматически переключает starred на противоположное значение.
      *
      * @param  Word  $word  Слово для обновления
-     * @param  UpdateWordRequest  $request  Валидированный запрос со статусом starred
-     * @param  ToggleWordStarred  $toggleStarred  Action для изменения starred
+     * @param  ToggleWordStarred  $toggleStarred  Action для переключения starred
      * @return JsonResponse JSON:API ответ с обновлённым словом
      */
     #[Put('api/v1/words/{word}/starred', name: 'api.v1.words.starred')]
-    public function toggleStarred(Word $word, UpdateWordRequest $request, ToggleWordStarred $toggleStarred): JsonResponse
+    public function toggleStarred(Word $word, ToggleWordStarred $toggleStarred): JsonResponse
     {
         /** @var \App\Models\User|null $user */
         $user = auth('sanctum')->user();
@@ -373,14 +371,16 @@ final class WordController extends Controller
             ], Response::HTTP_FORBIDDEN, ['Content-Type' => 'application/vnd.api+json']);
         }
 
-        $wordData = $toggleStarred->handle(
+        $isStarred = $toggleStarred->handle(
             wordId: $word->id,
-            userId: $user->id,
-            starred: $request->validatedStarred()
+            userId: $user->id
         );
 
+        // Обновляем слово из базы данных
+        $word->refresh();
+
         return response()->json([
-            'data' => $wordData->toJsonArray(),
+            'data' => WordData::from($word)->toJsonArray(),
         ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
     }
 

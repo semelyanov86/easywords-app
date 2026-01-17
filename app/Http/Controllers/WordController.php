@@ -6,7 +6,10 @@ namespace App\Http\Controllers;
 
 use App\Actions\CreateWord;
 use App\Actions\GetUserSettings;
+use App\Actions\GetWord;
+use App\Actions\IncrementWordViews;
 use App\Http\Requests\StoreWordWebRequest;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 /**
@@ -60,6 +63,28 @@ final class WordController
             'languages_list' => $settings->languages_list ?? [],
             'word' => $wordData,
             'user' => $user,
+        ]);
+    }
+
+    /**
+     * Отображает страницу изучения слова.
+     *
+     * Показывает карточку слова с возможностью перевернуть, отметить как выученное,
+     * удалить, добавить в избранное и поделиться с другим пользователем.
+     * Принимает опциональные мета-данные для навигации между словами.
+     */
+    public function show(Request $request, GetWord $getWord, IncrementWordViews $increment, int $id): \Inertia\Response
+    {
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+
+        $word = $getWord->handle($id, $user->id);
+        $increment->handle($word->id, $user->id);
+
+        return Inertia::render('Words/Show', [
+            'word' => $word,
+            'user' => $user,
+            'meta' => null, // Для прямого доступа к слову мета-данные не передаются
         ]);
     }
 }

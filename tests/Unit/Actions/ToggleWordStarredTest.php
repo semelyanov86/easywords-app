@@ -14,7 +14,10 @@ final class ToggleWordStarredTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_sets_starred_to_true(): void
+    /**
+     * Проверяет, что starred переключается на true.
+     */
+    public function test_toggles_starred_to_true(): void
     {
         $user = User::factory()->create();
         $word = Word::factory()->create([
@@ -24,20 +27,19 @@ final class ToggleWordStarredTest extends TestCase
 
         $action = new ToggleWordStarred();
 
-        $wordData = $action->handle(
-            wordId: $word->id,
-            userId: $user->id,
-            starred: true
-        );
+        $result = $action->handle($word->id, $user->id);
 
-        $this->assertTrue($wordData->starred);
+        $this->assertTrue($result);
         $this->assertDatabaseHas(Word::class, [
             'id' => $word->id,
             'starred' => true,
         ]);
     }
 
-    public function test_sets_starred_to_false(): void
+    /**
+     * Проверяет, что starred переключается на false.
+     */
+    public function test_toggles_starred_to_false(): void
     {
         $user = User::factory()->create();
         $word = Word::factory()->create([
@@ -47,19 +49,18 @@ final class ToggleWordStarredTest extends TestCase
 
         $action = new ToggleWordStarred();
 
-        $wordData = $action->handle(
-            wordId: $word->id,
-            userId: $user->id,
-            starred: false
-        );
+        $result = $action->handle($word->id, $user->id);
 
-        $this->assertFalse($wordData->starred);
+        $this->assertFalse($result);
         $this->assertDatabaseHas(Word::class, [
             'id' => $word->id,
             'starred' => false,
         ]);
     }
 
+    /**
+     * Проверяет, что выбрасывается исключение, если слово не найдено.
+     */
     public function test_throws_exception_if_word_not_found(): void
     {
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
@@ -67,13 +68,12 @@ final class ToggleWordStarredTest extends TestCase
         $user = User::factory()->create();
         $action = new ToggleWordStarred();
 
-        $action->handle(
-            wordId: 999,
-            userId: $user->id,
-            starred: true
-        );
+        $action->handle(999, $user->id);
     }
 
+    /**
+     * Проверяет, что выбрасывается исключение, если слово принадлежит другому пользователю.
+     */
     public function test_throws_exception_if_word_belongs_to_different_user(): void
     {
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
@@ -87,10 +87,6 @@ final class ToggleWordStarredTest extends TestCase
 
         $action = new ToggleWordStarred();
 
-        $action->handle(
-            wordId: $word->id,
-            userId: $user2->id,
-            starred: true
-        );
+        $action->handle($word->id, $user2->id);
     }
 }

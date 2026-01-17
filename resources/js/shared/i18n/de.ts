@@ -136,6 +136,42 @@ export const translations: TranslationStructure = {
             'Dieses Wort existiert bereits in Ihrem Wortschatz für die ausgewählte Sprache.',
         translation_error:
             'Übersetzung konnte nicht abgerufen werden. Bitte versuchen Sie es erneut.',
+        // Study Page
+        study_title: 'Übersetzen Sie das Wort',
+        study_subtitle:
+            'Raten Sie die Wortübersetzung. Zum Überprüfen drehen Sie die Karte. Wenn Sie das Wort gelernt haben, klicken Sie auf die Schaltfläche Gelernt. Um zurückzugehen, klicken Sie auf die Schaltfläche Vorherige.',
+        share_word: 'Wort teilen',
+        delete: 'Löschen',
+        add_to_favorites: 'Zu Favoriten hinzufügen',
+        remove_from_favorites: 'Aus Favoriten entfernen',
+        mark_learned: 'Gelernt',
+        flip: 'Umdrehen',
+        previous: 'Vorherige',
+        next: 'Nächste',
+        show_example: 'Beispiel zeigen',
+        keyboard_shortcuts: 'Tastaturkürzel',
+        shortcuts_description:
+            'Verwenden Sie die Tastatur zur schnellen Steuerung',
+        shortcut_enter: 'Eingabe - Als gelernt markieren',
+        shortcut_space: 'Leertaste - Karte umdrehen',
+        shortcut_backspace: 'Rücktaste - Vorheriges Wort',
+        shortcut_delete: 'Entf - Wort löschen',
+        shortcut_arrow_left: '← - Vorheriges Wort',
+        shortcut_arrow_right: '→ - Nächstes Wort',
+        share_modal_title: 'Benutzer auswählen',
+        share_modal_subtitle:
+            'Um fortzufahren, wählen Sie einen Benutzer aus und klicken Sie auf Weiter',
+        share: 'Teilen',
+        close: 'Schließen',
+        word_deleted: 'Wort erfolgreich gelöscht',
+        word_shared: 'Wort erfolgreich geteilt',
+        word_learned: 'Wort als gelernt markiert',
+        word_starred: 'Wort zu Favoriten hinzugefügt',
+        word_unstarred: 'Wort aus Favoriten entfernt',
+        error_deleting: 'Fehler beim Löschen des Wortes',
+        error_sharing: 'Fehler beim Teilen des Wortes',
+        error_marking_learned: 'Fehler beim Markieren des Wortes als gelernt',
+        error_toggling_starred: 'Fehler beim Ändern des Favoritenstatus',
     },
     // Settings
     settings: {

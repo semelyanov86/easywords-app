@@ -125,9 +125,7 @@ final class WordControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        $response = $this->putJson(route('api.v1.words.starred', ['word' => $word->id]), [
-            'starred' => true,
-        ]);
+        $response = $this->putJson(route('api.v1.words.starred', ['word' => $word->id]));
 
         $response->assertStatus(200)
             ->assertHeader('content-type', 'application/vnd.api+json')
@@ -149,9 +147,7 @@ final class WordControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user2);
 
-        $response = $this->putJson(route('api.v1.words.starred', ['word' => $word->id]), [
-            'starred' => true,
-        ]);
+        $response = $this->putJson(route('api.v1.words.starred', ['word' => $word->id]));
 
         $response->assertStatus(403)
             ->assertHeader('content-type', 'application/vnd.api+json');

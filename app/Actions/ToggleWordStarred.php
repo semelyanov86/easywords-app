@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Data\WordData;
 use App\Models\Word;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -24,20 +23,20 @@ final class ToggleWordStarred
      *
      * @param  int  $wordId  ID слова
      * @param  int  $userId  ID пользователя-владельца (для проверки прав)
-     * @param  bool  $starred  Новое значение starred (true или false)
-     * @return WordData Обновлённое слово в формате Data
+     * @return bool Новое значение starred (true или false)
      *
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Если слово не найдено или не принадлежит пользователю
      */
-    public function handle(int $wordId, int $userId, bool $starred): WordData
+    public function handle(int $wordId, int $userId): bool
     {
         $word = Word::query()
             ->where('id', $wordId)
             ->where('user_id', $userId)
             ->firstOrFail();
 
-        $word->update(['starred' => $starred]);
+        $newStatus = ! $word->starred;
+        $word->update(['starred' => $newStatus]);
 
-        return WordData::from($word);
+        return $newStatus;
     }
 }
