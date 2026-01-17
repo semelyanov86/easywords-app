@@ -63,7 +63,7 @@ final class StudyController extends Controller
             );
 
             return response()->json([
-                'data' => $result['word_data']->toJsonArray(),
+                'data' => $result['word']->toJsonArray(),
                 'meta' => [
                     'total' => $result['total'],
                     'next_id' => $result['next_id'],

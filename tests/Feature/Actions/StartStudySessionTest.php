@@ -40,7 +40,7 @@ final class StartStudySessionTest extends TestCase
 
         $result = $action->handle(userId: $user->id, limit: 3, reverse: false);
 
-        $this->assertArrayHasKey('word_data', $result);
+        $this->assertArrayHasKey('word', $result);
         $this->assertArrayHasKey('total', $result);
         $this->assertArrayHasKey('next_id', $result);
         $this->assertArrayHasKey('prev_id', $result);
@@ -88,7 +88,7 @@ final class StartStudySessionTest extends TestCase
 
         $result = $action->handle(userId: $user->id, limit: 3, reverse: false);
 
-        $this->assertEquals($wordIds[0], $result['word_data']->id);
+        $this->assertEquals($wordIds[0], $result['word']->id);
         $this->assertEquals(3, $result['total']);
         $this->assertEquals(1, $result['current_index']);
         $this->assertEquals($wordIds[1], $result['next_id']);
@@ -148,8 +148,8 @@ final class StartStudySessionTest extends TestCase
         $result = $action->handle(userId: $user->id, limit: 1, reverse: true);
 
         // Проверяем, что original и translated поменялись местами
-        $this->assertEquals('привет', $result['word_data']->original);
-        $this->assertEquals('hello', $result['word_data']->translated);
+        $this->assertEquals('привет', $result['word']->original);
+        $this->assertEquals('hello', $result['word']->translated);
     }
 
     public function test_reverse_false_keeps_original_and_translated(): void
@@ -181,8 +181,8 @@ final class StartStudySessionTest extends TestCase
         $result = $action->handle(userId: $user->id, limit: 1, reverse: false);
 
         // Проверяем, что original и translated на своих местах
-        $this->assertEquals('hello', $result['word_data']->original);
-        $this->assertEquals('привет', $result['word_data']->translated);
+        $this->assertEquals('hello', $result['word']->original);
+        $this->assertEquals('привет', $result['word']->translated);
     }
 
     public function test_reverse_works_with_existing_session(): void
@@ -221,7 +221,7 @@ final class StartStudySessionTest extends TestCase
         $result = $action->handle(userId: $user->id, limit: 1, reverse: true);
 
         // Проверяем, что reverse работает даже с существующей сессией
-        $this->assertEquals('привет', $result['word_data']->original);
-        $this->assertEquals('hello', $result['word_data']->translated);
+        $this->assertEquals('привет', $result['word']->original);
+        $this->assertEquals('hello', $result['word']->translated);
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Data\WordData;
-use Illuminate\Support\Facades\Cache;
+use App\Support\StudySessionCache;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 /**
@@ -24,6 +24,7 @@ final readonly class StartStudySession
     use AsAction;
 
     public function __construct(
+        private StudySessionCache $sessionCache,
         private GetUserRandomWords $getUserRandomWords,
         private GetWord $getWord,
         private IncrementWordViews $incrementWordViews,
@@ -35,68 +36,42 @@ final readonly class StartStudySession
      * @param  int  $userId  ID пользователя
      * @param  int  $limit  Количество слов для изучения
      * @param  bool  $reverse  Порядок слов (true - обратный, false - прямой)
-     * @return array{word_data: WordData, total: int, next_id: ?int, prev_id: ?int, current_index: int}
+     * @return array{word: WordData, total: int, next_id: ?int, prev_id: ?int, current_index: int}
      */
     public function handle(int $userId, int $limit = 20, bool $reverse = false): array
     {
-        $session = $this->loadExistingSession($userId);
+        $currentId = $this->sessionCache->getCurrentId($userId);
+        $nextId = $this->sessionCache->getNextId($userId);
 
-        if ($session !== null) {
-            return $this->resumeSession($session, $userId, $reverse);
+        if ($currentId !== null && $nextId !== null) {
+            return $this->resumeSession($userId, $currentId, $reverse);
         }
 
         return $this->startNewSession($userId, $limit, $reverse);
     }
 
     /**
-     * @return array{wordIds: array<int>, currentId: int, nextId: ?int, prevId: ?int}|null
+     * @return array{word: WordData, total: int, next_id: ?int, prev_id: ?int, current_index: int}
      */
-    private function loadExistingSession(int $userId): ?array
+    private function resumeSession(int $userId, int $currentId, bool $reverse): array
     {
-        /** @var array<int>|null $wordIds */
-        $wordIds = Cache::get($this->cacheKey('start', $userId));
-        /** @var int|null $currentId */
-        $currentId = Cache::get($this->cacheKey('current', $userId));
-        /** @var int|null $nextId */
-        $nextId = Cache::get($this->cacheKey('next', $userId));
+        $sessionWords = $this->sessionCache->getSessionWords($userId);
+        $currentIndex = $this->sessionCache->findWordIndex($currentId, $sessionWords);
 
-        if (! is_array($wordIds) || ! is_int($currentId) || ! is_int($nextId)) {
-            return null;
-        }
-
-        /** @var int|null $prevId */
-        $prevId = Cache::get($this->cacheKey('prev', $userId));
+        $word = $this->getWord->handle($currentId, $userId);
+        $this->incrementWordViews->handle($currentId, $userId);
 
         return [
-            'wordIds' => $wordIds,
-            'currentId' => $currentId,
-            'nextId' => $nextId,
-            'prevId' => $prevId,
+            'word' => $this->sessionCache->prepareWordData($word, $reverse),
+            'total' => count($sessionWords),
+            'next_id' => $this->sessionCache->getNextId($userId),
+            'prev_id' => $this->sessionCache->getPrevId($userId),
+            'current_index' => $currentIndex + 1,
         ];
     }
 
     /**
-     * @param  array{wordIds: array<int>, currentId: int, nextId: ?int, prevId: ?int}  $session
-     * @return array{word_data: WordData, total: int, next_id: ?int, prev_id: ?int, current_index: int}
-     */
-    private function resumeSession(array $session, int $userId, bool $reverse): array
-    {
-        $word = $this->getWord->handle($session['currentId'], $userId);
-        $this->incrementWordViews->handle($session['currentId'], $userId);
-        /** @var int|false $currentIndex */
-        $currentIndex = array_search($session['currentId'], $session['wordIds'], true);
-
-        return [
-            'word_data' => $this->prepareWordData($word, $reverse),
-            'total' => count($session['wordIds']),
-            'next_id' => $session['nextId'],
-            'prev_id' => $session['prevId'],
-            'current_index' => ($currentIndex !== false ? $currentIndex : 0) + 1,
-        ];
-    }
-
-    /**
-     * @return array{word_data: WordData, total: int, next_id: ?int, prev_id: ?int, current_index: int}
+     * @return array{word: WordData, total: int, next_id: ?int, prev_id: ?int, current_index: int}
      */
     private function startNewSession(int $userId, int $limit, bool $reverse): array
     {
@@ -113,54 +88,17 @@ final readonly class StartStudySession
             $wordIds = array_reverse($wordIds);
         }
 
-        $this->saveSession($userId, $wordIds);
+        $this->sessionCache->saveSession($userId, $wordIds);
 
         $word = $this->getWord->handle($wordIds[0], $userId);
         $this->incrementWordViews->handle($wordIds[0], $userId);
 
         return [
-            'word_data' => $this->prepareWordData($word, $reverse),
+            'word' => $this->sessionCache->prepareWordData($word, $reverse),
             'total' => count($wordIds),
             'next_id' => $wordIds[1] ?? null,
             'prev_id' => null,
             'current_index' => 1,
         ];
-    }
-
-    /**
-     * @param  array<int>  $wordIds
-     */
-    private function saveSession(int $userId, array $wordIds): void
-    {
-        Cache::put($this->cacheKey('start', $userId), $wordIds);
-        Cache::put($this->cacheKey('current', $userId), $wordIds[0]);
-        Cache::put($this->cacheKey('next', $userId), $wordIds[1] ?? null);
-        Cache::put($this->cacheKey('prev', $userId), null);
-    }
-
-    private function prepareWordData(WordData $word, bool $reverse): WordData
-    {
-        if (! $reverse) {
-            return $word;
-        }
-
-        return new WordData(
-            id: $word->id,
-            original: $word->translated,
-            translated: $word->original,
-            language: $word->language,
-            done_at: $word->done_at,
-            starred: $word->starred,
-            views: $word->views,
-            from_sample: $word->from_sample,
-            user_id: $word->user_id,
-            created_at: $word->created_at,
-            updated_at: $word->updated_at,
-        );
-    }
-
-    private function cacheKey(string $type, int $userId): string
-    {
-        return "words.{$type}.{$userId}";
     }
 }
