@@ -1,0 +1,24 @@
+meta {
+  name: Prev Word
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{BASE_URL}}/words/prev?reverse=0
+  body: none
+  auth: inherit
+}
+
+params:query {
+  reverse: 0
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Переходит к предыдущему слову в активной сессии изучения.
+}

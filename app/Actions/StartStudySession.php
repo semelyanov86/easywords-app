@@ -26,6 +26,7 @@ final readonly class StartStudySession
     public function __construct(
         private GetUserRandomWords $getUserRandomWords,
         private GetWord $getWord,
+        private IncrementWordViews $incrementWordViews,
     ) {}
 
     /**
@@ -52,7 +53,11 @@ final readonly class StartStudySession
         $existingNext = Cache::get($nextKey);
 
         if (is_array($existingStart) && is_int($existingCurrent) && is_int($existingNext)) {
-            $wordData = $this->getWord->handle($existingCurrent, $userId);
+            $word = $this->getWord->handle($existingCurrent, $userId);
+
+            $this->incrementWordViews->handle($existingCurrent, $userId);
+
+            $wordData = $word;
 
             if ($reverse) {
                 $wordData = new WordData(
@@ -62,7 +67,21 @@ final readonly class StartStudySession
                     language: $wordData->language,
                     done_at: $wordData->done_at,
                     starred: $wordData->starred,
-                    views: $wordData->views,
+                    views: $wordData->views + 1, // Уже инкрементировано
+                    from_sample: $wordData->from_sample,
+                    user_id: $wordData->user_id,
+                    created_at: $wordData->created_at,
+                    updated_at: $wordData->updated_at,
+                );
+            } else {
+                $wordData = new WordData(
+                    id: $wordData->id,
+                    original: $wordData->original,
+                    translated: $wordData->translated,
+                    language: $wordData->language,
+                    done_at: $wordData->done_at,
+                    starred: $wordData->starred,
+                    views: $wordData->views + 1, // Уже инкрементировано
                     from_sample: $wordData->from_sample,
                     user_id: $wordData->user_id,
                     created_at: $wordData->created_at,
@@ -113,7 +132,12 @@ final readonly class StartStudySession
 
         Cache::put($prevKey, null);
 
-        $wordData = $this->getWord->handle($currentId, $userId);
+        $word = $this->getWord->handle($currentId, $userId);
+
+        // Инкрементируем просмотры
+        $this->incrementWordViews->handle($currentId, $userId);
+
+        $wordData = $word;
 
         if ($reverse) {
             $wordData = new WordData(
@@ -123,7 +147,21 @@ final readonly class StartStudySession
                 language: $wordData->language,
                 done_at: $wordData->done_at,
                 starred: $wordData->starred,
-                views: $wordData->views,
+                views: $wordData->views + 1, // Уже инкрементировано
+                from_sample: $wordData->from_sample,
+                user_id: $wordData->user_id,
+                created_at: $wordData->created_at,
+                updated_at: $wordData->updated_at,
+            );
+        } else {
+            $wordData = new WordData(
+                id: $wordData->id,
+                original: $wordData->original,
+                translated: $wordData->translated,
+                language: $wordData->language,
+                done_at: $wordData->done_at,
+                starred: $wordData->starred,
+                views: $wordData->views + 1, // Уже инкрементировано
                 from_sample: $wordData->from_sample,
                 user_id: $wordData->user_id,
                 created_at: $wordData->created_at,

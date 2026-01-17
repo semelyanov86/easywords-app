@@ -1,0 +1,28 @@
+meta {
+  name: Next Word
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{BASE_URL}}/words/next?reverse=0
+  body: none
+  auth: inherit
+}
+
+params:query {
+  reverse: 0
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Запускает новую сессию изучения слов или продолжает существующую.
+  
+          Система использует кэш для управления состоянием сессии:
+          - Если сессия уже существует (есть кэш words.start.{user_id}), возвращает текущее слово
+          - Иначе создаёт новую сессию с указанным количеством слов
+}

@@ -36,10 +36,7 @@ final class StartStudySessionTest extends TestCase
             'done_at' => null,
         ]);
 
-        $action = new StartStudySession(
-            new \App\Actions\GetUserRandomWords(new \App\Actions\GetUserSettings()),
-            new \App\Actions\GetWord()
-        );
+        $action = resolve(StartStudySession::class);
 
         $result = $action->handle(userId: $user->id, limit: 3, reverse: false);
 
@@ -87,10 +84,7 @@ final class StartStudySessionTest extends TestCase
         Cache::put("words.next.{$user->id}", $wordIds[1]);
         Cache::put("words.prev.{$user->id}", null);
 
-        $action = new StartStudySession(
-            new \App\Actions\GetUserRandomWords(new \App\Actions\GetUserSettings()),
-            new \App\Actions\GetWord()
-        );
+        $action = resolve(StartStudySession::class);
 
         $result = $action->handle(userId: $user->id, limit: 3, reverse: false);
 
@@ -117,10 +111,7 @@ final class StartStudySessionTest extends TestCase
             'default_language' => 'EN',
         ]);
 
-        $action = new StartStudySession(
-            new \App\Actions\GetUserRandomWords(new \App\Actions\GetUserSettings()),
-            new \App\Actions\GetWord()
-        );
+        $action = resolve(StartStudySession::class);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('No words available for study session');
@@ -152,10 +143,7 @@ final class StartStudySessionTest extends TestCase
             'done_at' => null,
         ]);
 
-        $action = new StartStudySession(
-            new \App\Actions\GetUserRandomWords(new \App\Actions\GetUserSettings()),
-            new \App\Actions\GetWord()
-        );
+        $action = resolve(StartStudySession::class);
 
         $result = $action->handle(userId: $user->id, limit: 1, reverse: true);
 
@@ -188,10 +176,7 @@ final class StartStudySessionTest extends TestCase
             'done_at' => null,
         ]);
 
-        $action = new StartStudySession(
-            new \App\Actions\GetUserRandomWords(new \App\Actions\GetUserSettings()),
-            new \App\Actions\GetWord()
-        );
+        $action = resolve(StartStudySession::class);
 
         $result = $action->handle(userId: $user->id, limit: 1, reverse: false);
 
@@ -231,10 +216,7 @@ final class StartStudySessionTest extends TestCase
         Cache::put("words.next.{$user->id}", null);
         Cache::put("words.prev.{$user->id}", null);
 
-        $action = new StartStudySession(
-            new \App\Actions\GetUserRandomWords(new \App\Actions\GetUserSettings()),
-            new \App\Actions\GetWord()
-        );
+        $action = resolve(StartStudySession::class);
 
         $result = $action->handle(userId: $user->id, limit: 1, reverse: true);
 
