@@ -1,0 +1,29 @@
+meta {
+  name: Start Study Session
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{BASE_URL}}/words/start?limit=10&reverse=0
+  body: json
+  auth: inherit
+}
+
+params:query {
+  limit: 10
+  reverse: 0
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Запускает новую сессию изучения слов или продолжает существующую.
+  
+          Система использует кэш для управления состоянием сессии:
+          - Если сессия уже существует (есть кэш words.start.{user_id}), возвращает текущее слово
+          - Иначе создаёт новую сессию с указанным количеством слов
+}

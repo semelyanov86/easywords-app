@@ -485,6 +485,71 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /words/start:
+    get:
+      tags:
+        - Words
+      summary: Запустить сессию изучения
+      description: |
+        Запускает новую сессию изучения слов или продолжает существующую.
+
+        Система использует кэш для управления состоянием сессии:
+        - Если сессия уже существует (есть кэш words.start.{user_id}), возвращает текущее слово
+        - Иначе создаёт новую сессию с указанным количеством слов
+
+        Ключи кэша:
+        - words.start.{user_id} - массив ID слов в сессии
+        - words.current.{user_id} - ID текущего слова
+        - words.next.{user_id} - ID следующего слова
+        - words.prev.{user_id} - ID предыдущего слова (null в начале)
+      operationId: startStudySession
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          description: Количество слов для изучения
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 10
+        - name: reverse
+          in: query
+          description: Перемешать слова в обратном порядке
+          required: false
+          schema:
+            type: boolean
+            default: false
+            example: false
+      responses:
+        '200':
+          description: Сессия успешно запущена
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/WordWithSessionMetaResponse'
+        '400':
+          description: Нет доступных слов для изучения
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Ошибка валидации
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
   /words/{wordId}:
     get:
       tags:
@@ -951,6 +1016,39 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/WordResource'
+
+    WordWithSessionMetaResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/WordResource'
+        meta:
+          type: object
+          description: Метаданные сессии изучения
+          required:
+            - total
+            - next_id
+            - prev_id
+            - current_index
+          properties:
+            total:
+              type: integer
+              description: Общее количество слов в сессии
+              example: 10
+            next_id:
+              type: integer
+              nullable: true
+              description: ID следующего слова (null если текущее слово последнее)
+              example: 124
+            prev_id:
+              type: integer
+              nullable: true
+              description: ID предыдущего слова (null если текущее слово первое)
+              example: null
+            current_index:
+              type: integer
+              description: Индекс текущего слова (начинается с 1)
+              example: 1
 
     WordsPaginatedResponse:
       type: object
