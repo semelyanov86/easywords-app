@@ -14,19 +14,17 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import {
-    deleteMethod,
-    markLearned,
-    next,
-    prev,
-    share,
-    toggleStarred,
-} from '@/routes/words';
+import { useWordStudy } from '@/features/word-study/model/useWordStudy';
+import { WordStudyActions } from '@/features/word-study/ui/WordStudyActions';
+import { WordStudyCard } from '@/features/word-study/ui/WordStudyCard';
+import { WordStudyKeyboardShortcuts } from '@/features/word-study/ui/WordStudyKeyboardShortcuts';
+import { share } from '@/routes/words';
 import { useTranslation } from '@/shared/i18n/useTranslation';
+import { FlipCard } from '@/shared/ui/FlipCard/FlipCard';
 import { User } from '@/types';
 import { AuthHeader } from '@/widgets/auth/AuthHeader';
-import { Head, router, useForm } from '@inertiajs/react';
-import { useCallback, useEffect, useState } from 'react';
+import { Head, useForm } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 
 interface WordData {
     id: number;
@@ -69,31 +67,20 @@ export default function WordStudyPage({
         user_id: '',
     });
 
-    const handleMarkLearned = useCallback(() => {
-        router.post(markLearned(word.id).url);
-    }, [word.id]);
+    const {
+        handleMarkLearned,
+        handleMarkUnlearned,
+        handleDelete,
+        handleToggleStarred,
+        handleGoToPrev,
+        handleGoToNext,
+    } = useWordStudy(word.id);
 
-    const handleDelete = useCallback(() => {
-        router.delete(deleteMethod(word.id));
-    }, [word.id]);
+    const isLearned = word.done_at !== null;
+    const canGoPrev = meta?.prev_id !== null && meta?.prev_id !== undefined;
+    const canGoNext = meta?.next_id !== null && meta?.prev_id !== undefined;
 
-    const handleToggleStarred = useCallback(() => {
-        router.post(toggleStarred(word.id).url);
-    }, [word.id]);
-
-    const handleGoToPrev = useCallback(() => {
-        if (meta?.prev_id) {
-            router.get(prev().url);
-        }
-    }, [meta]);
-
-    const handleGoToNext = useCallback(() => {
-        if (meta?.next_id) {
-            router.get(next().url);
-        }
-    }, [meta]);
-
-    const handleShare = useCallback(() => {
+    const handleShare = () => {
         shareForm.setData('user_id', selectedUserId);
         shareForm.post(share(word.id).url, {
             onSuccess: () => {
@@ -102,18 +89,29 @@ export default function WordStudyPage({
                 shareForm.reset();
             },
         });
-    }, [word.id, selectedUserId, shareForm]);
+    };
 
     // Keyboard shortcuts
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            // Don't trigger shortcuts when modal is open
             if (isShareModalOpen) return;
+
+            // Prevent shortcuts in input fields
+            if (
+                e.target instanceof HTMLInputElement ||
+                e.target instanceof HTMLTextAreaElement
+            ) {
+                return;
+            }
 
             switch (e.key) {
                 case 'Enter':
                     e.preventDefault();
-                    handleMarkLearned();
+                    if (!isLearned) {
+                        handleMarkLearned();
+                    } else {
+                        handleMarkUnlearned();
+                    }
                     break;
                 case ' ':
                     e.preventDefault();
@@ -121,7 +119,7 @@ export default function WordStudyPage({
                     break;
                 case 'Backspace':
                     e.preventDefault();
-                    if (meta?.prev_id) {
+                    if (canGoPrev) {
                         handleGoToPrev();
                     }
                     break;
@@ -131,13 +129,13 @@ export default function WordStudyPage({
                     break;
                 case 'ArrowLeft':
                     e.preventDefault();
-                    if (meta?.prev_id) {
+                    if (canGoPrev) {
                         handleGoToPrev();
                     }
                     break;
                 case 'ArrowRight':
                     e.preventDefault();
-                    if (meta?.next_id) {
+                    if (canGoNext) {
                         handleGoToNext();
                     }
                     break;
@@ -148,15 +146,78 @@ export default function WordStudyPage({
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [
         isShareModalOpen,
-        meta,
+        isLearned,
+        canGoPrev,
+        canGoNext,
         handleMarkLearned,
+        handleMarkUnlearned,
         handleDelete,
         handleGoToPrev,
         handleGoToNext,
     ]);
 
-    const canGoPrev = meta?.prev_id !== null;
-    const canGoNext = meta?.next_id !== null;
+    // Word content components
+    const frontContent = (
+        <div className="flex min-h-[300px] items-center justify-center text-center">
+            <div className="space-y-4">
+                <p className="text-primary-900 dark:text-primary-100 text-6xl leading-tight font-bold">
+                    {word.original}
+                </p>
+                <p className="text-primary-600 dark:text-primary-400 text-2xl font-medium">
+                    {word.language.toUpperCase()}
+                </p>
+                {isLearned && (
+                    <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Выучено
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+
+    const backContent = (
+        <div className="flex min-h-[300px] items-center justify-center text-center">
+            <div className="space-y-4">
+                <p className="text-primary-900 dark:text-primary-100 text-6xl leading-tight font-bold">
+                    {word.translated}
+                </p>
+                <p className="text-primary-600 dark:text-primary-400 text-2xl font-medium">
+                    RU
+                </p>
+                {isLearned && (
+                    <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Выучено
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 
     return (
         <>
@@ -167,7 +228,7 @@ export default function WordStudyPage({
                     {/* Header */}
                     <div className="mb-8 text-center">
                         <h1 className="text-primary-900 dark:text-primary-100 text-4xl font-bold tracking-tight">
-                            {t.words.study_title}
+                            📚 {t.words.study_title}
                         </h1>
                         <p className="text-primary-700 dark:text-primary-300 mt-3 text-lg">
                             {t.words.study_subtitle}
@@ -176,258 +237,40 @@ export default function WordStudyPage({
 
                     {/* Flashcard */}
                     <div className="mx-auto max-w-2xl">
-                        <div className="perspective-1000 relative">
-                            <div
-                                className={`relative min-h-[400px] cursor-pointer rounded-2xl bg-white p-8 shadow-2xl transition-all duration-500 ease-in-out dark:bg-neutral-800 ${
-                                    isFlipped ? 'rotate-y-180' : ''
-                                }`}
-                                onClick={() => setIsFlipped(!isFlipped)}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        setIsFlipped(!isFlipped);
-                                    }
-                                }}
-                                role="button"
-                                tabIndex={0}
-                                aria-label={t.words.flip}
-                            >
-                                {/* Word ID (small, top) */}
-                                <div className="absolute top-4 left-4 font-mono text-xs text-neutral-400">
-                                    #{word.id}
-                                </div>
-
-                                {/* Progress indicator */}
-                                {meta && meta.current_index && meta.total && (
-                                    <div className="absolute top-4 right-4 text-sm font-semibold text-neutral-600 dark:text-neutral-400">
-                                        {meta.current_index} / {meta.total}
-                                    </div>
-                                )}
-
-                                {/* Word content */}
-                                <div className="flex min-h-[300px] items-center justify-center text-center">
-                                    <div className="space-y-4">
-                                        <p className="text-primary-900 dark:text-primary-100 text-5xl font-bold">
-                                            {isFlipped
-                                                ? word.translated
-                                                : word.original}
-                                        </p>
-                                        {!isFlipped && (
-                                            <p className="text-primary-600 dark:text-primary-400 text-xl">
-                                                {word.language}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Card actions */}
-                                <div className="absolute right-4 bottom-4 flex gap-2">
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setIsShareModalOpen(true);
-                                        }}
-                                        aria-label={t.words.share_word}
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            className="text-neutral-600 dark:text-neutral-400"
-                                        >
-                                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                                            <polyline points="16 6 12 2 8 6" />
-                                            <line
-                                                x1="12"
-                                                x2="12"
-                                                y1="2"
-                                                y2="15"
-                                            />
-                                        </svg>
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleToggleStarred();
-                                        }}
-                                        aria-label={
-                                            word.starred
-                                                ? t.words.remove_from_favorites
-                                                : t.words.add_to_favorites
-                                        }
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 24 24"
-                                            fill={
-                                                word.starred
-                                                    ? 'currentColor'
-                                                    : 'none'
-                                            }
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            className={
-                                                word.starred
-                                                    ? 'text-secondary-500'
-                                                    : 'text-neutral-600 dark:text-neutral-400'
-                                            }
-                                        >
-                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                                        </svg>
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleDelete();
-                                        }}
-                                        aria-label={t.words.delete}
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            className="text-red-600 dark:text-red-400"
-                                        >
-                                            <polyline points="3 6 5 6 21 6" />
-                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                        </svg>
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
+                        <WordStudyCard
+                            wordId={word.id}
+                            currentIndex={meta?.current_index ?? null}
+                            total={meta?.total ?? null}
+                            onShare={() => setIsShareModalOpen(true)}
+                            onToggleStar={handleToggleStarred}
+                            onDelete={handleDelete}
+                            isStarred={word.starred}
+                        >
+                            <FlipCard
+                                isFlipped={isFlipped}
+                                onFlip={() => setIsFlipped(!isFlipped)}
+                                frontContent={frontContent}
+                                backContent={backContent}
+                                isLearned={isLearned}
+                            />
+                        </WordStudyCard>
                     </div>
 
                     {/* Action buttons */}
-                    <div className="mt-8 flex flex-wrap justify-center gap-4">
-                        <Button
-                            size="lg"
-                            className="hover:bg-secondary-600 bg-secondary text-white"
-                            onClick={handleMarkLearned}
-                        >
-                            {t.words.mark_learned}
-                        </Button>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="hover:bg-primary-50 hover:text-primary-700 border-primary text-primary"
-                            onClick={() => setIsFlipped(!isFlipped)}
-                        >
-                            {t.words.flip}
-                        </Button>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            onClick={handleGoToPrev}
-                            disabled={!canGoPrev}
-                        >
-                            {t.words.previous}
-                        </Button>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            onClick={handleGoToNext}
-                            disabled={!canGoNext}
-                        >
-                            {t.words.next}
-                        </Button>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            disabled
-                            title={t.words.show_example}
-                        >
-                            {t.words.show_example}
-                        </Button>
-                    </div>
+                    <WordStudyActions
+                        isLearned={isLearned}
+                        canGoPrev={canGoPrev}
+                        canGoNext={canGoNext}
+                        onMarkLearned={handleMarkLearned}
+                        onMarkUnlearned={handleMarkUnlearned}
+                        onFlip={() => setIsFlipped(!isFlipped)}
+                        onPrev={handleGoToPrev}
+                        onNext={handleGoToNext}
+                        t={t}
+                    />
 
                     {/* Keyboard shortcuts */}
-                    <div className="mt-12 rounded-lg bg-white/50 p-6 backdrop-blur-sm dark:bg-neutral-800/50">
-                        <h3 className="text-primary-900 dark:text-primary-100 mb-4 text-lg font-semibold">
-                            {t.words.keyboard_shortcuts}
-                        </h3>
-                        <p className="text-primary-700 dark:text-primary-300 mb-4 text-sm">
-                            {t.words.shortcuts_description}
-                        </p>
-                        <div className="text-primary-600 dark:text-primary-400 grid gap-2 text-sm md:grid-cols-2">
-                            <div className="flex items-center gap-2">
-                                <kbd className="rounded border bg-neutral-100 px-2 py-1 font-mono text-xs dark:border-neutral-700 dark:bg-neutral-900">
-                                    {t.words.shortcut_enter.split(' - ')[0]}
-                                </kbd>
-                                <span>
-                                    {t.words.shortcut_enter.split(' - ')[1]}
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <kbd className="rounded border bg-neutral-100 px-2 py-1 font-mono text-xs dark:border-neutral-700 dark:bg-neutral-900">
-                                    {t.words.shortcut_space.split(' - ')[0]}
-                                </kbd>
-                                <span>
-                                    {t.words.shortcut_space.split(' - ')[1]}
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <kbd className="rounded border bg-neutral-100 px-2 py-1 font-mono text-xs dark:border-neutral-700 dark:bg-neutral-900">
-                                    ←
-                                </kbd>
-                                <span>
-                                    {
-                                        t.words.shortcut_arrow_left.split(
-                                            ' - ',
-                                        )[1]
-                                    }
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <kbd className="rounded border bg-neutral-100 px-2 py-1 font-mono text-xs dark:border-neutral-700 dark:bg-neutral-900">
-                                    →
-                                </kbd>
-                                <span>
-                                    {
-                                        t.words.shortcut_arrow_right.split(
-                                            ' - ',
-                                        )[1]
-                                    }
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <kbd className="rounded border bg-neutral-100 px-2 py-1 font-mono text-xs dark:border-neutral-700 dark:bg-neutral-900">
-                                    Backspace
-                                </kbd>
-                                <span>
-                                    {t.words.shortcut_backspace.split(' - ')[1]}
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <kbd className="rounded border bg-neutral-100 px-2 py-1 font-mono text-xs dark:border-neutral-700 dark:bg-neutral-900">
-                                    Delete
-                                </kbd>
-                                <span>
-                                    {t.words.shortcut_delete.split(' - ')[1]}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+                    <WordStudyKeyboardShortcuts t={t} />
                 </div>
 
                 {/* Share Modal */}
@@ -484,7 +327,7 @@ export default function WordStudyPage({
                                 className="hover:bg-secondary-600 bg-secondary text-white"
                             >
                                 {shareForm.processing
-                                    ? t.words.share
+                                    ? 'Отправка...'
                                     : t.words.share}
                             </Button>
                         </DialogFooter>

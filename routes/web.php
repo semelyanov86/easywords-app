@@ -19,6 +19,8 @@ Route::middleware(['auth'])->group(function (): void {
 
     // Word actions
     Route::post('words/{id}/mark-learned', [\App\Http\Controllers\WordActionController::class, 'markLearned'])->name('words.mark-learned');
+    Route::post('/words/{word}/unlearned', [\App\Http\Controllers\WordActionController::class, 'markUnlearned'])
+        ->name('words.unlearned');
     Route::post('words/{id}/toggle-starred', [\App\Http\Controllers\WordActionController::class, 'toggleStarred'])->name('words.toggle-starred');
     Route::post('words/{id}/share', [\App\Http\Controllers\WordActionController::class, 'share'])->name('words.share');
     Route::post('words/next', [\App\Http\Controllers\WordActionController::class, 'goToNext'])->name('words.next');

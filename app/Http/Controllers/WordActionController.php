@@ -8,8 +8,10 @@ use App\Actions\DeleteWord;
 use App\Actions\GoToNextWord;
 use App\Actions\GoToPrevWord;
 use App\Actions\MarkWordAsLearned;
+use App\Actions\MarkWordUnlearned;
 use App\Actions\ShareWord;
 use App\Actions\ToggleWordStarred;
+use App\Models\Word;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,6 +42,17 @@ final class WordActionController
         } catch (\Exception) {
             return back()->with('error', __('words.error_marking_learned'));
         }
+    }
+
+    public function markUnlearned(Word $word): RedirectResponse
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $action = resolve(MarkWordUnlearned::class);
+        $action->handle($word, $user->id);
+
+        return back();
     }
 
     /**
