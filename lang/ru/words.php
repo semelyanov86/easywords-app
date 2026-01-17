@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 return [
     'word_learned' => 'Слово отмечено как выученное',
+    'word_unlearned' => 'Слово отмечено как забытое',
     'word_deleted' => 'Слово успешно удалено',
     'word_shared' => 'Слово успешно поделено',
     'word_starred' => 'Слово добавлено в избранное',

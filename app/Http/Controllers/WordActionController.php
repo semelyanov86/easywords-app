@@ -52,7 +52,7 @@ final class WordActionController
         $action = resolve(MarkWordUnlearned::class);
         $action->handle($word, $user->id);
 
-        return back();
+        return back()->with('success', __('words.word_unlearned'));
     }
 
     /**

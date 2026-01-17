@@ -22,10 +22,11 @@ import { WordStudyCard } from '@/features/word-study/ui/WordStudyCard';
 import { WordStudyKeyboardShortcuts } from '@/features/word-study/ui/WordStudyKeyboardShortcuts';
 import { share } from '@/routes/words';
 import { useTranslation } from '@/shared/i18n/useTranslation';
+import { useToast } from '@/shared/lib/use-toast';
 import { FlipCard } from '@/shared/ui/FlipCard/FlipCard';
 import { User } from '@/types';
 import { AuthHeader } from '@/widgets/auth/AuthHeader';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
 interface WordData {
@@ -53,6 +54,10 @@ interface WordStudyPageProps {
     word: WordData;
     user: User;
     meta: StudyMeta | null;
+    flash?: {
+        success?: string;
+        error?: string;
+    };
 }
 
 export default function WordStudyPage({
@@ -60,6 +65,25 @@ export default function WordStudyPage({
     user,
     meta,
 }: WordStudyPageProps) {
+    const { toast } = useToast();
+    const { flash } = usePage().props as {
+        flash?: { success?: string; error?: string };
+    };
+
+    useEffect(() => {
+        if (flash?.success) {
+            toast({
+                title: flash.success,
+                variant: 'default',
+            });
+        }
+        if (flash?.error) {
+            toast({
+                title: flash.error,
+                variant: 'destructive',
+            });
+        }
+    }, [flash, toast]);
     const t = useTranslation();
     const [isFlipped, setIsFlipped] = useState(false);
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
