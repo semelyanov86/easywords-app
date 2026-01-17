@@ -192,7 +192,7 @@ export const translations: TranslationStructure = {
         sorting_description: 'Configure word order',
         fields: {
             paginate: 'Cards per page',
-            main_language: 'Learning language',
+            default_language: 'Learning language',
             show_starred: 'Show only starred',
             known_enabled: 'Show learned',
             latest_first: 'Filter by recently added',

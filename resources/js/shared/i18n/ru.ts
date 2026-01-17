@@ -194,7 +194,7 @@ export const translations: TranslationStructure = {
         sorting_description: 'Настройте порядок слов',
         fields: {
             paginate: 'Количество карточек',
-            main_language: 'Язык изучения',
+            default_language: 'Язык изучения',
             show_starred: 'Показывать только избранное',
             known_enabled: 'Показывать изученные',
             latest_first: 'Выборка по свежедобавленным',

@@ -12,7 +12,7 @@ interface User {
 }
 
 interface UserSettings {
-    main_language: string;
+    default_language: string;
     languages_list: string[];
 }
 
@@ -34,7 +34,7 @@ export default function Dashboard({
     statistics,
 }: DashboardPageProps) {
     const t = useDashboardTranslation(dashboardTranslations);
-    const { main_language, languages_list } = settings;
+    const { default_language, languages_list } = settings;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-blue-50/30 to-green-50/20">
@@ -92,7 +92,7 @@ export default function Dashboard({
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100 text-sm font-bold text-neutral-700 transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-white">
-                                                {main_language
+                                                {default_language
                                                     .substring(0, 2)
                                                     .toUpperCase()}
                                             </div>
@@ -106,7 +106,7 @@ export default function Dashboard({
                                         <ArrowRight className="h-5 w-5 translate-x-0 transition-transform group-hover/btn:translate-x-1" />
                                     </div>
                                     <p className="mt-2 text-xs font-medium text-neutral-600 transition-colors group-hover/btn:text-blue-100">
-                                        {main_language} → {language}
+                                        {default_language} → {language}
                                     </p>
                                 </Button>
 
@@ -123,7 +123,7 @@ export default function Dashboard({
                                             </div>
                                             <ArrowRight className="h-5 w-5 text-neutral-400 transition-colors group-hover/btn:text-white" />
                                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100 text-sm font-bold text-neutral-700 transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-white">
-                                                {main_language
+                                                {default_language
                                                     .substring(0, 2)
                                                     .toUpperCase()}
                                             </div>
@@ -131,7 +131,7 @@ export default function Dashboard({
                                         <ArrowRight className="h-5 w-5 translate-x-0 transition-transform group-hover/btn:translate-x-1" />
                                     </div>
                                     <p className="mt-2 text-xs font-medium text-neutral-600 transition-colors group-hover/btn:text-green-100">
-                                        {language} → {main_language}
+                                        {language} → {default_language}
                                     </p>
                                 </Button>
                             </div>

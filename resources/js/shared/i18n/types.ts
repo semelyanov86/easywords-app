@@ -170,7 +170,7 @@ export interface TranslationStructure {
         sorting_description: string;
         fields: {
             paginate: string;
-            main_language: string;
+            default_language: string;
             show_starred: string;
             known_enabled: string;
             latest_first: string;

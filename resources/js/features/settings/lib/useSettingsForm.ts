@@ -6,6 +6,7 @@ import { useForm } from '@inertiajs/react';
 interface SettingsFormData {
     paginate: number;
     main_language: string;
+    default_language: string;
     show_starred: boolean;
     known_enabled: boolean;
     latest_first: boolean;

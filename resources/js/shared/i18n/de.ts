@@ -201,7 +201,7 @@ export const translations: TranslationStructure = {
         sorting_description: 'Wortreihenfolge konfigurieren',
         fields: {
             paginate: 'Karten pro Seite',
-            main_language: 'Lernsprache',
+            default_language: 'Lernsprache',
             show_starred: 'Nur Favoriten anzeigen',
             known_enabled: 'Gelernte anzeigen',
             latest_first: 'Nach kürzlich hinzugefügten filtern',

@@ -17,6 +17,7 @@ import { Eye, Filter, List, Save } from 'lucide-react';
 interface SettingsFormData {
     paginate: number;
     main_language: string;
+    default_language: string;
     show_starred: boolean;
     known_enabled: boolean;
     latest_first: boolean;
@@ -42,6 +43,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
 
     const { form, handleSubmit } = useSettingsForm({
         paginate: settings.paginate,
+        default_language: settings.default_language,
         main_language: settings.main_language,
         show_starred: settings.show_starred,
         known_enabled: settings.known_enabled,
@@ -88,20 +90,20 @@ export function SettingsForm({ settings }: SettingsFormProps) {
 
                     <div className="space-y-2">
                         <Label
-                            htmlFor="main_language"
+                            htmlFor="default_language"
                             className="text-sm font-medium"
                         >
-                            {t.settings?.fields?.main_language ||
+                            {t.settings?.fields?.default_language ||
                                 'Main Language'}
                         </Label>
                         <Select
-                            value={form.data.main_language}
+                            value={form.data.default_language}
                             onValueChange={(value) =>
-                                form.setData('main_language', value)
+                                form.setData('default_language', value)
                             }
                             disabled={form.processing}
                         >
-                            <SelectTrigger id="main_language">
+                            <SelectTrigger id="default_language">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
