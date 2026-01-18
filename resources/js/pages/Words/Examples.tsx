@@ -60,26 +60,27 @@ export default function WordExamplesPage({
             <div className="from-primary-50 to-secondary-50 min-h-screen bg-gradient-to-br via-white dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
                 <AuthHeader userName={user.name} />
 
-                {/* Page header */}
+                {/* Page header - компактнее на мобильных */}
                 <header className="border-primary-200/50 dark:border-primary-800/50 border-b bg-white/80 backdrop-blur-md dark:bg-neutral-900/80">
-                    <div className="mx-auto max-w-6xl px-4 py-4">
-                        <div className="flex items-center gap-4">
+                    <div className="mx-auto max-w-6xl px-3 py-3 md:px-4 md:py-4">
+                        <div className="flex items-center gap-2 md:gap-4">
                             <Button
                                 variant="outline"
                                 onClick={handleBack}
-                                className="group border-primary-300 text-primary-700 dark:border-primary-700 dark:text-primary-300 hover:bg-primary-50 hover:border-primary-400 hover:text-primary-800 dark:hover:bg-primary-950/40 dark:hover:border-primary-600 transition-all duration-200 hover:-translate-x-1 hover:shadow-md"
+                                size="sm"
+                                className="group border-primary-300 text-primary-700 dark:border-primary-700 dark:text-primary-300 hover:bg-primary-50 hover:border-primary-400 hover:text-primary-800 dark:hover:bg-primary-950/40 dark:hover:border-primary-600 md:size-default transition-all duration-200 hover:-translate-x-1 hover:shadow-md"
                             >
                                 <span className="inline-block transition-transform group-hover:-translate-x-1">
                                     ←
                                 </span>
-                                <span className="ml-2">
+                                <span className="ml-1 hidden sm:inline md:ml-2">
                                     {t.words.back_to_word}
                                 </span>
                             </Button>
 
-                            <div className="flex items-center gap-2">
-                                <span className="text-2xl">💡</span>
-                                <h1 className="text-primary-900 dark:text-primary-100 text-xl font-bold">
+                            <div className="flex items-center gap-1.5 md:gap-2">
+                                <span className="text-lg md:text-2xl">💡</span>
+                                <h1 className="text-primary-900 dark:text-primary-100 text-base font-bold md:text-xl">
                                     {t.words.examples_title}
                                 </h1>
                             </div>
@@ -87,14 +88,14 @@ export default function WordExamplesPage({
                     </div>
                 </header>
 
-                {/* Main content */}
-                <main className="mx-auto max-w-6xl px-4 py-8">
-                    <div className="mx-auto max-w-4xl space-y-8">
-                        {/* Card - simple conditional rendering */}
-                        <div className="relative min-h-[550px]">
+                {/* Main content - адаптивный padding */}
+                <main className="mx-auto max-w-6xl px-3 py-4 md:px-4 md:py-8">
+                    <div className="mx-auto max-w-4xl space-y-4 md:space-y-8">
+                        {/* Card - меньше высота на мобильных */}
+                        <div className="relative min-h-[420px] md:min-h-[550px]">
                             {/* Front side - Original */}
                             <div
-                                className={`rounded-2xl bg-white p-8 shadow-2xl transition-all duration-500 dark:bg-neutral-800 ${isFlipped ? 'pointer-events-none absolute inset-0 scale-95 opacity-0' : 'scale-100 opacity-100'} `}
+                                className={`rounded-xl bg-white p-4 shadow-2xl transition-all duration-500 md:rounded-2xl md:p-8 dark:bg-neutral-800 ${isFlipped ? 'pointer-events-none absolute inset-0 scale-95 opacity-0' : 'scale-100 opacity-100'} `}
                             >
                                 <ExamplesContent
                                     examples={examples.original}
@@ -107,7 +108,7 @@ export default function WordExamplesPage({
 
                             {/* Back side - Translated */}
                             <div
-                                className={`rounded-2xl bg-white p-8 shadow-2xl transition-all duration-500 dark:bg-neutral-800 ${!isFlipped ? 'pointer-events-none absolute inset-0 scale-95 opacity-0' : 'scale-100 opacity-100'} `}
+                                className={`rounded-xl bg-white p-4 shadow-2xl transition-all duration-500 md:rounded-2xl md:p-8 dark:bg-neutral-800 ${!isFlipped ? 'pointer-events-none absolute inset-0 scale-95 opacity-0' : 'scale-100 opacity-100'} `}
                             >
                                 <ExamplesContent
                                     examples={examples.translated}
@@ -119,15 +120,15 @@ export default function WordExamplesPage({
                             </div>
                         </div>
 
-                        {/* Flip button - always visible */}
-                        <div className="flex flex-col items-center gap-3">
+                        {/* Flip button - компактнее на мобильных */}
+                        <div className="flex flex-col items-center gap-2 md:gap-3">
                             <FlipButton
                                 onClick={() => setIsFlipped(!isFlipped)}
                                 isFlipped={isFlipped}
                                 label={t.words.flip}
                             />
 
-                            <p className="text-primary-600 dark:text-primary-400 text-sm font-medium">
+                            <p className="text-primary-600 dark:text-primary-400 text-xs font-medium md:text-sm">
                                 {isFlipped
                                     ? '👆 Вернуться к оригиналу'
                                     : '👆 Показать перевод'}

@@ -9,16 +9,16 @@ interface FlipButtonProps {
 export function FlipButton({ onClick, isFlipped, label }: FlipButtonProps) {
     return (
         <Button
-            size="lg"
+            size="default"
             onClick={onClick}
-            className="group from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 relative overflow-hidden bg-gradient-to-r px-8 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"
+            className="group border-secondary-700 hover:bg-secondary-700 relative overflow-hidden border-2 bg-secondary px-6 py-5 text-base font-bold text-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95 md:px-8 md:py-6 md:text-lg md:hover:scale-110"
         >
-            {/* Animated background */}
-            <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-white/0 via-white/20 to-white/0 transition-transform duration-700 group-hover:translate-x-[100%]" />
+            {/* Animated shine effect */}
+            <div className="absolute inset-0 translate-x-[-200%] bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-[200%]" />
 
             {/* Icon with rotation */}
             <span
-                className={`mr-2 inline-block transition-transform duration-500 ${isFlipped ? 'rotate-180' : 'rotate-0'} `}
+                className={`mr-2 inline-block text-xl transition-transform duration-500 md:text-2xl ${isFlipped ? 'rotate-180' : 'rotate-0'} `}
             >
                 🔄
             </span>

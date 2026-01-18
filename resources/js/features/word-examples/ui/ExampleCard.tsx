@@ -9,26 +9,26 @@ export function ExampleCard({ text, variant, index }: ExampleCardProps) {
 
     return (
         <div
-            className={`group relative overflow-hidden rounded-xl border p-5 transition-all duration-300 hover:scale-[1.01] hover:shadow-md ${
+            className={`group relative overflow-hidden rounded-lg border p-3 transition-all duration-300 hover:scale-[1.01] hover:shadow-md md:rounded-xl md:p-5 ${
                 isOriginal
                     ? 'border-primary-200 dark:border-primary-700 from-primary-50 dark:from-primary-950/40 dark:to-primary-900/20 bg-gradient-to-br to-white'
                     : 'border-secondary-200 dark:border-secondary-700 from-secondary-50 dark:from-secondary-950/40 dark:to-secondary-900/20 bg-gradient-to-br to-white'
             } `}
         >
-            {/* Decorative number */}
+            {/* Decorative number - меньше на мобильных */}
             <div
-                className={`absolute -top-2 -right-2 flex h-12 w-12 items-center justify-center rounded-full ${isOriginal ? 'bg-primary-100 dark:bg-primary-900/30' : 'bg-secondary-100 dark:bg-secondary-900/30'} `}
+                className={`absolute -top-1.5 -right-1.5 flex h-8 w-8 items-center justify-center rounded-full md:-top-2 md:-right-2 md:h-12 md:w-12 ${isOriginal ? 'bg-primary-100 dark:bg-primary-900/30' : 'bg-secondary-100 dark:bg-secondary-900/30'} `}
             >
                 <span
-                    className={`text-lg font-bold ${isOriginal ? 'text-primary-600 dark:text-primary-400' : 'text-secondary-600 dark:text-secondary-400'} `}
+                    className={`text-sm font-bold md:text-lg ${isOriginal ? 'text-primary-600 dark:text-primary-400' : 'text-secondary-600 dark:text-secondary-400'} `}
                 >
                     {index + 1}
                 </span>
             </div>
 
-            {/* Text content */}
+            {/* Text content - меньший шрифт на мобильных */}
             <p
-                className={`relative z-10 pr-8 text-base leading-relaxed ${
+                className={`relative z-10 pr-6 text-sm leading-relaxed md:pr-8 md:text-base ${
                     isOriginal
                         ? 'text-primary-900 dark:text-primary-100'
                         : 'text-secondary-900 dark:text-secondary-100'
