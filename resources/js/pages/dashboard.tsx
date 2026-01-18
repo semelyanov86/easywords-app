@@ -1,17 +1,10 @@
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { DashboardSearchSection } from '@/features/word-search/ui/DashboardSearchSection';
 import { dashboardTranslations } from '@/shared/i18n/dashboard';
 import { useDashboardTranslation } from '@/shared/i18n/useDashboardTranslation';
 import { AuthHeader } from '@/widgets/auth/AuthHeader';
 import { StatisticCard } from '@/widgets/dashboard/StatisticCard';
-import { router, useForm } from '@inertiajs/react';
-import {
-    ArrowRight,
-    BookOpen,
-    Search as SearchIcon,
-    TrendingUp,
-    Zap,
-} from 'lucide-react';
+import { ArrowRight, BookOpen, TrendingUp, Zap } from 'lucide-react';
 
 interface User {
     id: number;
@@ -43,15 +36,6 @@ export default function Dashboard({
 }: DashboardPageProps) {
     const t = useDashboardTranslation(dashboardTranslations);
     const { default_language, languages_list } = settings;
-
-    const searchForm = useForm({
-        query: '',
-    });
-
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        router.get('/words/search', { q: searchForm.data.query });
-    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-blue-50/30 to-green-50/20">
@@ -156,39 +140,13 @@ export default function Dashboard({
                     ))}
                 </div>
 
-                {/* Search Section */}
-                <div className="mb-12">
-                    <h2 className="mb-4 text-xl font-bold text-neutral-900 sm:text-2xl">
-                        {t.searchWords || 'Поиск слов'}
-                    </h2>
-                    <form onSubmit={handleSearch}>
-                        <div className="relative max-w-2xl">
-                            <SearchIcon className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-neutral-400" />
-                            <Input
-                                type="text"
-                                placeholder={
-                                    t.searchPlaceholder ||
-                                    'Введите слово для поиска...'
-                                }
-                                value={searchForm.data.query}
-                                onChange={(e) =>
-                                    searchForm.setData('query', e.target.value)
-                                }
-                                className="h-14 pr-4 pl-12 text-base shadow-sm focus:ring-2 focus:ring-primary"
-                            />
-                            <Button
-                                type="submit"
-                                disabled={
-                                    searchForm.processing ||
-                                    !searchForm.data.query.trim()
-                                }
-                                className="hover:bg-primary-600 absolute top-1/2 right-2 h-10 -translate-y-1/2 bg-primary"
-                            >
-                                {t.searchButton || 'Найти'}
-                            </Button>
-                        </div>
-                    </form>
-                </div>
+                <DashboardSearchSection
+                    title={t.searchWords || 'Поиск слов'}
+                    placeholder={
+                        t.searchPlaceholder || 'Введите слово для поиска...'
+                    }
+                    buttonText={t.searchButton || 'Найти'}
+                />
 
                 <div className="mb-6">
                     <h2 className="mb-4 text-xl font-bold text-neutral-900 sm:text-2xl">

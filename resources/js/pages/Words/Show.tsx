@@ -14,6 +14,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { WordData } from '@/features/word-search/types';
 import { useWordStudy } from '@/features/word-study/model/useWordStudy';
 import { WordCardActions } from '@/features/word-study/ui/WordCardActions';
 import { WordCardMeta } from '@/features/word-study/ui/WordCardMeta';
@@ -28,20 +29,6 @@ import { User } from '@/types';
 import { AuthHeader } from '@/widgets/auth/AuthHeader';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-
-interface WordData {
-    id: number;
-    original: string;
-    translated: string;
-    language: string;
-    done_at: string | null;
-    starred: boolean;
-    views: number;
-    from_sample: boolean;
-    user_id: number;
-    created_at: string;
-    updated_at: string;
-}
 
 interface StudyMeta {
     total: number | null;
