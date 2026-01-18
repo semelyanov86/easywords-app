@@ -33,13 +33,15 @@ final class GetUserRandomWords
      * @param  int  $limit  Количество слов для получения
      * @return Collection<int, WordData> Коллекция случайных слов
      */
-    public function handle(int $userId, int $limit = 20): Collection
+    public function handle(int $userId, int $limit = 20, ?string $language = null): Collection
     {
         $settings = $this->settingsAction->handle($userId);
-
+        if (! $language) {
+            $language = $settings->default_language;
+        }
         $query = Word::query()
             ->where('user_id', $userId)
-            ->where('language', $settings->default_language);
+            ->where('language', $language);
 
         if (! $settings->known_enabled) {
             $query->whereNull('done_at');

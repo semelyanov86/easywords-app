@@ -58,6 +58,7 @@ final class StudyController extends Controller
         try {
             $result = $startStudySession->handle(
                 userId: $user->id,
+                language: $request->string('language')->toString(),
                 limit: $request->validatedLimit(),
                 reverse: $request->validatedReverse()
             );
@@ -120,7 +121,7 @@ final class StudyController extends Controller
         }
 
         try {
-            $result = $goToNextWord->handle($user, $request->validatedReverse());
+            $result = $goToNextWord->handle($user, $request->validatedLanguage(), $request->validatedReverse());
 
             return response()->json([
                 'data' => \App\Data\WordData::from($result['word'])->toJsonArray(),
@@ -175,7 +176,7 @@ final class StudyController extends Controller
         }
 
         try {
-            $result = $goToPrevWord->handle($user, $request->validatedReverse());
+            $result = $goToPrevWord->handle($user, $request->validatedLanguage(), $request->validatedReverse());
 
             return response()->json([
                 'data' => \App\Data\WordData::from($result['word'])->toJsonArray(),

@@ -33,25 +33,25 @@ final readonly class GoToPrevWord
      *
      * @throws \RuntimeException
      */
-    public function handle(User $user, bool $reverse = false): array
+    public function handle(User $user, string $language, bool $reverse = false): array
     {
-        $prevId = $this->sessionCache->getPrevId($user->id);
+        $prevId = $this->sessionCache->getPrevId($user->id, $language);
 
         if ($prevId === null) {
             throw new \RuntimeException('No previous word available');
         }
 
-        $sessionWords = $this->sessionCache->getSessionWords($user->id);
+        $sessionWords = $this->sessionCache->getSessionWords($user->id, $language);
         $currentIndex = $this->sessionCache->findWordIndex($prevId, $sessionWords);
 
-        $this->sessionCache->updateNavigation($user->id, $prevId, $currentIndex, $sessionWords);
+        $this->sessionCache->updateNavigation($user->id, $prevId, $currentIndex, $sessionWords, $language);
 
         $word = $this->getWord->handle($prevId, $user->id);
         $this->incrementWordViews->handle($prevId, $user->id);
 
         return [
             'word' => $this->sessionCache->prepareWordData($word, $reverse),
-            'meta' => $this->sessionCache->buildMeta($user->id, $currentIndex, $sessionWords),
+            'meta' => $this->sessionCache->buildMeta($user->id, $currentIndex, $sessionWords, $language),
         ];
     }
 }

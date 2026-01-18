@@ -38,24 +38,24 @@ final readonly class StartStudySession
      * @param  bool  $reverse  Порядок слов (true - обратный, false - прямой)
      * @return array{word: WordData, total: int, next_id: ?int, prev_id: ?int, current_index: int}
      */
-    public function handle(int $userId, int $limit = 20, bool $reverse = false): array
+    public function handle(int $userId, string $language, int $limit = 20, bool $reverse = false): array
     {
-        $currentId = $this->sessionCache->getCurrentId($userId);
-        $nextId = $this->sessionCache->getNextId($userId);
+        $currentId = $this->sessionCache->getCurrentId($userId, $language);
+        $nextId = $this->sessionCache->getNextId($userId, $language);
 
         if ($currentId !== null && $nextId !== null) {
-            return $this->resumeSession($userId, $currentId, $reverse);
+            return $this->resumeSession($userId, $currentId, $reverse, $language);
         }
 
-        return $this->startNewSession($userId, $limit, $reverse);
+        return $this->startNewSession($userId, $limit, $reverse, $language);
     }
 
     /**
      * @return array{word: WordData, total: int, next_id: ?int, prev_id: ?int, current_index: int}
      */
-    private function resumeSession(int $userId, int $currentId, bool $reverse): array
+    private function resumeSession(int $userId, int $currentId, bool $reverse, string $language): array
     {
-        $sessionWords = $this->sessionCache->getSessionWords($userId);
+        $sessionWords = $this->sessionCache->getSessionWords($userId, $language);
         $currentIndex = $this->sessionCache->findWordIndex($currentId, $sessionWords);
 
         $word = $this->getWord->handle($currentId, $userId);
@@ -64,8 +64,8 @@ final readonly class StartStudySession
         return [
             'word' => $this->sessionCache->prepareWordData($word, $reverse),
             'total' => count($sessionWords),
-            'next_id' => $this->sessionCache->getNextId($userId),
-            'prev_id' => $this->sessionCache->getPrevId($userId),
+            'next_id' => $this->sessionCache->getNextId($userId, $language),
+            'prev_id' => $this->sessionCache->getPrevId($userId, $language),
             'current_index' => $currentIndex + 1,
         ];
     }
@@ -73,7 +73,7 @@ final readonly class StartStudySession
     /**
      * @return array{word: WordData, total: int, next_id: ?int, prev_id: ?int, current_index: int}
      */
-    private function startNewSession(int $userId, int $limit, bool $reverse): array
+    private function startNewSession(int $userId, int $limit, bool $reverse, string $language): array
     {
         $words = $this->getUserRandomWords->handle($userId, $limit);
 
@@ -88,7 +88,7 @@ final readonly class StartStudySession
             $wordIds = array_reverse($wordIds);
         }
 
-        $this->sessionCache->saveSession($userId, $wordIds);
+        $this->sessionCache->saveSession($userId, $wordIds, $language);
 
         $word = $this->getWord->handle($wordIds[0], $userId);
         $this->incrementWordViews->handle($wordIds[0], $userId);

@@ -46,6 +46,7 @@ final class StudyControllerTest extends TestCase
         $response = $this->getJson(route('api.v1.words.start', [
             'limit' => 1,
             'reverse' => true,
+            'language' => 'DE',
         ]));
 
         $response->assertStatus(200)
@@ -110,13 +111,15 @@ final class StudyControllerTest extends TestCase
         // Создаем сессию вручную
         /** @var array<int> $wordIds */
         $wordIds = $words->pluck('id')->toArray();
-        \Illuminate\Support\Facades\Cache::put("words.start.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.{$user->id}", $wordIds[0]);
-        \Illuminate\Support\Facades\Cache::put("words.next.{$user->id}", $wordIds[1]);
+        \Illuminate\Support\Facades\Cache::put("words.start.DE.{$user->id}", $wordIds);
+        \Illuminate\Support\Facades\Cache::put("words.current.DE.{$user->id}", $wordIds[0]);
+        \Illuminate\Support\Facades\Cache::put("words.next.DE.{$user->id}", $wordIds[1]);
 
         Sanctum::actingAs($user);
 
-        $response = $this->getJson(route('api.v1.words.start'));
+        $response = $this->getJson(route('api.v1.words.start', [
+            'language' => 'DE',
+        ]));
 
         $response->assertStatus(200)
             ->assertJsonPath('data.id', (string) $wordIds[0])
@@ -137,7 +140,9 @@ final class StudyControllerTest extends TestCase
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $response = $this->getJson(route('api.v1.words.start'));
+        $response = $this->getJson(route('api.v1.words.start', [
+            'language' => 'EN',
+        ]));
 
         $response->assertStatus(400)
             ->assertHeader('content-type', 'application/vnd.api+json')
@@ -175,7 +180,9 @@ final class StudyControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->getJson(route('api.v1.words.start'));
+        $response = $this->getJson(route('api.v1.words.start', [
+            'language' => 'DE',
+        ]));
 
         $response->assertStatus(200)
             ->assertJsonPath('meta.total', 20);
@@ -188,6 +195,7 @@ final class StudyControllerTest extends TestCase
 
         $response = $this->getJson(route('api.v1.words.start', [
             'limit' => 'invalid',
+            'language' => 'EN',
         ]));
 
         $response->assertStatus(422)
@@ -195,12 +203,14 @@ final class StudyControllerTest extends TestCase
 
         $response = $this->getJson(route('api.v1.words.start', [
             'limit' => 0,
+            'language' => 'EN',
         ]));
 
         $response->assertStatus(422);
 
         $response = $this->getJson(route('api.v1.words.start', [
             'limit' => 101,
+            'language' => 'EN',
         ]));
 
         $response->assertStatus(422);
@@ -213,6 +223,7 @@ final class StudyControllerTest extends TestCase
 
         $response = $this->getJson(route('api.v1.words.start', [
             'reverse' => 'invalid',
+            'language' => 'EN',
         ]));
 
         $response->assertStatus(422)
@@ -251,6 +262,7 @@ final class StudyControllerTest extends TestCase
         // Создаем сессию с reverse=true
         $response = $this->getJson(route('api.v1.words.start', [
             'reverse' => true,
+            'language' => 'DE',
         ]));
 
         $response->assertStatus(200)
@@ -258,7 +270,7 @@ final class StudyControllerTest extends TestCase
 
         // Проверяем, что кэш содержит слова
         /** @var mixed $startCache */
-        $startCache = \Illuminate\Support\Facades\Cache::get("words.start.{$user->id}");
+        $startCache = \Illuminate\Support\Facades\Cache::get("words.start.DE.{$user->id}");
         $this->assertIsArray($startCache);
         $this->assertCount(5, $startCache);
     }
@@ -292,6 +304,7 @@ final class StudyControllerTest extends TestCase
         $response = $this->getJson(route('api.v1.words.start', [
             'limit' => 1,
             'reverse' => true,
+            'language' => 'EN',
         ]));
 
         $this->assertInstanceOf(Word::class, $word);
@@ -331,6 +344,7 @@ final class StudyControllerTest extends TestCase
         $response = $this->getJson(route('api.v1.words.start', [
             'limit' => 1,
             'reverse' => false,
+            'language' => 'EN',
         ]));
 
         $this->assertInstanceOf(Word::class, $word);
@@ -367,16 +381,17 @@ final class StudyControllerTest extends TestCase
 
         // Создаем сессию
         $wordIds = [$word->id];
-        \Illuminate\Support\Facades\Cache::put("words.start.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.{$user->id}", $wordIds[0]);
-        \Illuminate\Support\Facades\Cache::put("words.next.{$user->id}", null);
-        \Illuminate\Support\Facades\Cache::put("words.prev.{$user->id}", null);
+        \Illuminate\Support\Facades\Cache::put("words.start.EN.{$user->id}", $wordIds);
+        \Illuminate\Support\Facades\Cache::put("words.current.EN.{$user->id}", $wordIds[0]);
+        \Illuminate\Support\Facades\Cache::put("words.next.EN.{$user->id}", null);
+        \Illuminate\Support\Facades\Cache::put("words.prev.EN.{$user->id}", null);
 
         Sanctum::actingAs($user);
 
         $response = $this->getJson(route('api.v1.words.start', [
             'limit' => 1,
             'reverse' => true,
+            'language' => 'EN',
         ]));
 
         $this->assertInstanceOf(Word::class, $word);
@@ -417,14 +432,16 @@ final class StudyControllerTest extends TestCase
         $wordIds = $words->pluck('id')->toArray();
 
         // Создаем сессию
-        \Illuminate\Support\Facades\Cache::put("words.start.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.{$user->id}", $wordIds[0]);
-        \Illuminate\Support\Facades\Cache::put("words.next.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.prev.{$user->id}", null);
+        \Illuminate\Support\Facades\Cache::put("words.start.DE.{$user->id}", $wordIds);
+        \Illuminate\Support\Facades\Cache::put("words.current.DE.{$user->id}", $wordIds[0]);
+        \Illuminate\Support\Facades\Cache::put("words.next.DE.{$user->id}", $wordIds[1]);
+        \Illuminate\Support\Facades\Cache::put("words.prev.DE.{$user->id}", null);
 
         Sanctum::actingAs($user);
 
-        $response = $this->getJson(route('api.v1.words.next'));
+        $response = $this->getJson(route('api.v1.words.next', [
+            'language' => 'DE',
+        ]));
 
         $response->assertStatus(200)
             ->assertHeader('content-type', 'application/vnd.api+json')
@@ -447,7 +464,9 @@ final class StudyControllerTest extends TestCase
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $response = $this->getJson(route('api.v1.words.next'));
+        $response = $this->getJson(route('api.v1.words.next', [
+            'language' => 'EN',
+        ]));
 
         $response->assertStatus(400)
             ->assertHeader('content-type', 'application/vnd.api+json')
@@ -462,9 +481,11 @@ final class StudyControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         // Создаем кэш с next, но без сессии
-        \Illuminate\Support\Facades\Cache::put("words.next.{$user->id}", 999);
+        \Illuminate\Support\Facades\Cache::put("words.next.EN.{$user->id}", 999);
 
-        $response = $this->getJson(route('api.v1.words.next'));
+        $response = $this->getJson(route('api.v1.words.next', [
+            'language' => 'EN',
+        ]));
 
         $response->assertStatus(400)
             ->assertJsonPath('errors.0.detail', 'Study session not found');
@@ -501,14 +522,16 @@ final class StudyControllerTest extends TestCase
         $wordIds = $words->pluck('id')->toArray();
 
         // Создаем сессию
-        \Illuminate\Support\Facades\Cache::put("words.start.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.{$user->id}", $wordIds[0]);
-        \Illuminate\Support\Facades\Cache::put("words.next.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.prev.{$user->id}", null);
+        \Illuminate\Support\Facades\Cache::put("words.start.DE.{$user->id}", $wordIds);
+        \Illuminate\Support\Facades\Cache::put("words.current.DE.{$user->id}", $wordIds[0]);
+        \Illuminate\Support\Facades\Cache::put("words.next.DE.{$user->id}", $wordIds[1]);
+        \Illuminate\Support\Facades\Cache::put("words.prev.DE.{$user->id}", null);
 
         Sanctum::actingAs($user);
 
-        $this->getJson(route('api.v1.words.next'));
+        $this->getJson(route('api.v1.words.next', [
+            'language' => 'DE',
+        ]));
 
         // Проверяем, что просмотры увеличились
         $word1 = Word::find($wordIds[1]);
@@ -542,16 +565,17 @@ final class StudyControllerTest extends TestCase
         /** @var array<int> $wordIds */
         $wordIds = $words->pluck('id')->toArray();
 
-        \Illuminate\Support\Facades\Cache::put("words.start.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.{$user->id}", $wordIds[0]);
-        \Illuminate\Support\Facades\Cache::put("words.next.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.prev.{$user->id}", null);
+        \Illuminate\Support\Facades\Cache::put("words.start.EN.{$user->id}", $wordIds);
+        \Illuminate\Support\Facades\Cache::put("words.current.EN.{$user->id}", $wordIds[0]);
+        \Illuminate\Support\Facades\Cache::put("words.next.EN.{$user->id}", $wordIds[1]);
+        \Illuminate\Support\Facades\Cache::put("words.prev.EN.{$user->id}", null);
 
         Sanctum::actingAs($user);
 
         $this->assertInstanceOf(Word::class, $words->first());
         $response = $this->getJson(route('api.v1.words.next', [
             'reverse' => true,
+            'language' => 'EN',
         ]));
 
         $response->assertStatus(200)
@@ -587,16 +611,17 @@ final class StudyControllerTest extends TestCase
         /** @var array<int> $wordIds */
         $wordIds = $words->pluck('id')->toArray();
 
-        \Illuminate\Support\Facades\Cache::put("words.start.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.{$user->id}", $wordIds[0]);
-        \Illuminate\Support\Facades\Cache::put("words.next.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.prev.{$user->id}", null);
+        \Illuminate\Support\Facades\Cache::put("words.start.EN.{$user->id}", $wordIds);
+        \Illuminate\Support\Facades\Cache::put("words.current.EN.{$user->id}", $wordIds[0]);
+        \Illuminate\Support\Facades\Cache::put("words.next.EN.{$user->id}", $wordIds[1]);
+        \Illuminate\Support\Facades\Cache::put("words.prev.EN.{$user->id}", null);
 
         Sanctum::actingAs($user);
 
         $this->assertInstanceOf(Word::class, $words->first());
         $response = $this->getJson(route('api.v1.words.next', [
             'reverse' => false,
+            'language' => 'EN',
         ]));
 
         $response->assertStatus(200)
@@ -636,14 +661,16 @@ final class StudyControllerTest extends TestCase
         $wordIds = $words->pluck('id')->toArray();
 
         // Создаем сессию на втором слове
-        \Illuminate\Support\Facades\Cache::put("words.start.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.next.{$user->id}", $wordIds[2]);
-        \Illuminate\Support\Facades\Cache::put("words.prev.{$user->id}", $wordIds[0]);
+        \Illuminate\Support\Facades\Cache::put("words.start.DE.{$user->id}", $wordIds);
+        \Illuminate\Support\Facades\Cache::put("words.current.DE.{$user->id}", $wordIds[1]);
+        \Illuminate\Support\Facades\Cache::put("words.next.DE.{$user->id}", $wordIds[2]);
+        \Illuminate\Support\Facades\Cache::put("words.prev.DE.{$user->id}", $wordIds[0]);
 
         Sanctum::actingAs($user);
 
-        $response = $this->getJson(route('api.v1.words.prev'));
+        $response = $this->getJson(route('api.v1.words.prev', [
+            'language' => 'DE',
+        ]));
 
         $response->assertStatus(200)
             ->assertHeader('content-type', 'application/vnd.api+json')
@@ -666,7 +693,9 @@ final class StudyControllerTest extends TestCase
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $response = $this->getJson(route('api.v1.words.prev'));
+        $response = $this->getJson(route('api.v1.words.prev', [
+            'language' => 'EN',
+        ]));
 
         $response->assertStatus(400)
             ->assertHeader('content-type', 'application/vnd.api+json')
@@ -681,9 +710,11 @@ final class StudyControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         // Создаем кэш с prev, но без сессии
-        \Illuminate\Support\Facades\Cache::put("words.prev.{$user->id}", 999);
+        \Illuminate\Support\Facades\Cache::put("words.prev.EN.{$user->id}", 999);
 
-        $response = $this->getJson(route('api.v1.words.prev'));
+        $response = $this->getJson(route('api.v1.words.prev', [
+            'language' => 'EN',
+        ]));
 
         $response->assertStatus(400)
             ->assertJsonPath('errors.0.detail', 'Study session not found');
@@ -720,14 +751,16 @@ final class StudyControllerTest extends TestCase
         $wordIds = $words->pluck('id')->toArray();
 
         // Создаем сессию на втором слове
-        \Illuminate\Support\Facades\Cache::put("words.start.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.next.{$user->id}", null);
-        \Illuminate\Support\Facades\Cache::put("words.prev.{$user->id}", $wordIds[0]);
+        \Illuminate\Support\Facades\Cache::put("words.start.DE.{$user->id}", $wordIds);
+        \Illuminate\Support\Facades\Cache::put("words.current.DE.{$user->id}", $wordIds[1]);
+        \Illuminate\Support\Facades\Cache::put("words.next.DE.{$user->id}", null);
+        \Illuminate\Support\Facades\Cache::put("words.prev.DE.{$user->id}", $wordIds[0]);
 
         Sanctum::actingAs($user);
 
-        $this->getJson(route('api.v1.words.prev'));
+        $this->getJson(route('api.v1.words.prev', [
+            'language' => 'DE',
+        ]));
 
         // Проверяем, что просмотры увеличились
         $word0 = Word::find($wordIds[0]);
@@ -761,16 +794,17 @@ final class StudyControllerTest extends TestCase
         /** @var array<int> $wordIds */
         $wordIds = $words->pluck('id')->toArray();
 
-        \Illuminate\Support\Facades\Cache::put("words.start.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.next.{$user->id}", null);
-        \Illuminate\Support\Facades\Cache::put("words.prev.{$user->id}", $wordIds[0]);
+        \Illuminate\Support\Facades\Cache::put("words.start.EN.{$user->id}", $wordIds);
+        \Illuminate\Support\Facades\Cache::put("words.current.EN.{$user->id}", $wordIds[1]);
+        \Illuminate\Support\Facades\Cache::put("words.next.EN.{$user->id}", null);
+        \Illuminate\Support\Facades\Cache::put("words.prev.EN.{$user->id}", $wordIds[0]);
 
         Sanctum::actingAs($user);
 
         $this->assertInstanceOf(Word::class, $words->first());
         $response = $this->getJson(route('api.v1.words.prev', [
             'reverse' => true,
+            'language' => 'EN',
         ]));
 
         $response->assertStatus(200)
@@ -806,16 +840,17 @@ final class StudyControllerTest extends TestCase
         /** @var array<int> $wordIds */
         $wordIds = $words->pluck('id')->toArray();
 
-        \Illuminate\Support\Facades\Cache::put("words.start.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.next.{$user->id}", null);
-        \Illuminate\Support\Facades\Cache::put("words.prev.{$user->id}", $wordIds[0]);
+        \Illuminate\Support\Facades\Cache::put("words.start.EN.{$user->id}", $wordIds);
+        \Illuminate\Support\Facades\Cache::put("words.current.EN.{$user->id}", $wordIds[1]);
+        \Illuminate\Support\Facades\Cache::put("words.next.EN.{$user->id}", null);
+        \Illuminate\Support\Facades\Cache::put("words.prev.EN.{$user->id}", $wordIds[0]);
 
         Sanctum::actingAs($user);
 
         $this->assertInstanceOf(Word::class, $words->first());
         $response = $this->getJson(route('api.v1.words.prev', [
             'reverse' => false,
+            'language' => 'EN',
         ]));
 
         $response->assertStatus(200)
@@ -832,6 +867,7 @@ final class StudyControllerTest extends TestCase
 
         $response = $this->getJson(route('api.v1.words.next', [
             'reverse' => 'invalid',
+            'language' => 'EN',
         ]));
 
         $response->assertStatus(422)
@@ -845,6 +881,7 @@ final class StudyControllerTest extends TestCase
 
         $response = $this->getJson(route('api.v1.words.prev', [
             'reverse' => 'invalid',
+            'language' => 'EN',
         ]));
 
         $response->assertStatus(422)

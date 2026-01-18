@@ -31,6 +31,7 @@ final class StartStudyRequest extends FormRequest
         return [
             'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
             'reverse' => ['sometimes', 'boolean'],
+            'language' => ['required', 'string', 'max:255'],
         ];
     }
 

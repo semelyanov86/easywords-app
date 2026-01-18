@@ -15,6 +15,8 @@ final class GoToPrevWordTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const string LANGUAGE = 'en';
+
     private User $user;
 
     private GoToPrevWord $action;
@@ -28,18 +30,18 @@ final class GoToPrevWordTest extends TestCase
         $this->action = resolve(GoToPrevWord::class);
     }
 
-    public function test_goes_to_prev_word(): void
+    public function test_goes_to_previous_word(): void
     {
         $words = Word::factory()->count(3)->for($this->user)->create();
         $wordIds = $words->pluck('id')->toArray();
 
-        // Устанавливаем состояние сессии на втором слове
-        Cache::put("words.start.{$this->user->id}", $wordIds);
-        Cache::put("words.current.{$this->user->id}", $wordIds[1]);
-        Cache::put("words.next.{$this->user->id}", $wordIds[2]);
-        Cache::put("words.prev.{$this->user->id}", $wordIds[0]);
+        // Устанавливаем состояние сессии
+        Cache::put('words.start.' . self::LANGUAGE . ".{$this->user->id}", $wordIds);
+        Cache::put('words.current.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[1]);
+        Cache::put('words.next.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[2]);
+        Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[0]);
 
-        $result = $this->action->handle($this->user);
+        $result = $this->action->handle($this->user, self::LANGUAGE);
 
         $this->assertEquals($wordIds[0], $result['word']->id);
         $this->assertEquals(3, $result['meta']['total']);
@@ -56,12 +58,12 @@ final class GoToPrevWordTest extends TestCase
         ]);
         $wordIds = $words->pluck('id')->toArray();
 
-        Cache::put("words.start.{$this->user->id}", $wordIds);
-        Cache::put("words.current.{$this->user->id}", $wordIds[1]);
-        Cache::put("words.next.{$this->user->id}", null);
-        Cache::put("words.prev.{$this->user->id}", $wordIds[0]);
+        Cache::put('words.start.' . self::LANGUAGE . ".{$this->user->id}", $wordIds);
+        Cache::put('words.current.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[1]);
+        Cache::put('words.next.' . self::LANGUAGE . ".{$this->user->id}", null);
+        Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[0]);
 
-        $result = $this->action->handle($this->user, reverse: true);
+        $result = $this->action->handle($this->user, self::LANGUAGE, reverse: true);
 
         $this->assertEquals('кошка', $result['word']->original);
         $this->assertEquals('cat', $result['word']->translated);
@@ -75,12 +77,12 @@ final class GoToPrevWordTest extends TestCase
         ]);
         $wordIds = $words->pluck('id')->toArray();
 
-        Cache::put("words.start.{$this->user->id}", $wordIds);
-        Cache::put("words.current.{$this->user->id}", $wordIds[1]);
-        Cache::put("words.next.{$this->user->id}", null);
-        Cache::put("words.prev.{$this->user->id}", $wordIds[0]);
+        Cache::put('words.start.' . self::LANGUAGE . ".{$this->user->id}", $wordIds);
+        Cache::put('words.current.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[1]);
+        Cache::put('words.next.' . self::LANGUAGE . ".{$this->user->id}", null);
+        Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[0]);
 
-        $result = $this->action->handle($this->user, reverse: false);
+        $result = $this->action->handle($this->user, self::LANGUAGE, reverse: false);
 
         $this->assertEquals('cat', $result['word']->original);
         $this->assertEquals('кошка', $result['word']->translated);
@@ -91,33 +93,33 @@ final class GoToPrevWordTest extends TestCase
         $words = Word::factory()->count(2)->for($this->user)->create();
         $wordIds = $words->pluck('id')->toArray();
 
-        // Устанавливаем состояние сессии на втором слове
-        Cache::put("words.start.{$this->user->id}", $wordIds);
-        Cache::put("words.current.{$this->user->id}", $wordIds[1]);
-        Cache::put("words.next.{$this->user->id}", null);
-        Cache::put("words.prev.{$this->user->id}", $wordIds[0]);
+        // Устанавливаем состояние сессии на первое слово
+        Cache::put('words.start.' . self::LANGUAGE . ".{$this->user->id}", $wordIds);
+        Cache::put('words.current.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[1]);
+        Cache::put('words.next.' . self::LANGUAGE . ".{$this->user->id}", null);
+        Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[0]);
 
-        $result = $this->action->handle($this->user);
+        $result = $this->action->handle($this->user, self::LANGUAGE);
 
         $this->assertEquals($wordIds[0], $result['word']->id);
         $this->assertNull($result['meta']['prev_id']);
     }
 
-    public function test_throws_exception_when_no_prev_word(): void
+    public function test_throws_exception_when_no_previous_word(): void
     {
         $words = Word::factory()->count(2)->for($this->user)->create();
         $wordIds = $words->pluck('id')->toArray();
 
-        // Устанавливаем состояние сессии на первом слове без предыдущего
-        Cache::put("words.start.{$this->user->id}", $wordIds);
-        Cache::put("words.current.{$this->user->id}", $wordIds[0]);
-        Cache::put("words.next.{$this->user->id}", $wordIds[1]);
-        Cache::put("words.prev.{$this->user->id}", null);
+        // Устанавливаем состояние сессии без предыдущего слова
+        Cache::put('words.start.' . self::LANGUAGE . ".{$this->user->id}", $wordIds);
+        Cache::put('words.current.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[0]);
+        Cache::put('words.next.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[1]);
+        Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", null);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('No previous word available');
 
-        $this->action->handle($this->user);
+        $this->action->handle($this->user, self::LANGUAGE);
     }
 
     public function test_throws_exception_when_session_not_found(): void
@@ -125,11 +127,11 @@ final class GoToPrevWordTest extends TestCase
         $word = Word::factory()->for($this->user)->create();
 
         // Устанавливаем только предыдущее слово без сессии
-        Cache::put("words.prev.{$this->user->id}", $word->id);
+        Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", $word->id);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Study session not found');
 
-        $this->action->handle($this->user);
+        $this->action->handle($this->user, self::LANGUAGE);
     }
 }

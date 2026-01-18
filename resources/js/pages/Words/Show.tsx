@@ -35,6 +35,7 @@ interface StudyMeta {
     next_id: number | null;
     prev_id: number | null;
     current_index: number | null;
+    reverse: boolean;
 }
 
 interface WordStudyPageProps {
@@ -132,7 +133,7 @@ export default function WordStudyPage({
                 case 'Backspace':
                     e.preventDefault();
                     if (canGoPrev) {
-                        handleGoToPrev();
+                        handleGoToPrev(word.language, meta?.reverse);
                     }
                     break;
                 case 'Delete':
@@ -142,13 +143,13 @@ export default function WordStudyPage({
                 case 'ArrowLeft':
                     e.preventDefault();
                     if (canGoPrev) {
-                        handleGoToPrev();
+                        handleGoToPrev(word.language, meta?.reverse);
                     }
                     break;
                 case 'ArrowRight':
                     e.preventDefault();
                     if (canGoNext) {
-                        handleGoToNext();
+                        handleGoToNext(word.language, meta?.reverse);
                     }
                     break;
             }
@@ -314,8 +315,18 @@ export default function WordStudyPage({
                         onMarkLearned={handleMarkLearned}
                         onMarkUnlearned={handleMarkUnlearned}
                         onFlip={() => setIsFlipped(!isFlipped)}
-                        onPrev={handleGoToPrev}
-                        onNext={handleGoToNext}
+                        onPrev={() =>
+                            handleGoToPrev(
+                                word.language,
+                                meta?.reverse || false,
+                            )
+                        }
+                        onNext={() =>
+                            handleGoToNext(
+                                word.language,
+                                meta?.reverse || false,
+                            )
+                        }
                         t={t}
                         wordId={word.id}
                         hasPremium={user.has_premium ?? false}

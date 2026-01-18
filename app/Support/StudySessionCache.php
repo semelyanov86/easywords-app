@@ -23,10 +23,10 @@ final readonly class StudySessionCache
      *
      * @throws \RuntimeException
      */
-    public function getSessionWords(int $userId): array
+    public function getSessionWords(int $userId, string $language): array
     {
         /** @var array<int>|null $sessionWords */
-        $sessionWords = cache()->get($this->key('start', $userId));
+        $sessionWords = cache()->get($this->key('start', $userId, $language));
 
         if (! is_array($sessionWords)) {
             throw new \RuntimeException('Study session not found');
@@ -38,10 +38,10 @@ final readonly class StudySessionCache
     /**
      * Получает ID текущего слова.
      */
-    public function getCurrentId(int $userId): ?int
+    public function getCurrentId(int $userId, string $language): ?int
     {
         /** @var int|null $currentId */
-        $currentId = cache()->get($this->key('current', $userId));
+        $currentId = cache()->get($this->key('current', $userId, $language));
 
         return $currentId;
     }
@@ -49,10 +49,10 @@ final readonly class StudySessionCache
     /**
      * Получает ID следующего слова.
      */
-    public function getNextId(int $userId): ?int
+    public function getNextId(int $userId, string $language): ?int
     {
         /** @var int|null $nextId */
-        $nextId = cache()->get($this->key('next', $userId));
+        $nextId = cache()->get($this->key('next', $userId, $language));
 
         return $nextId;
     }
@@ -60,10 +60,10 @@ final readonly class StudySessionCache
     /**
      * Получает ID предыдущего слова.
      */
-    public function getPrevId(int $userId): ?int
+    public function getPrevId(int $userId, string $language): ?int
     {
         /** @var int|null $prevId */
-        $prevId = cache()->get($this->key('prev', $userId));
+        $prevId = cache()->get($this->key('prev', $userId, $language));
 
         return $prevId;
     }
@@ -73,19 +73,19 @@ final readonly class StudySessionCache
      *
      * @param  array<int>  $sessionWords
      */
-    public function updateNavigation(int $userId, int $currentId, int $currentIndex, array $sessionWords): void
+    public function updateNavigation(int $userId, int $currentId, int $currentIndex, array $sessionWords, string $language): void
     {
-        cache()->put($this->key('current', $userId), $currentId);
+        cache()->put($this->key('current', $userId, $language), $currentId);
 
         $prevIndex = $currentIndex - 1;
         $prevId = ($prevIndex >= 0 && isset($sessionWords[$prevIndex]))
             ? $sessionWords[$prevIndex]
             : null;
-        cache()->put($this->key('prev', $userId), $prevId);
+        cache()->put($this->key('prev', $userId, $language), $prevId);
 
         $nextIndex = $currentIndex + 1;
         $nextId = $sessionWords[$nextIndex] ?? null;
-        cache()->put($this->key('next', $userId), $nextId);
+        cache()->put($this->key('next', $userId, $language), $nextId);
     }
 
     /**
@@ -112,12 +112,12 @@ final readonly class StudySessionCache
      * @param  array<int>  $sessionWords
      * @return array{total: int, next_id: ?int, prev_id: ?int, current_index: int}
      */
-    public function buildMeta(int $userId, int $currentIndex, array $sessionWords): array
+    public function buildMeta(int $userId, int $currentIndex, array $sessionWords, string $language): array
     {
         return [
             'total' => count($sessionWords),
-            'next_id' => $this->getNextId($userId),
-            'prev_id' => $this->getPrevId($userId),
+            'next_id' => $this->getNextId($userId, $language),
+            'prev_id' => $this->getPrevId($userId, $language),
             'current_index' => $currentIndex + 1, // 1-based
         ];
     }
@@ -127,12 +127,12 @@ final readonly class StudySessionCache
      *
      * @param  array<int>  $wordIds
      */
-    public function saveSession(int $userId, array $wordIds): void
+    public function saveSession(int $userId, array $wordIds, string $language): void
     {
-        cache()->put($this->key('start', $userId), $wordIds);
-        cache()->put($this->key('current', $userId), $wordIds[0]);
-        cache()->put($this->key('next', $userId), $wordIds[1] ?? null);
-        cache()->put($this->key('prev', $userId), null);
+        cache()->put($this->key('start', $userId, $language), $wordIds);
+        cache()->put($this->key('current', $userId, $language), $wordIds[0]);
+        cache()->put($this->key('next', $userId, $language), $wordIds[1] ?? null);
+        cache()->put($this->key('prev', $userId, $language), null);
     }
 
     /**
@@ -159,8 +159,8 @@ final readonly class StudySessionCache
         );
     }
 
-    private function key(string $type, int $userId): string
+    private function key(string $type, int $userId, string $language): string
     {
-        return "words.{$type}.{$userId}";
+        return "words.{$type}.{$language}.{$userId}";
     }
 }

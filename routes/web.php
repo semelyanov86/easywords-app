@@ -12,11 +12,14 @@ Route::get('/', fn () => Inertia::render('welcome', [
 
 Route::middleware(['auth'])->group(function (): void {
     Route::get('dashboard', \App\Http\Controllers\DashboardController::class)->name('dashboard');
+    Route::get('start', \App\Http\Controllers\StartStudyController::class)->name('study.start');
     Route::get('words/create', [\App\Http\Controllers\WordController::class, 'create'])->name('words.create');
     Route::post('words/create', [\App\Http\Controllers\WordController::class, 'store'])->name('words.store');
     Route::get('words/search', \App\Http\Controllers\WordSearchController::class)->name('words.search');
-    Route::get('words/{id}', [\App\Http\Controllers\WordController::class, 'show'])->name('words.show');
+    Route::get('words/next', [\App\Http\Controllers\WordActionController::class, 'goToNext'])->name('words.next');
+    Route::get('words/prev', [\App\Http\Controllers\WordActionController::class, 'goToPrev'])->name('words.prev');
     Route::get('words/translate', [\App\Http\Controllers\WordTranslationController::class, 'translate'])->name('words.translate');
+    Route::get('words/{id}', [\App\Http\Controllers\WordController::class, 'show'])->name('words.show');
     Route::get('words/{id}/examples', \App\Http\Controllers\ShowWordExamplesController::class)->name('words.examples');
 
     // Word actions
@@ -25,8 +28,6 @@ Route::middleware(['auth'])->group(function (): void {
         ->name('words.unlearned');
     Route::post('words/{id}/toggle-starred', [\App\Http\Controllers\WordActionController::class, 'toggleStarred'])->name('words.toggle-starred');
     Route::post('words/{id}/share', [\App\Http\Controllers\WordActionController::class, 'share'])->name('words.share');
-    Route::post('words/next', [\App\Http\Controllers\WordActionController::class, 'goToNext'])->name('words.next');
-    Route::post('words/prev', [\App\Http\Controllers\WordActionController::class, 'goToPrev'])->name('words.prev');
     Route::delete('words/{id}', [\App\Http\Controllers\WordActionController::class, 'delete'])->name('words.delete');
     Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::post('profile', [\App\Http\Controllers\ProfileController::class, 'storeToken'])->name('profile.tokens.store');

@@ -11,10 +11,13 @@ use App\Actions\MarkWordAsLearned;
 use App\Actions\MarkWordUnlearned;
 use App\Actions\ShareWord;
 use App\Actions\ToggleWordStarred;
+use App\Http\Requests\NextWordRequest;
 use App\Models\Word;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response;
 
 /**
  * Контроллер для действий с словами.
@@ -134,15 +137,26 @@ final class WordActionController
      *
      * Находит следующее слово в списке и перенаправляет на него.
      */
-    public function goToNext(Request $request, GoToNextWord $goToNextWord): RedirectResponse
+    public function goToNext(NextWordRequest $request, GoToNextWord $goToNextWord): Response
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        $result = $goToNextWord->handle($user);
+        $result = $goToNextWord->handle($user, $request->string('language')->toString(), $request->boolean('reverse'));
         $nextId = $result['word']->id;
 
-        return to_route('words.show', ['id' => $nextId]);
+        return Inertia::render('Words/Show', [
+            'word' => $result['word'],
+            'user' => $user,
+            'meta' => [
+                'total' => $result['meta']['total'],
+                'next_id' => $result['meta']['next_id'],
+                'prev_id' => $result['meta']['prev_id'],
+                'current_index' => $result['meta']['current_index'],
+                'language' => $request->string('language')->toString(),
+                'reverse' => $request->boolean('reverse'),
+            ],
+        ]);
     }
 
     /**
@@ -150,14 +164,25 @@ final class WordActionController
      *
      * Находит предыдущее слово в списке и перенаправляет на него.
      */
-    public function goToPrev(Request $request, GoToPrevWord $goToPrevWord, int $id): RedirectResponse
+    public function goToPrev(NextWordRequest $request, GoToPrevWord $goToPrevWord): Response
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        $result = $goToPrevWord->handle($user);
+        $result = $goToPrevWord->handle($user, $request->string('language')->toString(), $request->boolean('reverse'));
         $prevId = $result['word']->id;
 
-        return to_route('words.show', ['id' => $prevId]);
+        return Inertia::render('Words/Show', [
+            'word' => $result['word'],
+            'user' => $user,
+            'meta' => [
+                'total' => $result['meta']['total'],
+                'next_id' => $result['meta']['next_id'],
+                'prev_id' => $result['meta']['prev_id'],
+                'current_index' => $result['meta']['current_index'],
+                'language' => $request->string('language')->toString(),
+                'reverse' => $request->boolean('reverse'),
+            ],
+        ]);
     }
 }

@@ -33,25 +33,25 @@ final readonly class GoToNextWord
      *
      * @throws \RuntimeException
      */
-    public function handle(User $user, bool $reverse = false): array
+    public function handle(User $user, string $language, bool $reverse = false): array
     {
-        $nextId = $this->sessionCache->getNextId($user->id);
+        $nextId = $this->sessionCache->getNextId($user->id, $language);
 
         if ($nextId === null) {
             throw new \RuntimeException('No next word available');
         }
 
-        $sessionWords = $this->sessionCache->getSessionWords($user->id);
+        $sessionWords = $this->sessionCache->getSessionWords($user->id, $language);
         $currentIndex = $this->sessionCache->findWordIndex($nextId, $sessionWords);
 
-        $this->sessionCache->updateNavigation($user->id, $nextId, $currentIndex, $sessionWords);
+        $this->sessionCache->updateNavigation($user->id, $nextId, $currentIndex, $sessionWords, $language);
 
         $word = $this->getWord->handle($nextId, $user->id);
         $this->incrementWordViews->handle($nextId, $user->id);
 
         return [
             'word' => $this->sessionCache->prepareWordData($word, $reverse),
-            'meta' => $this->sessionCache->buildMeta($user->id, $currentIndex, $sessionWords),
+            'meta' => $this->sessionCache->buildMeta($user->id, $currentIndex, $sessionWords, $language),
         ];
     }
 }

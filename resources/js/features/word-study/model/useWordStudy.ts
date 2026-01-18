@@ -28,12 +28,26 @@ export function useWordStudy(wordId: number) {
         router.post(toggleStarred(wordId).url, {}, { preserveScroll: true });
     }, [wordId]);
 
-    const handleGoToPrev = useCallback(() => {
-        router.get(prev().url);
+    const handleGoToPrev = useCallback((language: string, reverse: boolean) => {
+        router.get(
+            prev({
+                query: {
+                    language: language,
+                    reverse: reverse,
+                },
+            }).url,
+        );
     }, []);
 
-    const handleGoToNext = useCallback(() => {
-        router.get(next().url);
+    const handleGoToNext = useCallback((language: string, reverse: boolean) => {
+        router.get(
+            next({
+                query: {
+                    language: language,
+                    reverse: reverse,
+                },
+            }).url,
+        );
     }, []);
 
     return {

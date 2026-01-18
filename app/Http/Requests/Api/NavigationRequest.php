@@ -10,6 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * Валидация запроса для навигации по словам (next/prev).
  *
  * @property-read bool|null $reverse Параметр для изменения порядка слов (true/false)
+ * @property-read string $language Язык слов в сессии
  */
 final class NavigationRequest extends FormRequest
 {
@@ -25,12 +26,18 @@ final class NavigationRequest extends FormRequest
     {
         return [
             'reverse' => ['sometimes', 'boolean'],
+            'language' => ['required', 'string', 'max:255'],
         ];
     }
 
     public function validatedReverse(): bool
     {
-        return (bool) $this->validated('reverse', false);
+        return $this->boolean('reverse');
+    }
+
+    public function validatedLanguage(): string
+    {
+        return $this->string('language')->toString();
     }
 
     #[\Override]
