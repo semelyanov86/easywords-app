@@ -89,57 +89,38 @@ export default function WordExamplesPage({
 
                 {/* Main content */}
                 <main className="mx-auto max-w-6xl px-4 py-8">
-                    <div className="mx-auto max-w-4xl space-y-6">
-                        {/* Card with flip animation */}
-                        <div className="perspective-1000">
+                    <div className="mx-auto max-w-4xl space-y-8">
+                        {/* Card - simple conditional rendering */}
+                        <div className="relative min-h-[550px]">
+                            {/* Front side - Original */}
                             <div
-                                className="relative min-h-[500px] transition-transform duration-700"
-                                style={{
-                                    transformStyle: 'preserve-3d',
-                                    transform: isFlipped
-                                        ? 'rotateY(180deg)'
-                                        : 'rotateY(0deg)',
-                                }}
+                                className={`rounded-2xl bg-white p-8 shadow-2xl transition-all duration-500 dark:bg-neutral-800 ${isFlipped ? 'pointer-events-none absolute inset-0 scale-95 opacity-0' : 'scale-100 opacity-100'} `}
                             >
-                                {/* Front side - Original */}
-                                <div
-                                    className="absolute inset-0 rounded-2xl bg-white p-8 shadow-2xl dark:bg-neutral-800"
-                                    style={{
-                                        backfaceVisibility: 'hidden',
-                                        WebkitBackfaceVisibility: 'hidden',
-                                    }}
-                                >
-                                    <ExamplesContent
-                                        examples={examples.original}
-                                        title={t.words.examples_original}
-                                        wordText={word.original}
-                                        language={word.language}
-                                        variant="original"
-                                    />
-                                </div>
+                                <ExamplesContent
+                                    examples={examples.original}
+                                    title={t.words.examples_original}
+                                    wordText={word.original}
+                                    language={word.language}
+                                    variant="original"
+                                />
+                            </div>
 
-                                {/* Back side - Translated */}
-                                <div
-                                    className="absolute inset-0 rounded-2xl bg-white p-8 shadow-2xl dark:bg-neutral-800"
-                                    style={{
-                                        backfaceVisibility: 'hidden',
-                                        WebkitBackfaceVisibility: 'hidden',
-                                        transform: 'rotateY(180deg)',
-                                    }}
-                                >
-                                    <ExamplesContent
-                                        examples={examples.translated}
-                                        title={t.words.examples_translated}
-                                        wordText={word.translated}
-                                        language={word.targetLanguage ?? 'RU'}
-                                        variant="translated"
-                                    />
-                                </div>
+                            {/* Back side - Translated */}
+                            <div
+                                className={`rounded-2xl bg-white p-8 shadow-2xl transition-all duration-500 dark:bg-neutral-800 ${!isFlipped ? 'pointer-events-none absolute inset-0 scale-95 opacity-0' : 'scale-100 opacity-100'} `}
+                            >
+                                <ExamplesContent
+                                    examples={examples.translated}
+                                    title={t.words.examples_translated}
+                                    wordText={word.translated}
+                                    language={word.targetLanguage ?? 'RU'}
+                                    variant="translated"
+                                />
                             </div>
                         </div>
 
                         {/* Flip button - always visible */}
-                        <div className="flex flex-col items-center gap-3 pt-4">
+                        <div className="flex flex-col items-center gap-3">
                             <FlipButton
                                 onClick={() => setIsFlipped(!isFlipped)}
                                 isFlipped={isFlipped}
@@ -158,10 +139,6 @@ export default function WordExamplesPage({
 
             {/* Custom scrollbar styles */}
             <style>{`
-                .perspective-1000 {
-                    perspective: 1000px;
-                }
-
                 .custom-scrollbar::-webkit-scrollbar {
                     width: 6px;
                 }

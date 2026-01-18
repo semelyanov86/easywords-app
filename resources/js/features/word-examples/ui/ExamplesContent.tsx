@@ -18,7 +18,7 @@ export function ExamplesContent({
     const isOriginal = variant === 'original';
 
     return (
-        <div className="flex h-full min-h-[400px] flex-col space-y-4 overflow-hidden">
+        <div className="flex h-full min-h-[500px] flex-col space-y-5">
             {/* Header */}
             <div className="flex-shrink-0 space-y-2 text-center">
                 <div
@@ -54,8 +54,8 @@ export function ExamplesContent({
                 </p>
             </div>
 
-            {/* Examples list - с возможностью прокрутки если не влезает */}
-            <div className="custom-scrollbar flex-1 space-y-3 overflow-y-auto pr-2">
+            {/* Examples list */}
+            <div className="custom-scrollbar max-h-[350px] flex-1 space-y-3 overflow-y-auto pr-2">
                 {examples.map((example, index) => (
                     <ExampleCard
                         key={index}
