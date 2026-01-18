@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Data\WordData;
 use App\Models\Word;
+use App\Support\StudySessionCache;
 use Carbon\CarbonImmutable;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -36,6 +37,32 @@ final class MarkWordAsLearned
             ->where('id', $wordId)
             ->where('user_id', $userId)
             ->firstOrFail();
+
+        $language = $word->language;
+
+        // Удаляем слово из кэша сессии изучения
+        $cache = new StudySessionCache();
+
+        try {
+            $sessionWords = $cache->getSessionWords($userId, $language);
+        } catch (\RuntimeException) {
+            $sessionWords = [];
+        }
+
+        // Удаляем слово из массива
+        $updatedWords = array_filter($sessionWords, fn (int $id) => $id !== $wordId);
+        $updatedWords = array_values($updatedWords); // Переиндексируем массив
+
+        // Сохраняем обновлённый массив обратно в кэш
+        cache()->put("words.start.{$language}.{$userId}", $updatedWords);
+
+        // Если это было текущее слово, обновляем навигацию
+        if ($cache->getCurrentId($userId, $language) === $wordId) {
+            $newCurrentId = $updatedWords[0] ?? null;
+            cache()->put("words.current.{$language}.{$userId}", $newCurrentId);
+            cache()->put("words.next.{$language}.{$userId}", $updatedWords[1] ?? null);
+            cache()->put("words.prev.{$language}.{$userId}", null);
+        }
 
         $word->update([
             'done_at' => $doneAt ?? CarbonImmutable::now(),
