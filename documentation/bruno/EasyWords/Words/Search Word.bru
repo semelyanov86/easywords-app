@@ -1,0 +1,26 @@
+meta {
+  name: Search Word
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{BASE_URL}}/words/search?query=Sek
+  body: none
+  auth: inherit
+}
+
+params:query {
+  query: Sek
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Ищет слова авторизованного пользователя по строке запроса.
+  
+  Поиск выполняется по полям original и translated с использованием частичного совпадения (%query%). Результаты отсортированы по полю original в алфавитном порядке. Поиск нечувствителен к регистру и работает только в рамках слов текущего пользователя.
+}

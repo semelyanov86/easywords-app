@@ -443,6 +443,55 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationErrorResponse'
 
+  /words/search:
+    get:
+      tags:
+        - Words
+      summary: Поиск слов по строке запроса
+      description: |
+        Ищет слова авторизованного пользователя по строке запроса.
+
+        Поиск выполняется по полям original и translated с использованием частичного совпадения (%query%).
+        Результаты отсортированы по полю original в алфавитном порядке.
+        Поиск нечувствителен к регистру и работает только в рамках слов текущего пользователя.
+      operationId: searchUserWords
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: query
+          in: query
+          description: Строка для поиска (частичное совпадение в любом месте original или translated)
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 255
+            example: hello
+      responses:
+        '200':
+          description: Массив найденных слов
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WordResource'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Ошибка валидации
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
   /random:
     get:
       tags:

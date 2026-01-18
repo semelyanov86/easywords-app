@@ -795,4 +795,259 @@ final class WordControllerTest extends TestCase
 
         $response->assertStatus(401);
     }
+
+    public function test_search_returns_matching_words_for_authenticated_user(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'hello',
+            'translated' => 'привет',
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'help',
+            'translated' => 'помощь',
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'world',
+            'translated' => 'мир',
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.search', ['query' => 'hel']));
+
+        $response->assertStatus(200)
+            ->assertHeader('content-type', 'application/vnd.api+json')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'type',
+                        'id',
+                        'attributes' => [
+                            'original',
+                            'translated',
+                            'language',
+                            'done_at',
+                            'starred',
+                            'views',
+                            'from_sample',
+                            'created_at',
+                            'updated_at',
+                        ],
+                    ],
+                ],
+            ])
+            ->assertJsonCount(2, 'data');
+
+        /** @var array<mixed> $data */
+        $data = $response->json('data');
+        $originals = collect($data)->pluck('attributes.original')->toArray();
+        $this->assertContains('hello', $originals);
+        $this->assertContains('help', $originals);
+    }
+
+    public function test_search_fails_without_authentication(): void
+    {
+        $response = $this->getJson(route('api.v1.words.search', ['query' => 'test']));
+
+        $response->assertStatus(401)
+            ->assertHeader('content-type', 'application/json');
+    }
+
+    public function test_search_by_original_field(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'hello',
+            'translated' => 'привет',
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'world',
+            'translated' => 'мир',
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.search', ['query' => 'hello']));
+
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.attributes.original', 'hello')
+            ->assertJsonPath('data.0.attributes.translated', 'привет');
+    }
+
+    public function test_search_by_translated_field(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'hello',
+            'translated' => 'привет',
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'goodbye',
+            'translated' => 'до свидания',
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.search', ['query' => 'привет']));
+
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.attributes.original', 'hello')
+            ->assertJsonPath('data.0.attributes.translated', 'привет');
+    }
+
+    public function test_search_returns_words_matching_in_both_fields(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'hello',
+            'translated' => 'привет',
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'hi',
+            'translated' => 'приветствие',
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'greeting',
+            'translated' => 'привет',
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.search', ['query' => 'привет']));
+
+        $response->assertStatus(200)
+            ->assertJsonCount(3, 'data');
+    }
+
+    public function test_search_returns_empty_array_when_no_matches(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'hello',
+            'translated' => 'привет',
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.search', ['query' => 'nonexistent']));
+
+        $response->assertStatus(200)
+            ->assertJsonCount(0, 'data');
+    }
+
+    public function test_search_returns_only_user_words(): void
+    {
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+        Sanctum::actingAs($user1);
+
+        Word::factory()->create([
+            'user_id' => $user1->id,
+            'original' => 'hello',
+            'translated' => 'привет',
+        ]);
+        Word::factory()->create([
+            'user_id' => $user2->id,
+            'original' => 'hello',
+            'translated' => 'привет',
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.search', ['query' => 'hello']));
+
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.attributes.original', 'hello');
+    }
+
+    public function test_search_results_are_sorted_alphabetically(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'zebra',
+            'translated' => 'зебра',
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'apple',
+            'translated' => 'яблоко',
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'banana',
+            'translated' => 'банан',
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.search', ['query' => '']));
+
+        $response->assertStatus(200)
+            ->assertJsonCount(3, 'data')
+            ->assertJsonPath('data.0.attributes.original', 'apple')
+            ->assertJsonPath('data.1.attributes.original', 'banana')
+            ->assertJsonPath('data.2.attributes.original', 'zebra');
+    }
+
+    public function test_search_is_case_insensitive(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'Hello',
+            'translated' => 'Привет',
+        ]);
+
+        $response1 = $this->getJson(route('api.v1.words.search', ['query' => 'hello']));
+        $response2 = $this->getJson(route('api.v1.words.search', ['query' => 'HELLO']));
+        $response3 = $this->getJson(route('api.v1.words.search', ['query' => 'Hello']));
+
+        $response1->assertStatus(200)->assertJsonCount(1, 'data');
+        $response2->assertStatus(200)->assertJsonCount(1, 'data');
+        $response3->assertStatus(200)->assertJsonCount(1, 'data');
+    }
+
+    public function test_search_performs_partial_match(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'hello',
+            'translated' => 'приветствие',
+        ]);
+        Word::factory()->create([
+            'user_id' => $user->id,
+            'original' => 'help',
+            'translated' => 'помощь',
+        ]);
+
+        $response = $this->getJson(route('api.v1.words.search', ['query' => 'hel']));
+
+        $response->assertStatus(200)
+            ->assertJsonCount(2, 'data');
+
+        /** @var array<mixed> $data */
+        $data = $response->json('data');
+        $originals = collect($data)->pluck('attributes.original')->toArray();
+        $this->assertContains('hello', $originals);
+        $this->assertContains('help', $originals);
+    }
 }

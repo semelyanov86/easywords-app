@@ -13,6 +13,7 @@ use App\Actions\GetUserWordsWithFilters;
 use App\Actions\GetWord;
 use App\Actions\IncrementWordViews;
 use App\Actions\MarkWordAsLearned;
+use App\Actions\SearchUserWords;
 use App\Actions\ShareWord;
 use App\Actions\ToggleWordStarred;
 use App\Data\WordData;
@@ -20,6 +21,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\GetRandomWordsRequest;
 use App\Http\Requests\Api\GetUserWordsRequest;
 use App\Http\Requests\Api\GetUserWordsWithFiltersRequest;
+use App\Http\Requests\Api\SearchUserWordsRequest;
 use App\Http\Requests\Api\ShareWordRequest;
 use App\Http\Requests\Api\StoreWordRequest;
 use App\Models\User;
@@ -84,6 +86,48 @@ final class WordController extends Controller
                 'total' => (string) $data->count(),
                 'last_page' => '1',
             ],
+        ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
+    }
+
+    /**
+     * Ищет слова авторизованного пользователя по строке запроса.
+     *
+     * Ищет слова по полям original и translated с использованием частичного совпадения (%query%).
+     * Поиск выполняется только среди слов, принадлежащих авторизованному пользователю.
+     *
+     * @param  SearchUserWordsRequest  $request  Валидированный запрос с параметром query
+     * @param  SearchUserWords  $searchUserWords  Action для поиска слов
+     * @return JsonResponse JSON:API ответ с массивом найденных слов
+     */
+    #[Get('api/v1/words/search', name: 'api.v1.words.search')]
+    public function search(SearchUserWordsRequest $request, SearchUserWords $searchUserWords): JsonResponse
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth('sanctum')->user();
+
+        if ($user === null) {
+            return response()->json([
+                'errors' => [
+                    [
+                        'status' => '401',
+                        'title' => 'Unauthenticated',
+                    ],
+                ],
+            ], Response::HTTP_UNAUTHORIZED, ['Content-Type' => 'application/vnd.api+json']);
+        }
+
+        $words = $searchUserWords->handle(
+            userId: $user->id,
+            query: $request->validatedQuery()
+        );
+
+        $data = collect($words)
+            ->map(fn (WordData $wordData) => $wordData->toJsonArray())
+            ->filter(fn (?array $item) => $item !== null)
+            ->values();
+
+        return response()->json([
+            'data' => $data,
         ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
     }
 
