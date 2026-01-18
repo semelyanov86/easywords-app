@@ -5,6 +5,7 @@ import { useStatisticsTranslation } from '@/shared/i18n/useStatisticsTranslation
 import { WordStatisticsData } from '@/shared/types/statistics';
 import { User } from '@/types';
 import { AuthHeader } from '@/widgets/auth/AuthHeader';
+import { Head } from '@inertiajs/react';
 import { ArrowLeft, Award, Target } from 'lucide-react';
 
 interface StatisticsPageProps {
@@ -88,99 +89,104 @@ export default function Statistics({ user, statistics }: StatisticsPageProps) {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-blue-50/30 to-green-50/30">
-            <AuthHeader userName={user.name} />
+        <>
+            <Head title="Easywords Statistics" />
+            <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-blue-50/30 to-green-50/30">
+                <AuthHeader userName={user.name} />
 
-            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-                {/* Header */}
-                <div className="mb-10">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#1E5F8C] to-[#2B7DB8] shadow-lg shadow-blue-500/30">
-                            <Award className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                            <h1 className="text-3xl font-bold text-neutral-900 sm:text-4xl">
-                                {t.title || 'Personal Statistics'}
-                            </h1>
-                            <p className="mt-1 text-base text-neutral-600 sm:text-lg">
-                                {t.subtitle ||
-                                    'Track your learning progress and achievements'}
-                            </p>
+                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+                    {/* Header */}
+                    <div className="mb-10">
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#1E5F8C] to-[#2B7DB8] shadow-lg shadow-blue-500/30">
+                                <Award className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                                <h1 className="text-3xl font-bold text-neutral-900 sm:text-4xl">
+                                    {t.title || 'Personal Statistics'}
+                                </h1>
+                                <p className="mt-1 text-base text-neutral-600 sm:text-lg">
+                                    {t.subtitle ||
+                                        'Track your learning progress and achievements'}
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Main Stats Grid */}
-                <div className="mb-8">
-                    <StatsGrid stats={mainStats} columns={4} />
-                </div>
-
-                {/* Views Stats Grid */}
-                <div className="mb-8">
-                    <StatsGrid stats={viewsStats} columns={3} />
-                </div>
-
-                {/* Progress Stats Grid */}
-                <div className="mb-10">
-                    <StatsGrid stats={progressStats} columns={2} />
-                </div>
-
-                {/* Most Viewed Words Section */}
-                <div className="mb-8">
-                    <div className="mb-5 flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#7CB342] to-[#9CCC65] shadow-md shadow-green-500/20">
-                            <Target className="h-5 w-5 text-white" />
-                        </div>
-                        <h2 className="text-2xl font-bold text-neutral-900">
-                            {t.mostViewedWords || 'Most Viewed Words'}
-                        </h2>
+                    {/* Main Stats Grid */}
+                    <div className="mb-8">
+                        <StatsGrid stats={mainStats} columns={4} />
                     </div>
-                    <WordsTable
-                        words={statistics.top_viewed_words}
-                        emptyMessage={t.noWordsViewed || 'No words viewed yet'}
-                        translations={{
-                            word: t.word || 'Word',
-                            translation: t.translation || 'Translation',
-                            views: t.views || 'Views',
-                        }}
-                    />
-                </div>
 
-                {/* Words Added Today Section */}
-                <div className="mb-10">
-                    <div className="mb-5 flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#33691E] to-[#558B2F] shadow-md shadow-green-700/20">
-                            <Award className="h-5 w-5 text-white" />
-                        </div>
-                        <h2 className="text-2xl font-bold text-neutral-900">
-                            {t.wordsAddedToday || 'Words Added Today'}
-                        </h2>
+                    {/* Views Stats Grid */}
+                    <div className="mb-8">
+                        <StatsGrid stats={viewsStats} columns={3} />
                     </div>
-                    <WordsTable
-                        words={statistics.words_added_today}
-                        emptyMessage={
-                            t.noWordsAddedToday || 'No words added today'
-                        }
-                        translations={{
-                            word: t.word || 'Word',
-                            translation: t.translation || 'Translation',
-                            views: t.views || 'Views',
-                        }}
-                    />
-                </div>
 
-                {/* Back Button */}
-                <div className="flex justify-center">
-                    <Button
-                        variant="outline"
-                        onClick={() => window.history.back()}
-                        className="gap-2 shadow-sm transition-all hover:shadow-md"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        {t.back || 'Back'}
-                    </Button>
-                </div>
-            </main>
-        </div>
+                    {/* Progress Stats Grid */}
+                    <div className="mb-10">
+                        <StatsGrid stats={progressStats} columns={2} />
+                    </div>
+
+                    {/* Most Viewed Words Section */}
+                    <div className="mb-8">
+                        <div className="mb-5 flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#7CB342] to-[#9CCC65] shadow-md shadow-green-500/20">
+                                <Target className="h-5 w-5 text-white" />
+                            </div>
+                            <h2 className="text-2xl font-bold text-neutral-900">
+                                {t.mostViewedWords || 'Most Viewed Words'}
+                            </h2>
+                        </div>
+                        <WordsTable
+                            words={statistics.top_viewed_words}
+                            emptyMessage={
+                                t.noWordsViewed || 'No words viewed yet'
+                            }
+                            translations={{
+                                word: t.word || 'Word',
+                                translation: t.translation || 'Translation',
+                                views: t.views || 'Views',
+                            }}
+                        />
+                    </div>
+
+                    {/* Words Added Today Section */}
+                    <div className="mb-10">
+                        <div className="mb-5 flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#33691E] to-[#558B2F] shadow-md shadow-green-700/20">
+                                <Award className="h-5 w-5 text-white" />
+                            </div>
+                            <h2 className="text-2xl font-bold text-neutral-900">
+                                {t.wordsAddedToday || 'Words Added Today'}
+                            </h2>
+                        </div>
+                        <WordsTable
+                            words={statistics.words_added_today}
+                            emptyMessage={
+                                t.noWordsAddedToday || 'No words added today'
+                            }
+                            translations={{
+                                word: t.word || 'Word',
+                                translation: t.translation || 'Translation',
+                                views: t.views || 'Views',
+                            }}
+                        />
+                    </div>
+
+                    {/* Back Button */}
+                    <div className="flex justify-center">
+                        <Button
+                            variant="outline"
+                            onClick={() => window.history.back()}
+                            className="gap-2 shadow-sm transition-all hover:shadow-md"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                            {t.back || 'Back'}
+                        </Button>
+                    </div>
+                </main>
+            </div>
+        </>
     );
 }

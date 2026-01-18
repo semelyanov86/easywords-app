@@ -5,7 +5,7 @@ import { useNestedTranslation } from '@/shared/i18n/useNestedTranslation';
 import { AuthHeader } from '@/widgets/auth/AuthHeader';
 import { ApiTokensCard } from '@/widgets/profile/ApiTokensCard';
 import { UserInfoCard } from '@/widgets/profile/UserInfoCard';
-import { router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
 import CreateToken from './CreateToken';
 
@@ -83,79 +83,83 @@ export default function Show({
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-blue-50/30 to-green-50/20">
-            <AuthHeader userName={user.name} />
-            <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-neutral-900 sm:text-4xl">
-                        {t.title || 'Profile'}
-                    </h1>
-                </div>
+        <>
+            <Head title={'Easywords Profile'} />
+            <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-blue-50/30 to-green-50/20">
+                <AuthHeader userName={user.name} />
+                <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+                    <div className="mb-8">
+                        <h1 className="text-3xl font-bold text-neutral-900 sm:text-4xl">
+                            {t.title || 'Profile'}
+                        </h1>
+                    </div>
 
-                <div className="mb-8">
-                    <UserInfoCard
-                        user={user}
-                        onChangePassword={() =>
-                            router.visit(profile.password.edit().url)
-                        }
+                    <div className="mb-8">
+                        <UserInfoCard
+                            user={user}
+                            onChangePassword={() =>
+                                router.visit(profile.password.edit().url)
+                            }
+                            translations={{
+                                userInfo: t.userInfo || 'User Information',
+                                userId: t.userId || 'User ID',
+                                userName: t.userName || 'Name',
+                                email: t.email || 'Email',
+                                createdAt: t.createdAt || 'Registration Date',
+                                updatedAt: t.updatedAt || 'Last Updated',
+                                changePassword:
+                                    t.changePassword || 'Change Password',
+                            }}
+                        />
+                    </div>
+
+                    <ApiTokensCard
+                        tokens={tokens}
+                        onDelete={handleDeleteToken}
+                        onCreateClick={() => setIsCreateTokenOpen(true)}
                         translations={{
-                            userInfo: t.userInfo || 'User Information',
-                            userId: t.userId || 'User ID',
-                            userName: t.userName || 'Name',
-                            email: t.email || 'Email',
-                            createdAt: t.createdAt || 'Registration Date',
-                            updatedAt: t.updatedAt || 'Last Updated',
-                            changePassword:
-                                t.changePassword || 'Change Password',
+                            apiKeys: t.apiKeys || 'API Keys',
+                            apiKeysDescription:
+                                t.apiKeysDescription ||
+                                'Manage your API tokens for service access',
+                            createToken: t.createToken || 'Add new token',
+                            noTokens:
+                                t.noTokens ||
+                                "You don't have any API tokens yet",
+                            created: t.created || 'Created',
+                            lastUsed: t.lastUsed || 'Last used',
+                            tokenWarning:
+                                t.tokenWarning ||
+                                'Save this token now. It will not be shown again.',
                         }}
                     />
-                </div>
+                </main>
 
-                <ApiTokensCard
-                    tokens={tokens}
-                    onDelete={handleDeleteToken}
-                    onCreateClick={() => setIsCreateTokenOpen(true)}
+                <CreateToken
+                    open={isCreateTokenOpen}
+                    onOpenChange={setIsCreateTokenOpen}
+                />
+
+                <DeleteTokenDialog
+                    open={deleteTokenId !== null}
+                    onOpenChange={(open) => {
+                        if (!open) {
+                            setDeleteTokenId(null);
+                            setDeleteTokenName('');
+                        }
+                    }}
+                    onConfirm={confirmDeleteToken}
+                    tokenName={deleteTokenName}
                     translations={{
-                        apiKeys: t.apiKeys || 'API Keys',
-                        apiKeysDescription:
-                            t.apiKeysDescription ||
-                            'Manage your API tokens for service access',
-                        createToken: t.createToken || 'Add new token',
-                        noTokens:
-                            t.noTokens || "You don't have any API tokens yet",
-                        created: t.created || 'Created',
-                        lastUsed: t.lastUsed || 'Last used',
-                        tokenWarning:
-                            t.tokenWarning ||
-                            'Save this token now. It will not be shown again.',
+                        title: t.deleteTokenTitle || 'Delete API Token',
+                        description:
+                            t.deleteTokenDescription ||
+                            'Are you sure you want to delete this token? This action cannot be undone.',
+                        cancel: t.cancel || 'Cancel',
+                        confirm: t.delete || 'Delete',
                     }}
                 />
-            </main>
-
-            <CreateToken
-                open={isCreateTokenOpen}
-                onOpenChange={setIsCreateTokenOpen}
-            />
-
-            <DeleteTokenDialog
-                open={deleteTokenId !== null}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setDeleteTokenId(null);
-                        setDeleteTokenName('');
-                    }
-                }}
-                onConfirm={confirmDeleteToken}
-                tokenName={deleteTokenName}
-                translations={{
-                    title: t.deleteTokenTitle || 'Delete API Token',
-                    description:
-                        t.deleteTokenDescription ||
-                        'Are you sure you want to delete this token? This action cannot be undone.',
-                    cancel: t.cancel || 'Cancel',
-                    confirm: t.delete || 'Delete',
-                }}
-            />
-        </div>
+            </div>
+        </>
     );
 }
