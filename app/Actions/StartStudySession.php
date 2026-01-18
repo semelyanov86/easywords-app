@@ -78,7 +78,7 @@ final readonly class StartStudySession
         $words = $this->getUserRandomWords->handle($userId, $limit);
 
         if ($words->isEmpty()) {
-            throw new \RuntimeException('No words available for study session');
+            throw new \DomainException('No words available for study session');
         }
 
         /** @var array<int> $wordIds */

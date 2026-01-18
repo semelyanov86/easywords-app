@@ -3,6 +3,7 @@ import { DashboardSearchSection } from '@/features/word-search/ui/DashboardSearc
 import { start } from '@/routes/study';
 import { dashboardTranslations } from '@/shared/i18n/dashboard';
 import { useDashboardTranslation } from '@/shared/i18n/useDashboardTranslation';
+import { useFlashMessages } from '@/shared/lib/useFlashMessages';
 import { AuthHeader } from '@/widgets/auth/AuthHeader';
 import { StatisticCard } from '@/widgets/dashboard/StatisticCard';
 import { Link } from '@inertiajs/react';
@@ -39,6 +40,7 @@ export default function Dashboard({
 }: DashboardPageProps) {
     const t = useDashboardTranslation(dashboardTranslations);
     const { main_language, languages_list } = settings;
+    useFlashMessages();
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-blue-50/30 to-green-50/20">

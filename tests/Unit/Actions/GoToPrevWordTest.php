@@ -110,14 +110,14 @@ final class GoToPrevWordTest extends TestCase
         $words = Word::factory()->count(2)->for($this->user)->create();
         $wordIds = $words->pluck('id')->toArray();
 
-        // Устанавливаем состояние сессии без предыдущего слова
+        // Устанавливаем состояние сессии без предыдущего и текущего слова
         Cache::put('words.start.' . self::LANGUAGE . ".{$this->user->id}", $wordIds);
-        Cache::put('words.current.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[0]);
-        Cache::put('words.next.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[1]);
+        Cache::put('words.current.' . self::LANGUAGE . ".{$this->user->id}", null);
+        Cache::put('words.next.' . self::LANGUAGE . ".{$this->user->id}", null);
         Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", null);
 
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('No previous word available');
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('Нельзя найти следующий идентификатор слова. Начните сессию заново');
 
         $this->action->handle($this->user, self::LANGUAGE);
     }

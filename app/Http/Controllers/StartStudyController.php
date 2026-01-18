@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\StartStudySession;
 use App\Http\Requests\NextWordRequest;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 
 /**
@@ -25,19 +26,23 @@ final readonly class StartStudyController
     public function __invoke(
         NextWordRequest $request,
         StartStudySession $startStudySession,
-    ): \Inertia\Response {
+    ): \Inertia\Response|RedirectResponse {
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
         $settings = $user->getSettingsValue();
         /** @var int $limit */
         $limit = $settings['paginate'];
-        $sessionData = $startStudySession->handle(
-            userId: $user->id,
-            language: $request->string('language')->toString(),
-            limit: $limit,
-            reverse: $request->boolean('reverse'),
-        );
+        try {
+            $sessionData = $startStudySession->handle(
+                userId: $user->id,
+                language: $request->string('language')->toString(),
+                limit: $limit,
+                reverse: $request->boolean('reverse'),
+            );
+        } catch (\DomainException $e) {
+            return back()->with('success', $e->getMessage());
+        }
 
         return Inertia::render('Words/Show', [
             'word' => $sessionData['word'],

@@ -72,7 +72,7 @@ final class StudyController extends Controller
                     'current_index' => $result['current_index'],
                 ],
             ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException|\DomainException $e) {
             return response()->json([
                 'errors' => [
                     [
@@ -127,7 +127,7 @@ final class StudyController extends Controller
                 'data' => \App\Data\WordData::from($result['word'])->toJsonArray(),
                 'meta' => $result['meta'],
             ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException|\DomainException $e) {
             return response()->json([
                 'errors' => [
                     [
@@ -182,7 +182,7 @@ final class StudyController extends Controller
                 'data' => \App\Data\WordData::from($result['word'])->toJsonArray(),
                 'meta' => $result['meta'],
             ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException|\DomainException $e) {
             return response()->json([
                 'errors' => [
                     [

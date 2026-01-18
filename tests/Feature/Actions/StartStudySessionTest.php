@@ -113,7 +113,7 @@ final class StartStudySessionTest extends TestCase
 
         $action = resolve(StartStudySession::class);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\DomainException::class);
         $this->expectExceptionMessage('No words available for study session');
 
         $action->handle(userId: $user->id, language: 'EN', limit: 5, reverse: false);

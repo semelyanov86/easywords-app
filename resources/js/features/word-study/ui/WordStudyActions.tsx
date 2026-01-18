@@ -6,7 +6,6 @@ import { Link } from '@inertiajs/react';
 interface WordStudyActionsProps {
     isLearned: boolean;
     canGoPrev: boolean;
-    canGoNext: boolean;
     onMarkLearned: () => void;
     onMarkUnlearned: () => void;
     onFlip: () => void;
@@ -20,7 +19,6 @@ interface WordStudyActionsProps {
 export function WordStudyActions({
     isLearned,
     canGoPrev,
-    canGoNext,
     onMarkLearned,
     onMarkUnlearned,
     onFlip,
@@ -73,7 +71,6 @@ export function WordStudyActions({
                 size="lg"
                 variant="outline"
                 onClick={onNext}
-                disabled={!canGoNext}
                 className="transition-all duration-200 hover:scale-105 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
             >
                 {t.words.next} →

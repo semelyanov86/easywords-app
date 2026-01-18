@@ -137,12 +137,20 @@ final class WordActionController
      *
      * Находит следующее слово в списке и перенаправляет на него.
      */
-    public function goToNext(NextWordRequest $request, GoToNextWord $goToNextWord): Response
+    public function goToNext(NextWordRequest $request, GoToNextWord $goToNextWord): Response|RedirectResponse
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        $result = $goToNextWord->handle($user, $request->string('language')->toString(), $request->boolean('reverse'));
+        try {
+            $result = $goToNextWord->handle(
+                $user,
+                $request->string('language')->toString(),
+                $request->boolean('reverse')
+            );
+        } catch (\DomainException $e) {
+            return redirect(route('dashboard'))->with('success', $e->getMessage());
+        }
         $nextId = $result['word']->id;
 
         return Inertia::render('Words/Show', [

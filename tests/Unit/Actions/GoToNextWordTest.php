@@ -88,38 +88,60 @@ final class GoToNextWordTest extends TestCase
         $this->assertEquals('кошка', $result['word']->translated);
     }
 
-    public function test_sets_null_next_when_at_end(): void
+    public function test_restarts_session_when_at_end(): void
     {
         $words = Word::factory()->count(2)->for($this->user)->create();
         $wordIds = $words->pluck('id')->toArray();
 
-        // Устанавливаем состояние сессии на последнее слово
-        Cache::put('words.start.' . self::LANGUAGE . ".{$this->user->id}", $wordIds);
-        Cache::put('words.current.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[0]);
-        Cache::put('words.next.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[1]);
-        Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", null);
-
-        $result = $this->action->handle($this->user, self::LANGUAGE);
-
-        $this->assertEquals($wordIds[1], $result['word']->id);
-        $this->assertNull($result['meta']['next_id']);
-    }
-
-    public function test_throws_exception_when_no_next_word(): void
-    {
-        $words = Word::factory()->count(2)->for($this->user)->create();
-        $wordIds = $words->pluck('id')->toArray();
-
-        // Устанавливаем состояние сессии без следующего слова
+        // Устанавливаем состояние сессии на последнее слово (next = null)
         Cache::put('words.start.' . self::LANGUAGE . ".{$this->user->id}", $wordIds);
         Cache::put('words.current.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[1]);
         Cache::put('words.next.' . self::LANGUAGE . ".{$this->user->id}", null);
         Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[0]);
 
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('No next word available');
+        $result = $this->action->handle($this->user, self::LANGUAGE);
 
-        $this->action->handle($this->user, self::LANGUAGE);
+        // Проверяем, что вернулись к текущему слову (последнему)
+        $this->assertEquals($wordIds[1], $result['word']->id);
+        // Проверяем, что теперь есть следующее слово
+        $this->assertNotNull($result['meta']['next_id']);
+        // Предыдущее слово должно быть null
+        $this->assertNull($result['meta']['prev_id']);
+        // Индекс должен быть 1 (начинаем сначала)
+        $this->assertEquals(1, $result['meta']['current_index']);
+
+        // Проверяем, что кэш обновлён с перемешанным порядком
+        $cachedStart = Cache::get('words.start.' . self::LANGUAGE . ".{$this->user->id}");
+        $this->assertIsArray($cachedStart);
+        $this->assertEquals($wordIds[1], $cachedStart[0]); // Текущее слово первым
+    }
+
+    public function test_shuffles_words_when_restarting_session(): void
+    {
+        $words = Word::factory()->count(5)->for($this->user)->create();
+        $wordIds = $words->pluck('id')->toArray();
+
+        // Устанавливаем состояние сессии на последнее слово
+        Cache::put('words.start.' . self::LANGUAGE . ".{$this->user->id}", $wordIds);
+        Cache::put('words.current.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[4]);
+        Cache::put('words.next.' . self::LANGUAGE . ".{$this->user->id}", null);
+        Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", $wordIds[3]);
+
+        $result = $this->action->handle($this->user, self::LANGUAGE);
+
+        // Проверяем, что все слова остались
+        $cachedStart = Cache::get('words.start.' . self::LANGUAGE . ".{$this->user->id}");
+        $this->assertIsArray($cachedStart);
+        $this->assertCount(5, $cachedStart);
+        // Проверяем, что все уникальные ID остались
+        $this->assertCount(5, array_unique($cachedStart));
+
+        // Проверяем, что первый элемент - текущее слово
+        $this->assertEquals($wordIds[4], $cachedStart[0]);
+
+        // Проверяем, что следующее слово не null
+        $this->assertNotNull($result['meta']['next_id']);
+        $this->assertEquals($cachedStart[1], $result['meta']['next_id']);
     }
 
     public function test_throws_exception_when_session_not_found(): void
@@ -131,6 +153,23 @@ final class GoToNextWordTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Study session not found');
+
+        $this->action->handle($this->user, self::LANGUAGE);
+    }
+
+    public function test_throws_exception_when_current_word_missing_on_restart(): void
+    {
+        $words = Word::factory()->count(2)->for($this->user)->create();
+        $wordIds = $words->pluck('id')->toArray();
+
+        // Устанавливаем состояние сессии без текущего слова
+        Cache::put('words.start.' . self::LANGUAGE . ".{$this->user->id}", $wordIds);
+        Cache::put('words.current.' . self::LANGUAGE . ".{$this->user->id}", null);
+        Cache::put('words.next.' . self::LANGUAGE . ".{$this->user->id}", null);
+        Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", null);
+
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('Сессия закончена, начните новую');
 
         $this->action->handle($this->user, self::LANGUAGE);
     }

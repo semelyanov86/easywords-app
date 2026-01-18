@@ -38,7 +38,8 @@ final readonly class GoToNextWord
         $nextId = $this->sessionCache->getNextId($user->id, $language);
 
         if ($nextId === null) {
-            throw new \RuntimeException('No next word available');
+            // Достигнут конец сессии - перемешиваем слова и начинаем сначала
+            return $this->restartSession($user, $language, $reverse);
         }
 
         $sessionWords = $this->sessionCache->getSessionWords($user->id, $language);
@@ -52,6 +53,51 @@ final readonly class GoToNextWord
         return [
             'word' => $this->sessionCache->prepareWordData($word, $reverse),
             'meta' => $this->sessionCache->buildMeta($user->id, $currentIndex, $sessionWords, $language),
+        ];
+    }
+
+    /**
+     * Перезапускает сессию с перемешанным порядком слов.
+     *
+     * Когда достигнут конец сессии, перемешиваем все слова кроме текущего,
+     * ставим текущее слово первым и возвращаем его с обновлённой навигацией.
+     *
+     * @return array{word: WordData, meta: array{total: int, next_id: ?int, prev_id: ?int, current_index: int}}
+     *
+     * @throws \RuntimeException
+     */
+    private function restartSession(User $user, string $language, bool $reverse): array
+    {
+        $currentId = $this->sessionCache->getCurrentId($user->id, $language);
+
+        if ($currentId === null) {
+            throw new \DomainException('Сессия закончена, начните новую');
+        }
+
+        $sessionWords = $this->sessionCache->getSessionWords($user->id, $language);
+
+        // Перемешиваем слова с текущим словом на первой позиции
+        $shuffledWords = $this->sessionCache->shuffleSessionWords($sessionWords, $currentId);
+
+        // Сохраняем перемешанный массив в кэш
+        cache()->put($this->sessionCache->key('start', $user->id, $language), $shuffledWords);
+
+        // Обновляем навигацию: текущее слово - первый элемент (index 0)
+        cache()->put($this->sessionCache->key('current', $user->id, $language), $shuffledWords[0]);
+        cache()->put($this->sessionCache->key('prev', $user->id, $language), null);
+        cache()->put($this->sessionCache->key('next', $user->id, $language), $shuffledWords[1] ?? null);
+
+        $word = $this->getWord->handle($currentId, $user->id);
+        $this->incrementWordViews->handle($currentId, $user->id);
+
+        return [
+            'word' => $this->sessionCache->prepareWordData($word, $reverse),
+            'meta' => [
+                'total' => count($shuffledWords),
+                'next_id' => $shuffledWords[1] ?? null,
+                'prev_id' => null,
+                'current_index' => 1, // 1-based
+            ],
         ];
     }
 }

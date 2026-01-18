@@ -136,6 +136,39 @@ final readonly class StudySessionCache
     }
 
     /**
+     * Перемешивает массив слов с текущим словом на первой позиции.
+     *
+     * Когда достигнут конец сессии, перемешиваем все слова кроме текущего,
+     * и ставим текущее слово первым. Это позволяет пользователю начать
+     * изучение сначала с новым случайным порядком.
+     *
+     * @param  array<int>  $sessionWords
+     * @return array<int>
+     */
+    public function shuffleSessionWords(array $sessionWords, int $currentId): array
+    {
+        // Находим текущее слово в массиве
+        $currentKey = array_search($currentId, $sessionWords, true);
+
+        if ($currentKey === false) {
+            throw new \RuntimeException('Current word not found in session');
+        }
+
+        // Удаляем текущее слово из массива
+        unset($sessionWords[$currentKey]);
+        // Переиндексируем массив
+        $sessionWords = array_values($sessionWords);
+
+        // Перемешиваем оставшиеся слова
+        shuffle($sessionWords);
+
+        // Ставим текущее слово первым
+        array_unshift($sessionWords, $currentId);
+
+        return $sessionWords;
+    }
+
+    /**
      * Подготавливает WordData с учётом режима reverse.
      */
     public function prepareWordData(WordData $word, bool $reverse): WordData
@@ -159,7 +192,7 @@ final readonly class StudySessionCache
         );
     }
 
-    private function key(string $type, int $userId, string $language): string
+    public function key(string $type, int $userId, string $language): string
     {
         return "words.{$type}.{$language}.{$userId}";
     }

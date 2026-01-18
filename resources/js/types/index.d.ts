@@ -55,6 +55,8 @@ export interface NewToken {
 
 export interface FlashData {
     new_token?: NewToken;
+    success?: string;
+    error?: string;
     [key: string]: unknown;
 }
 

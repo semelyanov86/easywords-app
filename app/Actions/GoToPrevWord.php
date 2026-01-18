@@ -38,7 +38,10 @@ final readonly class GoToPrevWord
         $prevId = $this->sessionCache->getPrevId($user->id, $language);
 
         if ($prevId === null) {
-            throw new \RuntimeException('No previous word available');
+            $prevId = $this->sessionCache->getCurrentId($user->id, $language);
+        }
+        if (! $prevId) {
+            throw new \DomainException('Нельзя найти следующий идентификатор слова. Начните сессию заново');
         }
 
         $sessionWords = $this->sessionCache->getSessionWords($user->id, $language);

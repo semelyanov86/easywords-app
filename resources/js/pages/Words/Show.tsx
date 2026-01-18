@@ -167,6 +167,8 @@ export default function WordStudyPage({
         handleDelete,
         handleGoToPrev,
         handleGoToNext,
+        meta?.reverse,
+        word.language,
     ]);
 
     // Word content components - теперь с метаданными и действиями ВНУТРИ
@@ -311,7 +313,6 @@ export default function WordStudyPage({
                     <WordStudyActions
                         isLearned={isLearned}
                         canGoPrev={canGoPrev}
-                        canGoNext={canGoNext}
                         onMarkLearned={handleMarkLearned}
                         onMarkUnlearned={handleMarkUnlearned}
                         onFlip={() => setIsFlipped(!isFlipped)}

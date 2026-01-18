@@ -452,27 +452,72 @@ final class StudyControllerTest extends TestCase
             ->assertJsonPath('meta.current_index', 2);
     }
 
+    public function test_next_restarts_session_when_at_end(): void
+    {
+        $user = new User([
+            'name' => 'Test User',
+            'email' => 'test9@example.com',
+            'password' => bcrypt('password'),
+        ]);
+        $user->save();
+        $user->settings()->apply([
+            'paginate' => 20,
+            'fresh_first' => true,
+            'show_starred' => true,
+            'latest_first' => false,
+            'known_enabled' => false,
+            'main_language' => 'RU',
+            'show_imported' => true,
+            'languages_list' => ['DE', 'EN'],
+            'starred_enabled' => false,
+            'default_language' => 'DE',
+        ]);
+
+        $words = Word::factory()->count(3)->create([
+            'user_id' => $user->id,
+            'language' => 'DE',
+            'done_at' => null,
+        ]);
+        /** @var array<int> $wordIds */
+        $wordIds = $words->pluck('id')->toArray();
+
+        // Создаем сессию на последнем слове (next = null)
+        \Illuminate\Support\Facades\Cache::put("words.start.DE.{$user->id}", $wordIds);
+        \Illuminate\Support\Facades\Cache::put("words.current.DE.{$user->id}", $wordIds[2]);
+        \Illuminate\Support\Facades\Cache::put("words.next.DE.{$user->id}", null);
+        \Illuminate\Support\Facades\Cache::put("words.prev.DE.{$user->id}", $wordIds[1]);
+
+        Sanctum::actingAs($user);
+
+        $response = $this->getJson(route('api.v1.words.next', [
+            'language' => 'DE',
+        ]));
+
+        // Проверяем, что вернулись к текущему слову (последнему)
+        $response->assertStatus(200)
+            ->assertHeader('content-type', 'application/vnd.api+json')
+            ->assertJsonPath('data.id', (string) $wordIds[2])
+            ->assertJsonPath('meta.total', 3)
+            ->assertJsonPath('meta.current_index', 1)
+            ->assertJsonPath('meta.prev_id', null);
+
+        // Проверяем, что теперь есть следующее слово
+        $nextId = $response->json('meta.next_id');
+        $this->assertNotNull($nextId);
+        $this->assertNotEquals($wordIds[2], $nextId);
+
+        // Проверяем, что кэш обновлён с перемешанным порядком
+        $cachedStart = \Illuminate\Support\Facades\Cache::get("words.start.DE.{$user->id}");
+        $this->assertIsArray($cachedStart);
+        $this->assertEquals($wordIds[2], $cachedStart[0]); // Текущее слово первым
+        $this->assertEquals($nextId, $cachedStart[1]); // Следующее слово вторым
+    }
+
     public function test_next_fails_without_authentication(): void
     {
         $response = $this->getJson(route('api.v1.words.next'));
 
         $response->assertStatus(401);
-    }
-
-    public function test_next_fails_when_no_next_word(): void
-    {
-        $user = User::factory()->create();
-        Sanctum::actingAs($user);
-
-        $response = $this->getJson(route('api.v1.words.next', [
-            'language' => 'EN',
-        ]));
-
-        $response->assertStatus(400)
-            ->assertHeader('content-type', 'application/vnd.api+json')
-            ->assertJsonPath('errors.0.status', '400')
-            ->assertJsonPath('errors.0.title', 'Bad Request')
-            ->assertJsonPath('errors.0.detail', 'No next word available');
     }
 
     public function test_next_fails_when_session_not_found(): void
@@ -701,7 +746,7 @@ final class StudyControllerTest extends TestCase
             ->assertHeader('content-type', 'application/vnd.api+json')
             ->assertJsonPath('errors.0.status', '400')
             ->assertJsonPath('errors.0.title', 'Bad Request')
-            ->assertJsonPath('errors.0.detail', 'No previous word available');
+            ->assertJsonPath('errors.0.detail', 'Нельзя найти следующий идентификатор слова. Начните сессию заново');
     }
 
     public function test_prev_fails_when_session_not_found(): void
