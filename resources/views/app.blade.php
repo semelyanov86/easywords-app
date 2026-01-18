@@ -39,7 +39,7 @@
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#1E5F8C">
-        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="apple-mobile-web-app-title" content="Easywords">
         <link rel="manifest" href="/manifest.json">
