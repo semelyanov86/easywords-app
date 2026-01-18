@@ -1,0 +1,75 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Add server to known_hosts
+        run: |
+          set -e
+          mkdir -p ~/.ssh
+          PORT="${{ secrets.DEPLOY_SSH_PORT }}"
+          if [ -z "$PORT" ]; then PORT=22; fi
+          ssh-keyscan -p "$PORT" -H "${{ secrets.DEPLOY_SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Pull code on server
+        run: |
+          set -e
+          PORT="${{ secrets.DEPLOY_SSH_PORT }}"
+          if [ -z "$PORT" ]; then PORT=22; fi
+          ssh -p "$PORT" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" << 'EOF'
+            set -e
+            cd ~/cards
+            git pull
+          EOF
+
+      - name: Upload built assets (public/build)
+        run: |
+          set -e
+          PORT="${{ secrets.DEPLOY_SSH_PORT }}"
+          if [ -z "$PORT" ]; then PORT=22; fi
+          rsync -az --delete -e "ssh -p $PORT" public/build/ "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:~/cards/public/build/"
+
+      - name: Run artisan commands
+        run: |
+          set -e
+          PORT="${{ secrets.DEPLOY_SSH_PORT }}"
+          if [ -z "$PORT" ]; then PORT=22; fi
+          ssh -p "$PORT" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" << 'EOF'
+            set -e
+            cd ~/cards
+            /opt/php85/bin/php artisan migrate --force
+            /opt/php85/bin/php artisan cache:clear
+            /opt/php85/bin/php artisan config:clear
+          EOF
