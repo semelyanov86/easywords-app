@@ -60,8 +60,6 @@ final class MarkWordAsLearned
         if ($cache->getCurrentId($userId, $language) === $wordId) {
             $newCurrentId = $updatedWords[0] ?? null;
             cache()->put("words.current.{$language}.{$userId}", $newCurrentId);
-            cache()->put("words.next.{$language}.{$userId}", $updatedWords[1] ?? null);
-            cache()->put("words.prev.{$language}.{$userId}", null);
         }
 
         $word->update([
