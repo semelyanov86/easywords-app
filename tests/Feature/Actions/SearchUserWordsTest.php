@@ -190,8 +190,8 @@ final class SearchUserWordsTest extends TestCase
 
         $action = new SearchUserWords();
 
-        // Act - ищем все слова с пустым запросом
-        $results = $action->handle($user->id, '');
+        // Act - ищем все слова с непустым запросом, который найдёт все слова
+        $results = $action->handle($user->id, 'a'); // найдёт apple, banana, zebra (все содержат 'a')
 
         // Assert - проверяем сортировку
         $this->assertCount(3, $results);

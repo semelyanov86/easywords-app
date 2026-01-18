@@ -172,6 +172,20 @@ export const translations: TranslationStructure = {
         examples_original: 'Оригинал',
         examples_translated: 'Перевод',
         back_to_word: 'Вернуться к слову',
+        // Search
+        search_title: 'Поиск слов',
+        search_subtitle: 'Введите слово или фразу для поиска в вашем словаре',
+        search_placeholder: 'Введите слово для поиска...',
+        search_button: 'Найти',
+        search_results_count: 'Найдено результатов: :count',
+        no_results_title: 'Ничего не найдено',
+        no_results_message:
+            'Попробуйте изменить поисковый запрос или добавить новые слова',
+        enter_search_query: 'Введите поисковый запрос',
+        enter_search_query_hint:
+            'Введите слово или фразу для поиска в вашем словаре',
+        learned: 'Выучено',
+        views: 'Просмотров',
     },
     // Settings
     settings: {

@@ -170,6 +170,19 @@ export const translations: TranslationStructure = {
         examples_original: 'Original',
         examples_translated: 'Translation',
         back_to_word: 'Back to Word',
+        // Search
+        search_title: 'Search Words',
+        search_subtitle: 'Enter a word or phrase to search your vocabulary',
+        search_placeholder: 'Enter a word to search...',
+        search_button: 'Search',
+        search_results_count: 'Results found: :count',
+        no_results_title: 'No Results Found',
+        no_results_message: 'Try changing your search query or add new words',
+        enter_search_query: 'Enter Search Query',
+        enter_search_query_hint:
+            'Enter a word or phrase to search your vocabulary',
+        learned: 'Learned',
+        views: 'Views',
     },
     // Settings
     settings: {

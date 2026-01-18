@@ -994,7 +994,7 @@ final class WordControllerTest extends TestCase
             'translated' => 'банан',
         ]);
 
-        $response = $this->getJson(route('api.v1.words.search', ['query' => '']));
+        $response = $this->getJson(route('api.v1.words.search', ['query' => 'a']));
 
         $response->assertStatus(200)
             ->assertJsonCount(3, 'data')

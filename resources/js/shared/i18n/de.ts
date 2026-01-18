@@ -177,6 +177,21 @@ export const translations: TranslationStructure = {
         examples_original: 'Original',
         examples_translated: 'Übersetzung',
         back_to_word: 'Zurück zum Wort',
+        // Search
+        search_title: 'Wörter suchen',
+        search_subtitle:
+            'Geben Sie ein Wort oder einen Ausdruck ein, um Ihren Wortschatz zu durchsuchen',
+        search_placeholder: 'Wort zum Suchen eingeben...',
+        search_button: 'Suchen',
+        search_results_count: 'Ergebnisse gefunden: :count',
+        no_results_title: 'Keine Ergebnisse gefunden',
+        no_results_message:
+            'Versuchen Sie, Ihre Suchabfrage zu ändern oder neue Wörter hinzuzufügen',
+        enter_search_query: 'Suchabfrage eingeben',
+        enter_search_query_hint:
+            'Geben Sie ein Wort oder einen Ausdruck ein, um Ihren Wortschatz zu durchsuchen',
+        learned: 'Gelernt',
+        views: 'Aufrufe',
     },
     // Settings
     settings: {

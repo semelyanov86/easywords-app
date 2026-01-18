@@ -25,13 +25,18 @@ final readonly class SearchUserWords
      *
      * Ищет слова по полям original и translated с учётом принадлежности пользователю.
      * Поиск нечувствителен к регистру и находит частичные совпадения.
+     * Если query пустой или null, возвращает пустой массив.
      *
      * @param  int  $userId  ID пользователя
-     * @param  string  $query  Строка для поиска (будет обёрнута в %%)
+     * @param  string|null  $query  Строка для поиска (будет обёрнута в %%)
      * @return array<int, WordData> Массив найденных слов
      */
-    public function handle(int $userId, string $query): array
+    public function handle(int $userId, ?string $query): array
     {
+        if ($query === null || $query === '') {
+            return [];
+        }
+
         $words = Word::where('user_id', $userId)
             ->where(function ($q) use ($query): void {
                 $q->where('original', 'like', "%{$query}%")

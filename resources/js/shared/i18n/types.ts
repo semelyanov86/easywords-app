@@ -111,6 +111,17 @@ export interface TranslationStructure {
         examples_original: string;
         examples_translated: string;
         back_to_word: string;
+        search_title: string;
+        search_subtitle: string;
+        search_placeholder: string;
+        search_button: string;
+        search_results_count: string;
+        no_results_title: string;
+        no_results_message: string;
+        enter_search_query: string;
+        enter_search_query_hint: string;
+        learned: string;
+        views: string;
     };
     profile: {
         title: string;
