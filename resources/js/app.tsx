@@ -8,7 +8,8 @@ import { initializeTheme } from './hooks/use-appearance';
 import { LanguageProvider } from './shared/i18n/LanguageContext';
 import { Toaster } from './shared/ui/Toaster';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Easywords - learn words easily';
+const appName =
+    import.meta.env.VITE_APP_NAME || 'Easywords - learn words easily';
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
