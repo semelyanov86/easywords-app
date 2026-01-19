@@ -183,6 +183,23 @@ export const translations: TranslationStructure = {
             'Enter a word or phrase to search your vocabulary',
         learned: 'Learned',
         views: 'Views',
+        // Learned Words Page
+        learnedWords: {
+            title: 'Learned Words',
+            subtitle:
+                'List of all words you have learned. Uncheck the box to mark a word as unlearned.',
+            backToDashboard: 'Back to Dashboard',
+            totalWords: 'Total Learned Words',
+            noWords: 'No learned words',
+            noWordsHint: 'Start learning words and they will appear here',
+            table: {
+                id: 'ID',
+                original: 'Word',
+                translation: 'Translation',
+                status: 'Status',
+                markUnlearned: 'Mark as unlearned',
+            },
+        },
     },
     // Settings
     settings: {

@@ -186,6 +186,23 @@ export const translations: TranslationStructure = {
             'Введите слово или фразу для поиска в вашем словаре',
         learned: 'Выучено',
         views: 'Просмотров',
+        // Learned Words Page
+        learnedWords: {
+            title: 'Выученные слова',
+            subtitle:
+                'Список всех слов, которые вы выучили. Снимите галочку, чтобы пометить слово как невыученное.',
+            backToDashboard: 'Вернуться на дашборд',
+            totalWords: 'Всего выученных слов',
+            noWords: 'Нет выученных слов',
+            noWordsHint: 'Начните учить слова, и они появятся здесь',
+            table: {
+                id: 'ID',
+                original: 'Слово',
+                translation: 'Перевод',
+                status: 'Статус',
+                markUnlearned: 'Пометить как невыученное',
+            },
+        },
     },
     // Settings
     settings: {

@@ -192,6 +192,24 @@ export const translations: TranslationStructure = {
             'Geben Sie ein Wort oder einen Ausdruck ein, um Ihren Wortschatz zu durchsuchen',
         learned: 'Gelernt',
         views: 'Aufrufe',
+        // Learned Words Page
+        learnedWords: {
+            title: 'Gelernte Wörter',
+            subtitle:
+                'Liste aller Wörter, die Sie gelernt haben. Entfernen Sie das Häkchen, um ein Wort als ungelernt zu markieren.',
+            backToDashboard: 'Zurück zum Dashboard',
+            totalWords: 'Insgesamt gelernte Wörter',
+            noWords: 'Keine gelernten Wörter',
+            noWordsHint:
+                'Beginnen Sie mit dem Lernen von Wörtern und sie werden hier erscheinen',
+            table: {
+                id: 'ID',
+                original: 'Wort',
+                translation: 'Übersetzung',
+                status: 'Status',
+                markUnlearned: 'Als ungelernt markieren',
+            },
+        },
     },
     // Settings
     settings: {

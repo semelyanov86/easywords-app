@@ -122,6 +122,21 @@ export interface TranslationStructure {
         enter_search_query_hint: string;
         learned: string;
         views: string;
+        learnedWords: {
+            title: string;
+            subtitle: string;
+            backToDashboard: string;
+            totalWords: string;
+            noWords: string;
+            noWordsHint: string;
+            table: {
+                id: string;
+                original: string;
+                translation: string;
+                status: string;
+                markUnlearned: string;
+            };
+        };
     };
     profile: {
         title: string;

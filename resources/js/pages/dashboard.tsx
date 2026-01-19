@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { DashboardSearchSection } from '@/features/word-search/ui/DashboardSearchSection';
+import { index } from '@/routes/learned-words';
 import { start } from '@/routes/study';
 import { dashboardTranslations } from '@/shared/i18n/dashboard';
 import { useDashboardTranslation } from '@/shared/i18n/useDashboardTranslation';
@@ -182,13 +183,15 @@ export default function Dashboard({
                     </div>
 
                     <div className="grid gap-4 sm:grid-cols-3 sm:gap-6">
-                        <StatisticCard
-                            icon={BookOpen}
-                            iconBgColor="secondary"
-                            title={t.totalWords || 'Total Words'}
-                            value={statistics.done_words}
-                            description={t.wordsLearned || 'words learned'}
-                        />
+                        <Link href={index().url}>
+                            <StatisticCard
+                                icon={BookOpen}
+                                iconBgColor="secondary"
+                                title={t.totalWords || 'Total Words'}
+                                value={statistics.done_words}
+                                description={t.wordsLearned || 'words learned'}
+                            />
+                        </Link>
 
                         <StatisticCard
                             icon={TrendingUp}

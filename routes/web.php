@@ -11,6 +11,7 @@ Route::get('/', fn () => Inertia::render('welcome', [
 ]))->name('home');
 
 Route::middleware(['auth'])->group(function (): void {
+    Route::get('learned-words', \App\Http\Controllers\LearnedWordsController::class)->name('learned-words.index');
     Route::get('dashboard', \App\Http\Controllers\DashboardController::class)->name('dashboard');
     Route::get('start', \App\Http\Controllers\StartStudyController::class)->name('study.start');
     Route::get('words/create', [\App\Http\Controllers\WordController::class, 'create'])->name('words.create');
