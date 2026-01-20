@@ -85,7 +85,7 @@ export function UserMenu({ userName }: UserMenuProps) {
                 <DropdownMenuSeparator className="bg-neutral-200" />
 
                 {/* Mobile Language Switcher */}
-                <div className="md:hidden">
+                <div className="lg:hidden">
                     <DropdownMenuLabel className="text-xs font-semibold tracking-wide text-neutral-500 uppercase">
                         {t.language || 'Language'}
                     </DropdownMenuLabel>
