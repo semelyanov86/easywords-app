@@ -36,6 +36,8 @@ export function useWordStudy(wordId: number) {
                     reverse: reverse,
                 },
             }).url,
+            {},
+            { preserveScroll: true },
         );
     }, []);
 
@@ -47,6 +49,8 @@ export function useWordStudy(wordId: number) {
                     reverse: reverse,
                 },
             }).url,
+            {},
+            { preserveScroll: true },
         );
     }, []);
 

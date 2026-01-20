@@ -182,10 +182,10 @@ export default function WordStudyPage({
 
             <div className="flex min-h-[300px] items-center justify-center text-center">
                 <div className="space-y-4">
-                    <p className="text-primary-900 dark:text-primary-100 text-6xl leading-tight font-bold">
+                    <p className="text-primary-900 dark:text-primary-100 text-4xl leading-tight font-bold md:text-6xl">
                         {word.original}
                     </p>
-                    <p className="text-primary-600 dark:text-primary-400 text-2xl font-medium">
+                    <p className="text-primary-600 dark:text-primary-400 text-lg font-medium md:text-2xl">
                         {word.language.toUpperCase()}
                     </p>
                     {isLearned && (
@@ -237,10 +237,10 @@ export default function WordStudyPage({
 
             <div className="flex min-h-[300px] items-center justify-center text-center">
                 <div className="space-y-4">
-                    <p className="text-primary-900 dark:text-primary-100 text-6xl leading-tight font-bold">
+                    <p className="text-primary-900 dark:text-primary-100 text-4xl leading-tight font-bold md:text-6xl">
                         {word.translated}
                     </p>
-                    <p className="text-primary-600 dark:text-primary-400 text-2xl font-medium">
+                    <p className="text-primary-600 dark:text-primary-400 text-lg font-medium md:text-2xl">
                         RU
                     </p>
                     {isLearned && (
@@ -293,7 +293,7 @@ export default function WordStudyPage({
                         <h1 className="text-primary-900 dark:text-primary-100 text-4xl font-bold tracking-tight">
                             📚 {t.words.study_title}
                         </h1>
-                        <p className="text-primary-700 dark:text-primary-300 mt-3 text-lg">
+                        <p className="text-primary-700 dark:text-primary-300 mt-3 hidden text-lg md:block">
                             {t.words.study_subtitle}
                         </p>
                     </div>
