@@ -31,7 +31,7 @@ export function UserInfoCard({
     onChangePassword,
 }: UserInfoCardProps) {
     return (
-        <Card className="border-2 shadow-sm transition-shadow hover:shadow-md">
+        <Card className="border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
             <CardHeader>
                 <CardTitle className="text-xl">
                     {translations.userInfo}
@@ -40,47 +40,47 @@ export function UserInfoCard({
             <CardContent className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                        <Label className="text-sm font-semibold text-neutral-600">
+                        <Label className="text-sm font-semibold text-muted-foreground">
                             {translations.userId}
                         </Label>
-                        <p className="mt-1 text-lg font-medium text-neutral-900">
+                        <p className="mt-1 text-lg font-medium text-foreground">
                             {user.id}
                         </p>
                     </div>
                     <div>
-                        <Label className="text-sm font-semibold text-neutral-600">
+                        <Label className="text-sm font-semibold text-muted-foreground">
                             {translations.userName}
                         </Label>
-                        <p className="mt-1 text-lg font-medium text-neutral-900">
+                        <p className="mt-1 text-lg font-medium text-foreground">
                             {user.name}
                         </p>
                     </div>
                     <div>
-                        <Label className="text-sm font-semibold text-neutral-600">
+                        <Label className="text-sm font-semibold text-muted-foreground">
                             {translations.email}
                         </Label>
-                        <p className="mt-1 text-lg font-medium text-neutral-900">
+                        <p className="mt-1 text-lg font-medium text-foreground">
                             {user.email}
                         </p>
                     </div>
                     <div>
-                        <Label className="text-sm font-semibold text-neutral-600">
+                        <Label className="text-sm font-semibold text-muted-foreground">
                             {translations.createdAt}
                         </Label>
-                        <p className="mt-1 text-lg font-medium text-neutral-900">
+                        <p className="mt-1 text-lg font-medium text-foreground">
                             {new Date(user.created_at).toLocaleDateString()}
                         </p>
                     </div>
                     <div className="sm:col-span-2">
-                        <Label className="text-sm font-semibold text-neutral-600">
+                        <Label className="text-sm font-semibold text-muted-foreground">
                             {translations.updatedAt}
                         </Label>
-                        <p className="mt-1 text-lg font-medium text-neutral-900">
+                        <p className="mt-1 text-lg font-medium text-foreground">
                             {new Date(user.updated_at).toLocaleDateString()}
                         </p>
                     </div>
                 </div>
-                <div className="mt-4 border-t pt-4">
+                <div className="mt-4 border-t border-border pt-4">
                     <Button
                         onClick={onChangePassword}
                         className="w-full"

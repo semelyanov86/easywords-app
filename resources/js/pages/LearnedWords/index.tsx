@@ -26,7 +26,7 @@ export default function LearnedWordsPage({
     return (
         <>
             <Head title={t.words.learnedWords.title || 'Выученные слова'} />
-            <div className="from-primary-50 to-secondary-50 dark:via-neutral-850 min-h-screen bg-gradient-to-br via-white dark:from-neutral-900 dark:to-neutral-900">
+            <div className="min-h-screen bg-background">
                 <AuthHeader userName={user.name} />
 
                 <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">

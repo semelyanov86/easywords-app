@@ -32,19 +32,19 @@ export default function Settings({ user, settings }: SettingsPageProps) {
     return (
         <>
             <Head title={t.settings?.title || 'App Settings'} />
-            <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-blue-50/30 to-green-50/20">
+            <div className="min-h-screen bg-background">
                 <AuthHeader userName={user.name} />
                 <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
                     <div className="mb-10">
                         <div className="flex items-start gap-4">
-                            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 text-white shadow-lg">
+                            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg">
                                 <SettingsIcon className="h-7 w-7" />
                             </div>
                             <div className="flex-1">
-                                <h1 className="text-4xl font-bold tracking-tight text-neutral-900">
+                                <h1 className="text-4xl font-bold tracking-tight text-foreground">
                                     {t.settings?.title || 'App Settings'}
                                 </h1>
-                                <p className="mt-2 text-lg text-neutral-600">
+                                <p className="mt-2 text-lg text-muted-foreground">
                                     {t.settings?.subtitle ||
                                         'Customize your learning experience'}
                                 </p>

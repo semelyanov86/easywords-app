@@ -51,14 +51,14 @@ export default function WordSearchPage({
         return (
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-neutral-600">
+                    <p className="text-sm font-medium text-muted-foreground">
                         {t.words.search_results_count?.replace(
                             ':count',
                             results.length.toString(),
                         ) || `Найдено результатов: ${results.length}`}
                     </p>
 
-                    <div className="ml-4 h-px flex-1 bg-gradient-to-r from-neutral-200 via-neutral-100 to-transparent" />
+                    <div className="ml-4 h-px flex-1 bg-gradient-to-r from-border to-transparent" />
                 </div>
 
                 <div className="grid gap-4 sm:gap-6">
@@ -79,7 +79,7 @@ export default function WordSearchPage({
         <>
             <Head title={`${t.words.search_title} - ${query || ''}`} />
 
-            <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-blue-50/30 to-green-50/20">
+            <div className="min-h-screen bg-background">
                 <AuthHeader userName={user.name} />
 
                 <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
@@ -90,7 +90,7 @@ export default function WordSearchPage({
                                 {t.words.search_title || 'Поиск слов'}
                             </h1>
 
-                            <p className="max-w-2xl text-base text-neutral-600 sm:text-lg">
+                            <p className="max-w-2xl text-base text-muted-foreground sm:text-lg">
                                 {t.words.search_subtitle ||
                                     'Введите слово или фразу для поиска в вашем словаре'}
                             </p>

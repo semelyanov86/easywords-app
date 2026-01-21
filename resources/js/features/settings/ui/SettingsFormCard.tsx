@@ -21,7 +21,7 @@ export function SettingsFormCard({
     children,
 }: SettingsFormCardProps) {
     return (
-        <Card className="border-neutral-200 shadow-sm transition-shadow hover:shadow-md">
+        <Card className="border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
             <CardHeader>
                 <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">

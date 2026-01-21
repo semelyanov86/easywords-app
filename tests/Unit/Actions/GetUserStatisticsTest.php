@@ -130,7 +130,7 @@ final class GetUserStatisticsTest extends TestCase
 
         Word::factory()->create(['user_id' => $user->id, 'updated_at' => now()]);
         Word::factory()->create(['user_id' => $user->id, 'updated_at' => now()->subDays(10)]);
-        Word::factory()->create(['user_id' => $user->id, 'updated_at' => now()->subDays(20)]);
+        Word::factory()->create(['user_id' => $user->id, 'updated_at' => now()->subMonth()]);
         Word::factory()->create(['user_id' => $user->id, 'updated_at' => now()->subMonths(2)]);
 
         $statistics = $action->handle($user);

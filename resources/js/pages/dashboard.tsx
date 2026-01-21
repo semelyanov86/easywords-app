@@ -46,25 +46,25 @@ export default function Dashboard({
     return (
         <>
             <Head title={t.pageTitle || 'Easywords Dashboard'} />
-            <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-blue-50/30 to-green-50/20">
+            <div className="min-h-screen bg-background">
                 <AuthHeader userName={user.name} />
 
                 <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
                     <div className="mb-6">
                         <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <h1 className="text-3xl font-bold text-neutral-900 sm:text-4xl">
+                                <h1 className="text-3xl font-bold text-foreground sm:text-4xl">
                                     {t.chooseDirection ||
                                         'Choose Learning Direction'}
                                 </h1>
-                                <p className="mt-2 text-base text-neutral-600 sm:text-lg">
+                                <p className="mt-2 text-base text-muted-foreground sm:text-lg">
                                     {t.selectPair ||
                                         'Select a language pair to start practicing'}
                                 </p>
                             </div>
-                            <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-sm">
+                            <div className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 shadow-sm">
                                 <Zap className="h-5 w-5 text-primary" />
-                                <span className="text-sm font-semibold text-neutral-700">
+                                <span className="text-sm font-semibold text-foreground">
                                     {t.welcome}, {user.name}
                                 </span>
                             </div>
@@ -75,18 +75,18 @@ export default function Dashboard({
                         {languages_list.map((language) => (
                             <div
                                 key={language}
-                                className="group rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm transition-all hover:shadow-xl"
+                                className="group rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:shadow-xl"
                             >
                                 <div className="mb-6 flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-xl font-bold text-white">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-xl font-bold text-primary-foreground">
                                             {language.charAt(0).toUpperCase()}
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-bold text-neutral-900">
+                                            <h3 className="text-lg font-bold text-foreground">
                                                 {language}
                                             </h3>
-                                            <p className="text-sm text-neutral-500">
+                                            <p className="text-sm text-muted-foreground">
                                                 {t.practice || 'Practice'}
                                             </p>
                                         </div>
@@ -105,17 +105,17 @@ export default function Dashboard({
                                         <Button
                                             type="button"
                                             variant="outline"
-                                            className="group/btn relative h-auto w-full overflow-hidden border-2 border-neutral-200 p-4 text-left transition-all hover:border-primary hover:bg-primary hover:text-white"
+                                            className="group/btn relative h-auto w-full overflow-hidden border-2 p-4 text-left transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground"
                                         >
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100 text-sm font-bold text-neutral-700 transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-white">
+                                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-sm font-bold text-muted-foreground transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-primary-foreground">
                                                         {main_language
                                                             .substring(0, 2)
                                                             .toUpperCase()}
                                                     </div>
-                                                    <ArrowRight className="h-5 w-5 text-neutral-400 transition-colors group-hover/btn:text-white" />
-                                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100 text-sm font-bold text-neutral-700 transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-white">
+                                                    <ArrowRight className="h-5 w-5 text-muted-foreground transition-colors group-hover/btn:text-primary-foreground" />
+                                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-sm font-bold text-muted-foreground transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-primary-foreground">
                                                         {language
                                                             .substring(0, 2)
                                                             .toUpperCase()}
@@ -123,7 +123,7 @@ export default function Dashboard({
                                                 </div>
                                                 <ArrowRight className="h-5 w-5 translate-x-0 transition-transform group-hover/btn:translate-x-1" />
                                             </div>
-                                            <p className="mt-2 text-xs font-medium text-neutral-600 transition-colors group-hover/btn:text-blue-100">
+                                            <p className="mt-2 text-xs font-medium text-muted-foreground transition-colors group-hover/btn:text-primary-foreground/80">
                                                 {main_language} → {language}
                                             </p>
                                         </Button>
@@ -140,17 +140,17 @@ export default function Dashboard({
                                         <Button
                                             type="button"
                                             variant="outline"
-                                            className="group/btn relative h-auto w-full overflow-hidden border-2 border-neutral-200 p-4 text-left transition-all hover:border-secondary hover:bg-secondary hover:text-white"
+                                            className="group/btn relative h-auto w-full overflow-hidden border-2 p-4 text-left transition-all hover:border-secondary hover:bg-secondary hover:text-secondary-foreground"
                                         >
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100 text-sm font-bold text-neutral-700 transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-white">
+                                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-sm font-bold text-muted-foreground transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-secondary-foreground">
                                                         {language
                                                             .substring(0, 2)
                                                             .toUpperCase()}
                                                     </div>
-                                                    <ArrowRight className="h-5 w-5 text-neutral-400 transition-colors group-hover/btn:text-white" />
-                                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100 text-sm font-bold text-neutral-700 transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-white">
+                                                    <ArrowRight className="h-5 w-5 text-muted-foreground transition-colors group-hover/btn:text-secondary-foreground" />
+                                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-sm font-bold text-muted-foreground transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-secondary-foreground">
                                                         {main_language
                                                             .substring(0, 2)
                                                             .toUpperCase()}
@@ -158,7 +158,7 @@ export default function Dashboard({
                                                 </div>
                                                 <ArrowRight className="h-5 w-5 translate-x-0 transition-transform group-hover/btn:translate-x-1" />
                                             </div>
-                                            <p className="mt-2 text-xs font-medium text-neutral-600 transition-colors group-hover/btn:text-green-100">
+                                            <p className="mt-2 text-xs font-medium text-muted-foreground transition-colors group-hover/btn:text-secondary-foreground/80">
                                                 {language} → {main_language}
                                             </p>
                                         </Button>
@@ -177,7 +177,7 @@ export default function Dashboard({
                     />
 
                     <div className="mb-6">
-                        <h2 className="mb-4 text-xl font-bold text-neutral-900 sm:text-2xl">
+                        <h2 className="mb-4 text-xl font-bold text-foreground sm:text-2xl">
                             {t.yourProgress || 'Your Progress'}
                         </h2>
                     </div>

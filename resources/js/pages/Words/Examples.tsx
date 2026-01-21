@@ -57,18 +57,18 @@ export default function WordExamplesPage({
         <>
             <Head title={`${t.words.examples_title} - ${word.original}`} />
 
-            <div className="from-primary-50 to-secondary-50 min-h-screen bg-gradient-to-br via-white dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
+            <div className="min-h-screen bg-background">
                 <AuthHeader userName={user.name} />
 
-                {/* Page header - компактнее на мобильных */}
-                <header className="border-primary-200/50 dark:border-primary-800/50 border-b bg-white/80 backdrop-blur-md dark:bg-neutral-900/80">
+                {/* Page header */}
+                <header className="border-b border-border bg-card/80 backdrop-blur-md">
                     <div className="mx-auto max-w-6xl px-3 py-3 md:px-4 md:py-4">
                         <div className="flex items-center gap-2 md:gap-4">
                             <Button
                                 variant="outline"
                                 onClick={handleBack}
                                 size="sm"
-                                className="group border-primary-300 text-primary-700 dark:border-primary-700 dark:text-primary-300 hover:bg-primary-50 hover:border-primary-400 hover:text-primary-800 dark:hover:bg-primary-950/40 dark:hover:border-primary-600 md:size-default transition-all duration-200 hover:-translate-x-1 hover:shadow-md"
+                                className="group md:size-default transition-all duration-200 hover:-translate-x-1 hover:shadow-md"
                             >
                                 <span className="inline-block transition-transform group-hover:-translate-x-1">
                                     ←
@@ -80,7 +80,7 @@ export default function WordExamplesPage({
 
                             <div className="flex items-center gap-1.5 md:gap-2">
                                 <span className="text-lg md:text-2xl">💡</span>
-                                <h1 className="text-primary-900 dark:text-primary-100 text-base font-bold md:text-xl">
+                                <h1 className="text-base font-bold text-foreground md:text-xl">
                                     {t.words.examples_title}
                                 </h1>
                             </div>
@@ -88,14 +88,14 @@ export default function WordExamplesPage({
                     </div>
                 </header>
 
-                {/* Main content - адаптивный padding */}
+                {/* Main content */}
                 <main className="mx-auto max-w-6xl px-3 py-4 md:px-4 md:py-8">
                     <div className="mx-auto max-w-4xl space-y-4 md:space-y-8">
-                        {/* Card - меньше высота на мобильных */}
+                        {/* Card */}
                         <div className="relative min-h-[420px] md:min-h-[550px]">
                             {/* Front side - Original */}
                             <div
-                                className={`rounded-xl bg-white p-4 shadow-2xl transition-all duration-500 md:rounded-2xl md:p-8 dark:bg-neutral-800 ${isFlipped ? 'pointer-events-none absolute inset-0 scale-95 opacity-0' : 'scale-100 opacity-100'} `}
+                                className={`rounded-xl border border-border bg-card p-4 shadow-2xl transition-all duration-500 md:rounded-2xl md:p-8 ${isFlipped ? 'pointer-events-none absolute inset-0 scale-95 opacity-0' : 'scale-100 opacity-100'}`}
                             >
                                 <ExamplesContent
                                     examples={examples.original}
@@ -108,7 +108,7 @@ export default function WordExamplesPage({
 
                             {/* Back side - Translated */}
                             <div
-                                className={`rounded-xl bg-white p-4 shadow-2xl transition-all duration-500 md:rounded-2xl md:p-8 dark:bg-neutral-800 ${!isFlipped ? 'pointer-events-none absolute inset-0 scale-95 opacity-0' : 'scale-100 opacity-100'} `}
+                                className={`rounded-xl border border-border bg-card p-4 shadow-2xl transition-all duration-500 md:rounded-2xl md:p-8 ${!isFlipped ? 'pointer-events-none absolute inset-0 scale-95 opacity-0' : 'scale-100 opacity-100'}`}
                             >
                                 <ExamplesContent
                                     examples={examples.translated}
@@ -120,7 +120,7 @@ export default function WordExamplesPage({
                             </div>
                         </div>
 
-                        {/* Flip button - компактнее на мобильных */}
+                        {/* Flip button */}
                         <div className="flex flex-col items-center gap-2 md:gap-3">
                             <FlipButton
                                 onClick={() => setIsFlipped(!isFlipped)}
@@ -128,7 +128,7 @@ export default function WordExamplesPage({
                                 label={t.words.flip}
                             />
 
-                            <p className="text-primary-600 dark:text-primary-400 text-xs font-medium md:text-sm">
+                            <p className="text-xs font-medium text-muted-foreground md:text-sm">
                                 {isFlipped
                                     ? '👆 Вернуться к оригиналу'
                                     : '👆 Показать перевод'}
@@ -137,29 +137,6 @@ export default function WordExamplesPage({
                     </div>
                 </main>
             </div>
-
-            {/* Custom scrollbar styles */}
-            <style>{`
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: 6px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background: transparent;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: rgb(30 95 140 / 0.3);
-                    border-radius: 3px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: rgb(30 95 140 / 0.5);
-                }
-                .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: rgb(30 95 140 / 0.5);
-                }
-                .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: rgb(30 95 140 / 0.7);
-                }
-            `}</style>
         </>
     );
 }

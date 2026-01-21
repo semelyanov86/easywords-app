@@ -23,7 +23,7 @@ export function AuthHeader({ userName }: AuthHeaderProps) {
     const t = useDashboardTranslation(dashboardTranslations);
 
     return (
-        <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 shadow-sm backdrop-blur-md">
+        <header className="sticky top-0 z-50 border-b border-border bg-background/80 shadow-sm backdrop-blur-md">
             <div className="mx-auto flex h-16 items-center justify-between px-4 md:h-20 md:max-w-7xl md:px-6">
                 {/* Left Section - Logo & Actions */}
                 <div className="flex items-center gap-3 md:gap-4 lg:gap-6">

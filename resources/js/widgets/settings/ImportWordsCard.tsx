@@ -45,19 +45,19 @@ export function ImportWordsCard() {
     };
 
     return (
-        <Card className="relative overflow-hidden border-2 border-dashed border-neutral-200 bg-gradient-to-br from-white to-neutral-50 shadow-sm">
+        <Card className="relative overflow-hidden border-2 border-dashed border-border bg-gradient-to-br from-card to-muted/50 shadow-sm">
             <div className="absolute top-0 right-0 h-32 w-32 opacity-5">
                 <Sparkles className="h-full w-full text-secondary" />
             </div>
             <div className="relative flex flex-col items-center space-y-6 p-8 text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-secondary/80 text-white shadow-lg">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-secondary/80 text-secondary-foreground shadow-lg">
                     <Download className="h-8 w-8" />
                 </div>
                 <div className="space-y-3">
-                    <h3 className="text-xl font-bold text-neutral-900">
+                    <h3 className="text-xl font-bold text-foreground">
                         {t.settings?.import_words || 'Import Common Words'}
                     </h3>
-                    <p className="mx-auto max-w-md text-sm leading-relaxed text-neutral-600">
+                    <p className="mx-auto max-w-md text-sm leading-relaxed text-muted-foreground">
                         {t.settings?.import_description ||
                             'Save time by importing the most commonly used words for your default language. Perfect for getting started quickly!'}
                     </p>
@@ -67,7 +67,7 @@ export function ImportWordsCard() {
                     disabled={isImporting}
                     variant="outline"
                     size="lg"
-                    className="border-secondary bg-secondary/5 text-secondary hover:bg-secondary hover:text-white"
+                    className="border-secondary bg-secondary/5 text-secondary hover:bg-secondary hover:text-secondary-foreground"
                 >
                     <Download className="mr-2 h-5 w-5" />
                     {isImporting

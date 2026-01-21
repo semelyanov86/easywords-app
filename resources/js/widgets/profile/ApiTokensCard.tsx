@@ -39,7 +39,7 @@ export function ApiTokensCard({
     translations,
 }: ApiTokensCardProps) {
     return (
-        <Card className="border-2 shadow-sm transition-shadow hover:shadow-md">
+        <Card className="border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <div>
@@ -51,10 +51,7 @@ export function ApiTokensCard({
                             {translations.apiKeysDescription}
                         </CardDescription>
                     </div>
-                    <Button
-                        onClick={onCreateClick}
-                        className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-[#174a6f] hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none"
-                    >
+                    <Button onClick={onCreateClick}>
                         <Plus className="h-4 w-4" />
                         {translations.createToken}
                     </Button>

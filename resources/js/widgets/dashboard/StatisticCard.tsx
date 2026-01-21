@@ -28,17 +28,17 @@ export function StatisticCard({
     description,
 }: StatisticCardProps) {
     return (
-        <div className="group rounded-xl border border-neutral-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+        <div className="group rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:shadow-md">
             <div className="mb-3 flex items-center gap-3">
                 <div
                     className={`rounded-lg ${iconBgColorMap[iconBgColor]} p-2`}
                 >
                     <Icon className={`h-5 w-5 ${iconColorMap[iconBgColor]}`} />
                 </div>
-                <h3 className="font-semibold text-neutral-700">{title}</h3>
+                <h3 className="font-semibold text-card-foreground">{title}</h3>
             </div>
-            <p className="text-3xl font-bold text-neutral-900">{value}</p>
-            <p className="mt-1 text-sm text-neutral-500">{description}</p>
+            <p className="text-3xl font-bold text-foreground">{value}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{description}</p>
         </div>
     );
 }

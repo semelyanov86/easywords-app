@@ -216,12 +216,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
             </SettingsFormCard>
 
             <div className="flex justify-end gap-4">
-                <Button
-                    type="submit"
-                    disabled={form.processing}
-                    className="bg-primary hover:bg-primary/90"
-                    size="lg"
-                >
+                <Button type="submit" disabled={form.processing} size="lg">
                     <Save className="mr-2 h-4 w-4" />
                     {form.processing
                         ? t.settings?.saving || 'Saving...'

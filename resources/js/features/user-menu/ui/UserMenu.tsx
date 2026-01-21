@@ -54,39 +54,39 @@ export function UserMenu({ userName }: UserMenuProps) {
             <DropdownMenuTrigger asChild>
                 <Button
                     variant="ghost"
-                    className="group flex items-center gap-2 rounded-full pr-3 pl-1 transition-all hover:bg-neutral-100 md:gap-3 md:pr-4"
+                    className="group flex items-center gap-2 rounded-full pr-3 pl-1 transition-all hover:bg-accent md:gap-3 md:pr-4"
                 >
                     <Avatar className="h-9 w-9 border-2 border-primary/20 shadow-sm transition-all group-hover:border-primary/40 md:h-10 md:w-10">
-                        <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-sm font-semibold text-white md:text-base">
+                        <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-sm font-semibold text-primary-foreground md:text-base">
                             {getInitials(userName)}
                         </AvatarFallback>
                     </Avatar>
-                    <span className="hidden text-sm font-medium text-neutral-700 md:block">
+                    <span className="hidden text-sm font-medium text-foreground md:block">
                         {userName}
                     </span>
-                    <ChevronDown className="h-4 w-4 text-neutral-500 transition-transform group-hover:text-neutral-700 group-data-[state=open]:rotate-180" />
+                    <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-hover:text-foreground group-data-[state=open]:rotate-180" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-                className="w-64 rounded-xl border border-neutral-200 bg-white shadow-xl"
+                className="w-64 rounded-xl border border-border bg-popover shadow-xl"
                 align="end"
                 sideOffset={8}
             >
                 {/* User Info Header */}
                 <div className="px-3 py-3">
-                    <p className="text-sm font-semibold text-neutral-900">
+                    <p className="text-sm font-semibold text-popover-foreground">
                         {userName}
                     </p>
-                    <p className="text-xs text-neutral-500">
+                    <p className="text-xs text-muted-foreground">
                         {t.manage_account || 'Manage your account'}
                     </p>
                 </div>
 
-                <DropdownMenuSeparator className="bg-neutral-200" />
+                <DropdownMenuSeparator className="bg-border" />
 
                 {/* Mobile Language Switcher */}
                 <div className="lg:hidden">
-                    <DropdownMenuLabel className="text-xs font-semibold tracking-wide text-neutral-500 uppercase">
+                    <DropdownMenuLabel className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                         {t.language || 'Language'}
                     </DropdownMenuLabel>
                     <div className="flex flex-col gap-1 px-2 py-2">
@@ -98,7 +98,7 @@ export function UserMenu({ userName }: UserMenuProps) {
                                 className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
                                     language === lang.code
                                         ? 'bg-primary/10 font-medium text-primary'
-                                        : 'text-neutral-700 hover:bg-neutral-50'
+                                        : 'text-popover-foreground hover:bg-accent'
                                 }`}
                             >
                                 <span className="text-lg">{lang.flag}</span>
@@ -106,7 +106,7 @@ export function UserMenu({ userName }: UserMenuProps) {
                             </button>
                         ))}
                     </div>
-                    <DropdownMenuSeparator className="bg-neutral-200" />
+                    <DropdownMenuSeparator className="bg-border" />
                 </div>
 
                 {/* Menu Items */}
@@ -114,7 +114,7 @@ export function UserMenu({ userName }: UserMenuProps) {
                     <DropdownMenuItem asChild>
                         <a
                             href={profile.show().url}
-                            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-neutral-700 transition-all hover:bg-primary/5 hover:text-primary focus:bg-primary/5 focus:text-primary"
+                            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-popover-foreground transition-all hover:bg-primary/5 hover:text-primary focus:bg-primary/5 focus:text-primary"
                         >
                             <div className="rounded-lg bg-primary/10 p-1.5">
                                 <User className="h-4 w-4 text-primary" />
@@ -128,7 +128,7 @@ export function UserMenu({ userName }: UserMenuProps) {
                     <DropdownMenuItem asChild>
                         <a
                             href={show().url}
-                            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-neutral-700 transition-all hover:bg-secondary/5 hover:text-secondary focus:bg-secondary/5 focus:text-secondary"
+                            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-popover-foreground transition-all hover:bg-secondary/5 hover:text-secondary focus:bg-secondary/5 focus:text-secondary"
                         >
                             <div className="rounded-lg bg-secondary/10 p-1.5">
                                 <Settings className="h-4 w-4 text-secondary" />
@@ -142,7 +142,7 @@ export function UserMenu({ userName }: UserMenuProps) {
                     <DropdownMenuItem asChild>
                         <a
                             href="/statistics"
-                            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-neutral-700 transition-all hover:bg-accent/5 hover:text-accent focus:bg-accent/5 focus:text-accent"
+                            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-popover-foreground transition-all hover:bg-accent/5 hover:text-accent focus:bg-accent/5 focus:text-accent"
                         >
                             <div className="rounded-lg bg-accent/10 p-1.5">
                                 <BarChart3 className="h-4 w-4 text-accent" />
@@ -156,7 +156,7 @@ export function UserMenu({ userName }: UserMenuProps) {
                     <DropdownMenuItem asChild>
                         <a
                             href={profile.password.edit().url}
-                            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-neutral-700 transition-all hover:bg-primary/5 hover:text-primary focus:bg-primary/5 focus:text-primary"
+                            className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-popover-foreground transition-all hover:bg-primary/5 hover:text-primary focus:bg-primary/5 focus:text-primary"
                         >
                             <div className="rounded-lg bg-primary/10 p-1.5">
                                 <KeyRound className="h-4 w-4 text-primary" />
@@ -168,17 +168,17 @@ export function UserMenu({ userName }: UserMenuProps) {
                     </DropdownMenuItem>
                 </div>
 
-                <DropdownMenuSeparator className="bg-neutral-200" />
+                <DropdownMenuSeparator className="bg-border" />
 
                 <div className="p-1">
                     <DropdownMenuItem asChild>
                         <button
                             type="button"
                             onClick={handleLogout}
-                            className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-neutral-700 transition-all hover:bg-red-50 hover:text-red-600 focus:bg-red-50 focus:text-red-600"
+                            className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-popover-foreground transition-all hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
                         >
-                            <div className="rounded-lg bg-red-50 p-1.5">
-                                <LogOut className="h-4 w-4 text-red-600" />
+                            <div className="rounded-lg bg-destructive/10 p-1.5">
+                                <LogOut className="h-4 w-4 text-destructive" />
                             </div>
                             <span className="font-medium">{t.logout}</span>
                         </button>

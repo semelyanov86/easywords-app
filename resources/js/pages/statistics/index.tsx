@@ -91,21 +91,21 @@ export default function Statistics({ user, statistics }: StatisticsPageProps) {
     return (
         <>
             <Head title="Easywords Statistics" />
-            <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-blue-50/30 to-green-50/30">
+            <div className="min-h-screen bg-background">
                 <AuthHeader userName={user.name} />
 
                 <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
                     {/* Header */}
                     <div className="mb-10">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#1E5F8C] to-[#2B7DB8] shadow-lg shadow-blue-500/30">
-                                <Award className="h-6 w-6 text-white" />
+                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg">
+                                <Award className="h-6 w-6 text-primary-foreground" />
                             </div>
                             <div>
-                                <h1 className="text-3xl font-bold text-neutral-900 sm:text-4xl">
+                                <h1 className="text-3xl font-bold text-foreground sm:text-4xl">
                                     {t.title || 'Personal Statistics'}
                                 </h1>
-                                <p className="mt-1 text-base text-neutral-600 sm:text-lg">
+                                <p className="mt-1 text-base text-muted-foreground sm:text-lg">
                                     {t.subtitle ||
                                         'Track your learning progress and achievements'}
                                 </p>
@@ -131,10 +131,10 @@ export default function Statistics({ user, statistics }: StatisticsPageProps) {
                     {/* Most Viewed Words Section */}
                     <div className="mb-8">
                         <div className="mb-5 flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#7CB342] to-[#9CCC65] shadow-md shadow-green-500/20">
-                                <Target className="h-5 w-5 text-white" />
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-secondary to-secondary/80 shadow-md">
+                                <Target className="h-5 w-5 text-secondary-foreground" />
                             </div>
-                            <h2 className="text-2xl font-bold text-neutral-900">
+                            <h2 className="text-2xl font-bold text-foreground">
                                 {t.mostViewedWords || 'Most Viewed Words'}
                             </h2>
                         </div>
@@ -154,10 +154,10 @@ export default function Statistics({ user, statistics }: StatisticsPageProps) {
                     {/* Words Added Today Section */}
                     <div className="mb-10">
                         <div className="mb-5 flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#33691E] to-[#558B2F] shadow-md shadow-green-700/20">
-                                <Award className="h-5 w-5 text-white" />
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent to-accent/80 shadow-md">
+                                <Award className="h-5 w-5 text-accent-foreground" />
                             </div>
-                            <h2 className="text-2xl font-bold text-neutral-900">
+                            <h2 className="text-2xl font-bold text-foreground">
                                 {t.wordsAddedToday || 'Words Added Today'}
                             </h2>
                         </div>
