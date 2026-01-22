@@ -14,6 +14,7 @@ import { toast } from '@/shared/lib/use-toast';
 import { User } from '@/types';
 import { AuthHeader } from '@/widgets/auth/AuthHeader';
 import { Head, router, useForm } from '@inertiajs/react';
+import axios from 'axios';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -45,6 +46,16 @@ export default function ExtractFromImagePage({
     const [selectedTargetLanguage, setSelectedTargetLanguage] =
         useState<string>(defaultTargetLanguage);
     const [isAddingWord, setIsAddingWord] = useState(false);
+
+    const [displayedWords, setDisplayedWords] = useState<ExtractedWord[]>(
+        words || [],
+    );
+
+    useEffect(() => {
+        if (words) {
+            setDisplayedWords(words);
+        }
+    }, [words]);
 
     const extractForm = useForm<ExtractFormData>({
         image: null,
@@ -111,38 +122,37 @@ export default function ExtractFromImagePage({
         });
     };
 
-    const handleAddWord = (
+    const handleAddWord = async (
         original: string,
         translation: string,
         language: string,
     ) => {
         setIsAddingWord(true);
-        router.post(
-            createWord().url,
-            {
+
+        try {
+            await axios.post(createWord().url, {
                 original,
                 translated: translation,
                 language,
-            },
-            {
-                onSuccess: () => {
-                    toast({
-                        title: t.words.word_added_success,
-                        description: `"${original}" ${t.words.has_been_added}`,
-                    });
-                    setIsAddingWord(false);
-                },
-                onError: () => {
-                    toast({
-                        title: 'Error',
-                        description: t.words.word_add_error,
-                        variant: 'destructive',
-                    });
-                    setIsAddingWord(false);
-                },
-                preserveScroll: true,
-            },
-        );
+            });
+
+            toast({
+                title: t.words.word_added_success || 'Word added successfully',
+                description: `"${original}" ${t.words.has_been_added || 'has been added to your collection'}`,
+            });
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error: unknown) {
+            toast({
+                title: 'Error',
+                description: t.words.word_add_error || 'Failed to add word',
+                variant: 'destructive',
+            });
+        } finally {
+            setIsAddingWord(false);
+            setDisplayedWords((prevWords) =>
+                prevWords.filter((word) => word.original !== original),
+            );
+        }
     };
 
     const handleBackToCreate = () => {
@@ -190,17 +200,15 @@ export default function ExtractFromImagePage({
                         />
                     )}
 
-                    {/* Results Table */}
-                    {words && words.length > 0 && (
+                    {displayedWords.length > 0 && (
                         <ExtractedWordsTable
-                            words={words}
+                            words={displayedWords}
                             onAddWord={handleAddWord}
                             isAddingWord={isAddingWord}
                         />
                     )}
 
-                    {/* Empty State */}
-                    {words && words.length === 0 && (
+                    {words && displayedWords.length === 0 && (
                         <EmptyWordsState onBackToCreate={handleBackToCreate} />
                     )}
                 </div>

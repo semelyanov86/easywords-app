@@ -43,7 +43,7 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="apple-mobile-web-app-title" content="Easywords">
         <link rel="manifest" href="/manifest.json">
-
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])

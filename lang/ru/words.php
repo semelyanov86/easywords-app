@@ -31,4 +31,5 @@ return [
     'actions' => 'Действия',
     'add_word' => 'Добавить слово',
     'no_words_extracted' => 'Не удалось извлечь слова из изображения. Попробуйте другое изображение.',
+    'Word ":word" has been added successfully' => 'Слово ":word" успешно добавлено',
 ];

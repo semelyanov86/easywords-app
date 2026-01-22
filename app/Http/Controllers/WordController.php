@@ -43,14 +43,13 @@ final class WordController
      * Создает слово с привязкой к авторизованному пользователю.
      * Возвращает созданное слово для отображения успешного уведомления.
      */
-    public function store(StoreWordWebRequest $request, CreateWord $createWord, GetUserSettings $getUserSettings): \Inertia\Response
+    public function store(StoreWordWebRequest $request, CreateWord $createWord, GetUserSettings $getUserSettings): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
         /** @var array{original: string, translated: string, language: string} $validated */
         $validated = $request->validated();
 
         /** @var \App\Models\User $user */
         $user = auth()->user();
-        $settings = $getUserSettings->handle($user->id);
 
         $wordData = $createWord->handle(
             userId: $user->id,
@@ -58,6 +57,16 @@ final class WordController
             translated: $validated['translated'],
             language: $validated['language']
         );
+
+        // Для JSON запросов
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => __('Word ":word" has been added successfully', ['word' => $wordData->original]),
+                'word' => $wordData,
+            ]);
+        }
+
+        $settings = $getUserSettings->handle($user->id);
 
         return Inertia::render('Words/Create', [
             'languages_list' => $settings->languages_list ?? [],

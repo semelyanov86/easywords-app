@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { AddWordForm } from '@/features/word/ui/AddWordForm';
 import { extract } from '@/routes/words/extract-from-image';
 import { useTranslation } from '@/shared/i18n/useTranslation';
+import { useFlashMessages } from '@/shared/lib/useFlashMessages';
 import { User } from '@/types';
 import { AuthHeader } from '@/widgets/auth/AuthHeader';
 import { Head, router } from '@inertiajs/react';
@@ -21,6 +22,7 @@ export default function CreateWordPage({
     user,
 }: CreateWordPageProps) {
     const t = useTranslation();
+    useFlashMessages();
 
     return (
         <>
