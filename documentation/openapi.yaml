@@ -37,8 +37,83 @@ tags:
     description: Получение статистики
   - name: Translation
     description: Получение перевода слов (AI-генерация)
+  - name: Images
+    description: Извлечение слов из изображений (AI-распознавание)
 
 paths:
+  /images/extract-words:
+    post:
+      tags:
+        - Images
+      summary: Извлечь слова из изображения
+      description: |
+        Извлекает слова из изображения и предоставляет их переводы.
+
+        Система распознаёт текст на изображении через OpenAI/Perplexity API,
+        выделяет 5-10 ключевых слов для изучения и возвращает их переводы.
+
+        Результаты не сохраняются в базе данных и предназначены для
+        предварительного просмотра перед добавлением в личный словарь.
+      operationId: extractWordsFromImage
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - image
+                - language
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: Файл изображения (JPEG, PNG и др. поддерживаемые форматы)
+                  example: photo.jpg
+                language:
+                  type: string
+                  maxLength: 2
+                  description: Код языка текста на изображении (en, de, и т.д.)
+                  example: en
+                target_language:
+                  type: string
+                  maxLength: 2
+                  description: Код языка для переводов (по умолчанию русский)
+                  example: ru
+      responses:
+        '200':
+          description: Слова успешно извлечены
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ExtractedWordsResponse'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Ошибка валидации
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Ошибка при распознавании через OpenAI/Perplexity API
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /translate:
     get:
       tags:
@@ -1501,6 +1576,50 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/ExampleResource'
+
+    ExtractedWordResource:
+      type: object
+      required:
+        - type
+        - id
+        - attributes
+      properties:
+        type:
+          type: string
+          enum: [extracted-words]
+          example: extracted-words
+        id:
+          type: string
+          description: Хеш оригинального слова и языка (временный ID)
+          example: "a1b2c3d4e5f6"
+        attributes:
+          type: object
+          required:
+            - original
+            - translation
+            - language
+          properties:
+            original:
+              type: string
+              description: Оригинальное слово, извлеченное из изображения
+              example: hello
+            translation:
+              type: string
+              description: Перевод слова
+              example: привет
+            language:
+              type: string
+              description: Код языка оригинального слова
+              example: en
+
+    ExtractedWordsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          description: Массив извлеченных слов
+          items:
+            $ref: '#/components/schemas/ExtractedWordResource'
 
     WordTranslationResponse:
       type: object

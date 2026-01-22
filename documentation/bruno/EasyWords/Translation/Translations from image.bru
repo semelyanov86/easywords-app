@@ -1,0 +1,29 @@
+meta {
+  name: Translations from image
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{BASE_URL}}/images/extract-words
+  body: multipartForm
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+body:multipart-form {
+  language: DE
+  image: 
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
