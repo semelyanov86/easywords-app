@@ -200,6 +200,28 @@ export const translations: TranslationStructure = {
                 markUnlearned: 'Mark as unlearned',
             },
         },
+        extract_from_image_title: 'Add from Image',
+        extract_from_image_description:
+            'Upload an image with text and get a list of words to study with translations.',
+        back_to_create: 'Back to Add Word',
+        upload_image_title: 'Upload Image',
+        upload_image_description:
+            'Select an image with text in one of the supported languages.',
+        select_image: 'Select Image',
+        source_language: 'Image Text Language',
+        target_language: 'Translation Language',
+        processing: 'Processing...',
+        extract_words: 'Extract Words',
+        extracted_words_title: 'Extracted Words',
+        extracted_words_description:
+            'Click the "Add Word" button to save the word to your vocabulary.',
+        original: 'Original',
+        translation: 'Translation',
+        language: 'Language',
+        actions: 'Actions',
+        add_word: 'Add Word',
+        no_words_extracted:
+            'Could not extract words from the image. Please try another image.',
     },
     // Settings
     settings: {

@@ -210,6 +210,28 @@ export const translations: TranslationStructure = {
                 markUnlearned: 'Als ungelernt markieren',
             },
         },
+        extract_from_image_title: 'Aus Bild hinzufügen',
+        extract_from_image_description:
+            'Laden Sie ein Bild mit Text hoch und erhalten Sie eine Liste von Wörtern zum Lernen mit Übersetzungen.',
+        back_to_create: 'Zurück zum Wort hinzufügen',
+        upload_image_title: 'Bild hochladen',
+        upload_image_description:
+            'Wählen Sie ein Bild mit Text in einer der unterstützten Sprachen.',
+        select_image: 'Bild auswählen',
+        source_language: 'Bildtext-Sprache',
+        target_language: 'Übersetzungssprache',
+        processing: 'Verarbeitung...',
+        extract_words: 'Wörter extrahieren',
+        extracted_words_title: 'Extrahierte Wörter',
+        extracted_words_description:
+            'Klicken Sie auf die Schaltfläche "Wort hinzufügen", um das Wort zu Ihrem Wortschatz zu speichern.',
+        original: 'Original',
+        translation: 'Übersetzung',
+        language: 'Sprache',
+        actions: 'Aktionen',
+        add_word: 'Wort hinzufügen',
+        no_words_extracted:
+            'Es konnten keine Wörter aus dem Bild extrahiert werden. Bitte versuchen Sie ein anderes Bild.',
     },
     // Settings
     settings: {

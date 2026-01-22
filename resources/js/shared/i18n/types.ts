@@ -137,6 +137,24 @@ export interface TranslationStructure {
                 markUnlearned: string;
             };
         };
+        extract_from_image_title: string;
+        extract_from_image_description: string;
+        back_to_create: string;
+        upload_image_title: string;
+        upload_image_description: string;
+        select_image: string;
+        source_language: string;
+        target_language: string;
+        processing: string;
+        extract_words: string;
+        extracted_words_title: string;
+        extracted_words_description: string;
+        original: string;
+        translation: string;
+        language: string;
+        actions: string;
+        add_word: string;
+        no_words_extracted: string;
     };
     profile: {
         title: string;

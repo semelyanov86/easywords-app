@@ -1,3 +1,4 @@
+import { UserSettings } from '@/features/settings/types/settings';
 import { useTranslation } from '@/shared/i18n/useTranslation';
 import { Toaster } from '@/shared/ui/Toaster';
 import { User } from '@/types';
@@ -6,20 +7,6 @@ import { ImportWordsCard } from '@/widgets/settings/ImportWordsCard';
 import { SettingsForm } from '@/widgets/settings/SettingsForm';
 import { Head } from '@inertiajs/react';
 import { Settings as SettingsIcon } from 'lucide-react';
-
-interface UserSettings {
-    paginate: number;
-    fresh_first: boolean;
-    show_starred: boolean;
-    latest_first: boolean;
-    known_enabled: boolean;
-    main_language: string;
-    show_imported: boolean;
-    languages_list: string[];
-    starred_enabled: boolean;
-    default_language: string;
-    show_shared: boolean;
-}
 
 interface SettingsPageProps {
     user: User;

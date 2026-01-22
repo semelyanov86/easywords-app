@@ -1,8 +1,11 @@
+import { Button } from '@/components/ui/button';
 import { AddWordForm } from '@/features/word/ui/AddWordForm';
+import { extract } from '@/routes/words/extract-from-image';
 import { useTranslation } from '@/shared/i18n/useTranslation';
 import { User } from '@/types';
 import { AuthHeader } from '@/widgets/auth/AuthHeader';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
+import { Image as ImageIcon } from 'lucide-react';
 
 interface CreateWordPageProps {
     languages_list: string[];
@@ -36,6 +39,14 @@ export default function CreateWordPage({
                     languages={languages_list}
                     createdWordId={word?.id}
                 />
+                <Button
+                    onClick={() => router.visit(extract().url)}
+                    variant="outline"
+                    className="mb-6 w-full"
+                >
+                    <ImageIcon className="mr-2 h-5 w-5" />
+                    {t.words.extract_from_image_title}
+                </Button>
             </div>
         </>
     );

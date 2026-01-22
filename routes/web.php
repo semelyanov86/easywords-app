@@ -16,6 +16,8 @@ Route::middleware(['auth'])->group(function (): void {
     Route::get('start', \App\Http\Controllers\StartStudyController::class)->name('study.start');
     Route::get('words/create', [\App\Http\Controllers\WordController::class, 'create'])->name('words.create');
     Route::post('words/create', [\App\Http\Controllers\WordController::class, 'store'])->name('words.store');
+    Route::get('words/extract-from-image', [\App\Http\Controllers\ExtractWordsFromImageController::class, 'index'])->name('words.extract-from-image.index');
+    Route::post('words/extract-from-image', [\App\Http\Controllers\ExtractWordsFromImageController::class, 'extract'])->name('words.extract-from-image.extract');
     Route::get('words/search', \App\Http\Controllers\WordSearchController::class)->name('words.search');
     Route::get('words/next', [\App\Http\Controllers\WordActionController::class, 'goToNext'])->name('words.next');
     Route::get('words/prev', [\App\Http\Controllers\WordActionController::class, 'goToPrev'])->name('words.prev');
