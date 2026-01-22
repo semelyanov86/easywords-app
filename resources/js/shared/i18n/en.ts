@@ -221,7 +221,14 @@ export const translations: TranslationStructure = {
         actions: 'Actions',
         add_word: 'Add Word',
         no_words_extracted:
-            'Could not extract words from the image. Please try another image.',
+            'Could not extract words from image. Please try another image.',
+        extraction_success: 'Words extracted successfully',
+        extraction_success_description:
+            'You can now add words to your collection',
+        extraction_error: 'Failed to extract words from image',
+        word_added_success: 'Word added successfully',
+        has_been_added: 'has been added to your collection',
+        word_add_error: 'Failed to add word',
     },
     // Settings
     settings: {

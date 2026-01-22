@@ -225,6 +225,13 @@ export const translations: TranslationStructure = {
         add_word: 'Добавить слово',
         no_words_extracted:
             'Не удалось извлечь слова из изображения. Попробуйте другое изображение.',
+        extraction_success: 'Слова успешно извлечены',
+        extraction_success_description:
+            'Теперь вы можете добавить слова в свою коллекцию',
+        extraction_error: 'Не удалось извлечь слова из изображения',
+        word_added_success: 'Слово успешно добавлено',
+        has_been_added: 'было добавлено в вашу коллекцию',
+        word_add_error: 'Не удалось добавить слово',
     },
     // Settings
     settings: {

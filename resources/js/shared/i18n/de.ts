@@ -232,6 +232,13 @@ export const translations: TranslationStructure = {
         add_word: 'Wort hinzufügen',
         no_words_extracted:
             'Es konnten keine Wörter aus dem Bild extrahiert werden. Bitte versuchen Sie ein anderes Bild.',
+        extraction_success: 'Wörter erfolgreich extrahiert',
+        extraction_success_description:
+            'Sie können jetzt Wörter zu Ihrer Sammlung hinzufügen',
+        extraction_error: 'Wörter konnten nicht aus dem Bild extrahiert werden',
+        word_added_success: 'Wort erfolgreich hinzugefügt',
+        has_been_added: 'wurde zu Ihrer Sammlung hinzugefügt',
+        word_add_error: 'Wort konnte nicht hinzugefügt werden',
     },
     // Settings
     settings: {

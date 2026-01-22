@@ -155,6 +155,12 @@ export interface TranslationStructure {
         actions: string;
         add_word: string;
         no_words_extracted: string;
+        extraction_success: string;
+        extraction_success_description: string;
+        extraction_error: string;
+        word_added_success: string;
+        has_been_added: string;
+        word_add_error: string;
     };
     profile: {
         title: string;
