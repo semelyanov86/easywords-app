@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Data\ExtractedWordData;
+use App\Http\Requests\WordImageExtractRequest;
 use App\Services\ImageWordExtractor;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 /**
@@ -39,20 +39,15 @@ final class ExtractWordsFromImageController
      * выделяет ключевые слова для изучения и предоставляет их переводы.
      * Результаты не сохраняются в базе данных.
      *
-     * @param  Request  $request  Валидированный запрос с изображением и языком
      * @param  ImageWordExtractor  $extractor  Сервис для извлечения слов из изображения
      * @return \Inertia\Response Ответ с массивом слов для добавления
      */
-    public function extract(Request $request, ImageWordExtractor $extractor): \Inertia\Response
+    public function extract(WordImageExtractRequest $request, ImageWordExtractor $extractor): \Inertia\Response
     {
         /** @var \App\Models\User $user */
         $user = auth()->user();
         /** @var array{image: \Illuminate\Http\UploadedFile, language: string, target_language?: string} $validated */
-        $validated = $request->validate([
-            'image' => ['required', 'file', 'image', 'max:10240'],
-            'language' => ['required', 'string', 'size:2'],
-            'target_language' => ['sometimes', 'string', 'size:2'],
-        ]);
+        $validated = $request->validated();
 
         $sourceLanguage = $validated['language'];
         $targetLanguage = $validated['target_language'] ?? 'ru';

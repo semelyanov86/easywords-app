@@ -27,7 +27,9 @@ final class ExtractWordsFromImageControllerTest extends TestCase
     public function test_validates_required_image(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         $this->actingAs($user);
 
         // Act
@@ -42,7 +44,9 @@ final class ExtractWordsFromImageControllerTest extends TestCase
     public function test_validates_required_language(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         $this->actingAs($user);
 
         $image = UploadedFile::fake()->image('test.jpg');
@@ -59,7 +63,9 @@ final class ExtractWordsFromImageControllerTest extends TestCase
     public function test_validates_language_size(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         $this->actingAs($user);
 
         $image = UploadedFile::fake()->image('test.jpg');
@@ -77,7 +83,9 @@ final class ExtractWordsFromImageControllerTest extends TestCase
     public function test_validates_image_type(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         $this->actingAs($user);
 
         $file = UploadedFile::fake()->create('document.pdf', 1024);
@@ -95,7 +103,9 @@ final class ExtractWordsFromImageControllerTest extends TestCase
     public function test_validates_image_size(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         $this->actingAs($user);
 
         // 11 MB - превышает лимит в 10MB

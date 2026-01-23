@@ -19,7 +19,7 @@ final class ExtractWordsFromImageRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return Auth::user()->has_premium ?? false;
     }
 
     /**

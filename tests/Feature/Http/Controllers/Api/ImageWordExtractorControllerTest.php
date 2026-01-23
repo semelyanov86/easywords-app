@@ -19,7 +19,9 @@ final class ImageWordExtractorControllerTest extends TestCase
     public function test_returns_extracted_words_for_authenticated_user(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         Sanctum::actingAs($user);
 
         Config::set('services.openai.key', 'test-key');
@@ -118,7 +120,9 @@ final class ImageWordExtractorControllerTest extends TestCase
     public function test_returns_validation_error_when_image_is_missing(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         Sanctum::actingAs($user);
 
         // Act
@@ -134,7 +138,9 @@ final class ImageWordExtractorControllerTest extends TestCase
     public function test_returns_validation_error_when_language_is_missing(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         Sanctum::actingAs($user);
 
         $image = UploadedFile::fake()->image('test.jpg');
@@ -152,7 +158,9 @@ final class ImageWordExtractorControllerTest extends TestCase
     public function test_returns_validation_error_when_language_is_invalid_size(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         Sanctum::actingAs($user);
 
         $image = UploadedFile::fake()->image('test.jpg');
@@ -171,7 +179,9 @@ final class ImageWordExtractorControllerTest extends TestCase
     public function test_returns_validation_error_when_target_language_is_invalid_size(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         Sanctum::actingAs($user);
 
         $image = UploadedFile::fake()->image('test.jpg');
@@ -191,7 +201,9 @@ final class ImageWordExtractorControllerTest extends TestCase
     public function test_returns_validation_error_when_file_is_not_image(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         Sanctum::actingAs($user);
 
         $file = UploadedFile::fake()->create('document.pdf', 1024);
@@ -210,7 +222,9 @@ final class ImageWordExtractorControllerTest extends TestCase
     public function test_returns_validation_error_when_image_exceeds_max_size(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         Sanctum::actingAs($user);
 
         // 11 MB - превышает лимит в 10MB
@@ -230,7 +244,9 @@ final class ImageWordExtractorControllerTest extends TestCase
     public function test_uses_default_target_language_when_not_provided(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         Sanctum::actingAs($user);
 
         Config::set('services.openai.key', 'test-key');
@@ -272,7 +288,9 @@ final class ImageWordExtractorControllerTest extends TestCase
     public function test_returns_error_on_openai_failure(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         Sanctum::actingAs($user);
 
         Config::set('services.openai.key', 'test-key');
@@ -298,7 +316,9 @@ final class ImageWordExtractorControllerTest extends TestCase
     public function test_handles_german_language(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         Sanctum::actingAs($user);
 
         Config::set('services.openai.key', 'test-key');
@@ -352,7 +372,9 @@ final class ImageWordExtractorControllerTest extends TestCase
     public function test_follows_json_api_specification(): void
     {
         // Arrange
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'has_premium' => true,
+        ]);
         Sanctum::actingAs($user);
 
         Config::set('services.openai.key', 'test-key');
