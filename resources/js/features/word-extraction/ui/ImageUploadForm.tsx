@@ -74,6 +74,7 @@ export function ImageUploadForm({
                             id="image-upload"
                             type="file"
                             accept="image/*"
+                            capture="environment"
                             onChange={onImageChange}
                             className="block w-full cursor-pointer rounded-xl border-2 border-dashed border-neutral-300 bg-white p-4 text-sm transition-all file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-gradient-to-r file:from-secondary file:to-secondary/90 file:px-6 file:py-2.5 file:text-sm file:font-semibold file:text-white file:shadow-sm file:transition-all hover:border-primary hover:file:shadow-md dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:border-primary/80"
                         />
