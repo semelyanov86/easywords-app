@@ -8,7 +8,7 @@ use App\Data\ExtractedWordData;
 use App\Data\ExtractedWordsCollectionData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ExtractWordsFromImageRequest;
-use App\Services\ImageWordExtractor;
+use App\Contracts\ImageWordExtractor;
 use Illuminate\Http\JsonResponse;
 use Spatie\RouteAttributes\Attributes\Middleware;
 use Spatie\RouteAttributes\Attributes\Post;

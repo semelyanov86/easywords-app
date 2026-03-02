@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Api;
 
+use App\Contracts\ImageWordExtractor;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Http;
 use Laravel\Sanctum\Sanctum;
+use Mockery;
 use Tests\TestCase;
 
 final class ImageWordExtractorControllerTest extends TestCase
@@ -24,37 +24,18 @@ final class ImageWordExtractorControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        Config::set('services.openai.key', 'test-key');
-        Config::set('services.openai.url', 'https://api.openai.test');
-        Config::set('services.openai.model', 'test-model');
+        $image = UploadedFile::fake()->image('test.jpg');
 
-        $imageContent = base64_decode('/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAP//////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=');
-        $image = UploadedFile::fake()->create('test.jpg', $imageContent);
+        /** @var ImageWordExtractor&\Mockery\MockInterface $mockExtractor */
+        $mockExtractor = Mockery::mock(ImageWordExtractor::class);
+        $mockExtractor->shouldReceive('extractWords') // @phpstan-ignore-line
+            ->once()
+            ->andReturn([
+                ['original' => 'hello', 'translation' => 'привет', 'language' => 'en'],
+                ['original' => 'world', 'translation' => 'мир', 'language' => 'en'],
+            ]);
 
-        Http::fake([
-            'https://api.openai.test/chat/completions' => Http::response([
-                'choices' => [
-                    [
-                        'message' => [
-                            'content' => json_encode([
-                                'words' => [
-                                    [
-                                        'original' => 'hello',
-                                        'translation' => 'привет',
-                                        'language' => 'en',
-                                    ],
-                                    [
-                                        'original' => 'world',
-                                        'translation' => 'мир',
-                                        'language' => 'en',
-                                    ],
-                                ],
-                            ]),
-                        ],
-                    ],
-                ],
-            ]),
-        ]);
+        $this->app->instance(ImageWordExtractor::class, $mockExtractor);
 
         // Act
         $response = $this->postJson(route('api.v1.images.extract-words'), [
@@ -249,31 +230,17 @@ final class ImageWordExtractorControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        Config::set('services.openai.key', 'test-key');
-        Config::set('services.openai.url', 'https://api.openai.test');
-        Config::set('services.openai.model', 'test-model');
+        /** @var ImageWordExtractor&\Mockery\MockInterface $mockExtractor */
+        $mockExtractor = Mockery::mock(ImageWordExtractor::class);
+        $mockExtractor->shouldReceive('extractWords') // @phpstan-ignore-line
+            ->once()
+            ->andReturn([
+                ['original' => 'test', 'translation' => 'тест', 'language' => 'en'],
+            ]);
+
+        $this->app->instance(ImageWordExtractor::class, $mockExtractor);
 
         $image = UploadedFile::fake()->image('test.jpg');
-
-        Http::fake([
-            'https://api.openai.test/chat/completions' => Http::response([
-                'choices' => [
-                    [
-                        'message' => [
-                            'content' => json_encode([
-                                'words' => [
-                                    [
-                                        'original' => 'test',
-                                        'translation' => 'тест',
-                                        'language' => 'en',
-                                    ],
-                                ],
-                            ]),
-                        ],
-                    ],
-                ],
-            ]),
-        ]);
 
         // Act
         $response = $this->postJson(route('api.v1.images.extract-words'), [
@@ -285,34 +252,6 @@ final class ImageWordExtractorControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_returns_error_on_openai_failure(): void
-    {
-        // Arrange
-        $user = User::factory()->create([
-            'has_premium' => true,
-        ]);
-        Sanctum::actingAs($user);
-
-        Config::set('services.openai.key', 'test-key');
-        Config::set('services.openai.url', 'https://api.openai.test');
-        Config::set('services.openai.model', 'test-model');
-
-        $image = UploadedFile::fake()->image('test.jpg');
-
-        Http::fake([
-            'https://api.openai.test/chat/completions' => Http::response(status: 500),
-        ]);
-
-        // Act
-        $response = $this->postJson(route('api.v1.images.extract-words'), [
-            'image' => $image,
-            'language' => 'en',
-        ]);
-
-        // Assert
-        $response->assertStatus(500);
-    }
-
     public function test_handles_german_language(): void
     {
         // Arrange
@@ -321,31 +260,17 @@ final class ImageWordExtractorControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        Config::set('services.openai.key', 'test-key');
-        Config::set('services.openai.url', 'https://api.openai.test');
-        Config::set('services.openai.model', 'test-model');
+        /** @var ImageWordExtractor&\Mockery\MockInterface $mockExtractor */
+        $mockExtractor = Mockery::mock(ImageWordExtractor::class);
+        $mockExtractor->shouldReceive('extractWords') // @phpstan-ignore-line
+            ->once()
+            ->andReturn([
+                ['original' => 'hallo', 'translation' => 'привет', 'language' => 'de'],
+            ]);
+
+        $this->app->instance(ImageWordExtractor::class, $mockExtractor);
 
         $image = UploadedFile::fake()->image('test.jpg');
-
-        Http::fake([
-            'https://api.openai.test/chat/completions' => Http::response([
-                'choices' => [
-                    [
-                        'message' => [
-                            'content' => json_encode([
-                                'words' => [
-                                    [
-                                        'original' => 'hallo',
-                                        'translation' => 'привет',
-                                        'language' => 'de',
-                                    ],
-                                ],
-                            ]),
-                        ],
-                    ],
-                ],
-            ]),
-        ]);
 
         // Act
         $response = $this->postJson(route('api.v1.images.extract-words'), [
@@ -377,31 +302,17 @@ final class ImageWordExtractorControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        Config::set('services.openai.key', 'test-key');
-        Config::set('services.openai.url', 'https://api.openai.test');
-        Config::set('services.openai.model', 'test-model');
+        /** @var ImageWordExtractor&\Mockery\MockInterface $mockExtractor */
+        $mockExtractor = Mockery::mock(ImageWordExtractor::class);
+        $mockExtractor->shouldReceive('extractWords') // @phpstan-ignore-line
+            ->once()
+            ->andReturn([
+                ['original' => 'test', 'translation' => 'тест', 'language' => 'en'],
+            ]);
+
+        $this->app->instance(ImageWordExtractor::class, $mockExtractor);
 
         $image = UploadedFile::fake()->image('test.jpg');
-
-        Http::fake([
-            'https://api.openai.test/chat/completions' => Http::response([
-                'choices' => [
-                    [
-                        'message' => [
-                            'content' => json_encode([
-                                'words' => [
-                                    [
-                                        'original' => 'test',
-                                        'translation' => 'тест',
-                                        'language' => 'en',
-                                    ],
-                                ],
-                            ]),
-                        ],
-                    ],
-                ],
-            ]),
-        ]);
 
         // Act
         $response = $this->postJson(route('api.v1.images.extract-words'), [

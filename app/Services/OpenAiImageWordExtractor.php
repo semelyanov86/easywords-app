@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Contracts\ImageWordExtractor;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
@@ -14,13 +15,8 @@ use Illuminate\Support\Facades\Http;
  * Позволяет распознавать текст на изображениях и получать слова с переводами
  * для изучения. Совместим с OpenAI API, Perplexity (Sonar Pro) и другими
  * OpenAI-совместимыми провайдерами, поддерживающими vision capabilities.
- *
- * Контракт:
- * - Принимает файл изображения и язык текста на изображении
- * - Возвращает массив слов с переводами на языке пользователя
- * - Не сохраняет результаты в базе данных
  */
-final readonly class ImageWordExtractor
+final readonly class OpenAiImageWordExtractor implements ImageWordExtractor
 {
     private PendingRequest $client;
 
@@ -38,12 +34,7 @@ final readonly class ImageWordExtractor
     }
 
     /**
-     * Извлекает слова из изображения и получает их переводы.
-     *
-     * @param  UploadedFile  $image  Файл изображения (JPEG, PNG и др. поддерживаемые форматы)
-     * @param  string  $sourceLanguage  Язык текста на изображении (например: "en", "de", "es")
-     * @param  string  $targetLanguage  Язык для переводов (по умолчанию русский)
-     * @return array<int, array{original: string, translation: string, language: string}>
+     * {@inheritDoc}
      *
      * @throws \Illuminate\Http\Client\RequestException если запрос к API не удался
      * @throws \JsonException если не удалось декодировать JSON ответ

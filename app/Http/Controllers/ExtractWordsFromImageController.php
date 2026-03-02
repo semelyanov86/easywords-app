@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Data\ExtractedWordData;
 use App\Http\Requests\WordImageExtractRequest;
-use App\Services\ImageWordExtractor;
+use App\Contracts\ImageWordExtractor;
 use Inertia\Inertia;
 
 /**
