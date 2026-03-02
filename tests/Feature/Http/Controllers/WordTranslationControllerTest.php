@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Contracts\WordTranslator;
 use App\Models\User;
 use App\Models\Word;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Http;
 use Laravel\Sanctum\Sanctum;
+use Mockery\MockInterface;
 use Tests\TestCase;
 
 final class WordTranslationControllerTest extends TestCase
@@ -162,27 +162,18 @@ final class WordTranslationControllerTest extends TestCase
             ->assertJsonValidationErrors(['word']);
     }
 
-    public function test_returns_translation_from_openai_when_not_in_database(): void
+    public function test_returns_translation_from_translator_when_not_in_database(): void
     {
         // Arrange
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        Config::set('services.openai.key', 'test-key');
-        Config::set('services.openai.url', 'https://api.openai.test');
-        Config::set('services.openai.model', 'test-model');
-
-        Http::fake([
-            'https://api.openai.test/chat/completions' => Http::response([
-                'choices' => [
-                    [
-                        'message' => [
-                            'content' => 'перевод',
-                        ],
-                    ],
-                ],
-            ]),
-        ]);
+        $this->mock(WordTranslator::class, function (MockInterface $mock): void {
+            $mock->shouldReceive('translate') // @phpstan-ignore-line
+                ->once()
+                ->with('nonexistent', 'en')
+                ->andReturn('перевод');
+        });
 
         // Act
         $response = $this->getJson(route('api.v1.translate', [
@@ -204,19 +195,17 @@ final class WordTranslationControllerTest extends TestCase
             ]);
     }
 
-    public function test_returns_error_on_openai_failure(): void
+    public function test_returns_error_on_translator_failure(): void
     {
         // Arrange
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        Config::set('services.openai.key', 'test-key');
-        Config::set('services.openai.url', 'https://api.openai.test');
-        Config::set('services.openai.model', 'test-model');
-
-        Http::fake([
-            'https://api.openai.test/chat/completions' => Http::response(status: 500),
-        ]);
+        $this->mock(WordTranslator::class, function (MockInterface $mock): void {
+            $mock->shouldReceive('translate') // @phpstan-ignore-line
+                ->once()
+                ->andThrow(new \RuntimeException('API error'));
+        });
 
         // Act
         $response = $this->getJson(route('api.v1.translate', [
@@ -295,23 +284,13 @@ final class WordTranslationControllerTest extends TestCase
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        Config::set('services.openai.key', 'test-key');
-        Config::set('services.openai.url', 'https://api.openai.test');
-        Config::set('services.openai.model', 'test-model');
+        $longTranslation = str_repeat('очень длинный перевод ', 5);
 
-        $longTranslation = 'очень длинный перевод который превышает сто символов и должен быть обрезан';
-
-        Http::fake([
-            'https://api.openai.test/chat/completions' => Http::response([
-                'choices' => [
-                    [
-                        'message' => [
-                            'content' => $longTranslation,
-                        ],
-                    ],
-                ],
-            ]),
-        ]);
+        $this->mock(WordTranslator::class, function (MockInterface $mock) use ($longTranslation): void {
+            $mock->shouldReceive('translate') // @phpstan-ignore-line
+                ->once()
+                ->andReturn($longTranslation);
+        });
 
         // Act
         $response = $this->getJson(route('api.v1.translate', [
