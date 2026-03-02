@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Contracts\WordExampleGenerator;
 use App\Data\ExampleData;
 use App\Models\Word;
-use App\Services\OpenAiConnector;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 /**
- * Генерация примеров использования слова через OpenAI.
+ * Генерация примеров использования слова через AI.
  *
  * Этот Action проверяет, есть ли у слова примеры. Если примеры отсутствуют,
- * генерирует их через OpenAI API и сохраняет в базу данных.
+ * генерирует их через AI API и сохраняет в базу данных.
  * Примеры включают: классику, афоризм и разговорный пример.
  */
 class GenerateWordExamples
 {
     use AsAction;
 
-    public function __construct(private readonly OpenAiConnector $openAiConnector) {}
+    public function __construct(private readonly WordExampleGenerator $wordExampleGenerator) {}
 
     /**
      * Генерирует или возвращает существующие примеры для слова.
@@ -45,8 +45,8 @@ class GenerateWordExamples
             return $this->buildExampleData($word);
         }
 
-        // Генерируем примеры через OpenAI
-        $examples = $this->openAiConnector->generateWordExamples(
+        // Генерируем примеры через AI
+        $examples = $this->wordExampleGenerator->generateWordExamples(
             word: $word->original,
             language: $word->language
         );

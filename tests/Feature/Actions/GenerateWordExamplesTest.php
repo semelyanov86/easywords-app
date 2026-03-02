@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature\Actions;
 
 use App\Actions\GenerateWordExamples;
+use App\Contracts\WordExampleGenerator;
 use App\Models\User;
 use App\Models\Word;
-use App\Services\OpenAiConnector;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\TestCase;
@@ -25,8 +25,8 @@ final class GenerateWordExamplesTest extends TestCase
             'example_translated' => ['Пример 1', 'Пример 2', 'Пример 3'],
         ]);
 
-        /** @var OpenAiConnector&\Mockery\MockInterface $connector */
-        $connector = Mockery::mock(OpenAiConnector::class);
+        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldNotReceive('generateWordExamples');
 
         $action = new GenerateWordExamples($connector);
@@ -63,8 +63,8 @@ final class GenerateWordExamplesTest extends TestCase
             ],
         ];
 
-        /** @var OpenAiConnector&\Mockery\MockInterface $connector */
-        $connector = Mockery::mock(OpenAiConnector::class);
+        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldReceive('generateWordExamples') // @phpstan-ignore-line
             ->once()
             ->with('test', 'en')
@@ -90,8 +90,8 @@ final class GenerateWordExamplesTest extends TestCase
         // Arrange
         $user = User::factory()->create();
 
-        /** @var OpenAiConnector&\Mockery\MockInterface $connector */
-        $connector = Mockery::mock(OpenAiConnector::class);
+        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldNotReceive('generateWordExamples');
 
         $action = new GenerateWordExamples($connector);
@@ -110,8 +110,8 @@ final class GenerateWordExamplesTest extends TestCase
         $user2 = User::factory()->create();
         $word = Word::factory()->for($user1)->create();
 
-        /** @var OpenAiConnector&\Mockery\MockInterface $connector */
-        $connector = Mockery::mock(OpenAiConnector::class);
+        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldNotReceive('generateWordExamples');
 
         $action = new GenerateWordExamples($connector);
@@ -139,8 +139,8 @@ final class GenerateWordExamplesTest extends TestCase
             'example_translated' => ['Only one translation'],
         ];
 
-        /** @var OpenAiConnector&\Mockery\MockInterface $connector */
-        $connector = Mockery::mock(OpenAiConnector::class);
+        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldReceive('generateWordExamples') // @phpstan-ignore-line
             ->once()
             ->with('test', 'en')
@@ -172,8 +172,8 @@ final class GenerateWordExamplesTest extends TestCase
             'example_translated' => ['Valid', 'Valid', 'Valid'],
         ];
 
-        /** @var OpenAiConnector&\Mockery\MockInterface $connector */
-        $connector = Mockery::mock(OpenAiConnector::class);
+        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldReceive('generateWordExamples') // @phpstan-ignore-line
             ->once()
             ->with('test', 'en')
@@ -204,8 +204,8 @@ final class GenerateWordExamplesTest extends TestCase
             'example_original' => ['Valid', 'Valid', 'Valid'],
         ];
 
-        /** @var OpenAiConnector&\Mockery\MockInterface $connector */
-        $connector = Mockery::mock(OpenAiConnector::class);
+        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldReceive('generateWordExamples') // @phpstan-ignore-line
             ->once()
             ->with('test', 'en')

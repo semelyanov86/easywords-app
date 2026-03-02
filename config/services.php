@@ -45,4 +45,14 @@ return [
         'timeout' => env('OPENAI_TIMEOUT', 120),
     ],
 
+    'claude' => [
+        'url' => env('CLAUDE_API_URL'),
+        'key' => env('CLAUDE_API_KEY'),
+        'timeout' => env('CLAUDE_API_TIMEOUT', 120),
+    ],
+
+    'ai' => [
+        'provider' => env('AI_PROVIDER', 'openai'),
+    ],
+
 ];

@@ -125,6 +125,8 @@ final class GetUserStatisticsTest extends TestCase
 
     public function test_returns_words_updated_this_month(): void
     {
+        $this->travelTo(now()->setDay(15));
+
         $user = User::factory()->create();
         $action = new GetUserStatistics();
 

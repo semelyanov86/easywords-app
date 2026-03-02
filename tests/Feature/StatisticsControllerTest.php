@@ -74,6 +74,8 @@ final class StatisticsControllerTest extends TestCase
 
     public function test_statistics_shares_views_counts(): void
     {
+        $this->travelTo(now()->setDay(15));
+
         $user = User::factory()->create();
 
         Word::factory()

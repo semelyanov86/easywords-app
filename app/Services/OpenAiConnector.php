@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Contracts\WordExampleGenerator;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Http;
  * Позволяет взаимодействовать с любым сервером, совместимым с OpenAI API
  * (включая модели от Z.ai, OpenAI, и другие). Читает конфигурацию из .env файла.
  */
-class OpenAiConnector
+class OpenAiConnector implements WordExampleGenerator
 {
     private readonly PendingRequest $client;
 
