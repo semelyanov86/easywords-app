@@ -1,0 +1,155 @@
+openapi: 3.0.3
+info:
+  title: Claude API Proxy
+  description: HTTP service that proxies requests to the Claude CLI tool.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:1111
+    description: Local development server
+
+security:
+  - bearerAuth: []
+
+paths:
+  /api/claude/json:
+    post:
+      summary: Execute Claude and return JSON response
+      description: |
+        Sends a prompt (and optional file) to the Claude CLI.
+        Expects Claude to return valid JSON and forwards it in the response.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - prompt
+              properties:
+                prompt:
+                  type: string
+                  description: The prompt to send to Claude.
+                file:
+                  type: string
+                  format: binary
+                  description: Optional file to include with the prompt.
+      responses:
+        "200":
+          description: Successful JSON response from Claude.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    description: The JSON object returned by Claude.
+        "400":
+          description: Bad request (e.g. missing prompt).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized — missing or invalid Bearer token.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "405":
+          description: Method not allowed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error (e.g. Claude did not return valid JSON).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "504":
+          description: Gateway Timeout — Claude CLI exceeded the execution time limit.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/claude/raw:
+    post:
+      summary: Execute Claude and return raw text response
+      description: |
+        Sends a prompt (and optional file) to the Claude CLI.
+        Wraps Claude's raw text output in a JSON object.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - prompt
+              properties:
+                prompt:
+                  type: string
+                  description: The prompt to send to Claude.
+                file:
+                  type: string
+                  format: binary
+                  description: Optional file to include with the prompt.
+      responses:
+        "200":
+          description: Successful response with raw Claude output.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RawResponse"
+        "400":
+          description: Bad request (e.g. missing prompt).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized — missing or invalid Bearer token.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "405":
+          description: Method not allowed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "504":
+          description: Gateway Timeout — Claude CLI exceeded the execution time limit.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    RawResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          description: The raw text output from Claude.
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message.
