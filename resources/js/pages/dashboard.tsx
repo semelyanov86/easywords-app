@@ -110,13 +110,13 @@ export default function Dashboard({
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-sm font-bold text-muted-foreground transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-primary-foreground">
-                                                        {main_language
+                                                        {language
                                                             .substring(0, 2)
                                                             .toUpperCase()}
                                                     </div>
                                                     <ArrowRight className="h-5 w-5 text-muted-foreground transition-colors group-hover/btn:text-primary-foreground" />
                                                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-sm font-bold text-muted-foreground transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-primary-foreground">
-                                                        {language
+                                                        {main_language
                                                             .substring(0, 2)
                                                             .toUpperCase()}
                                                     </div>
@@ -124,7 +124,7 @@ export default function Dashboard({
                                                 <ArrowRight className="h-5 w-5 translate-x-0 transition-transform group-hover/btn:translate-x-1" />
                                             </div>
                                             <p className="mt-2 text-xs font-medium text-muted-foreground transition-colors group-hover/btn:text-primary-foreground/80">
-                                                {main_language} → {language}
+                                                {language} → {main_language}
                                             </p>
                                         </Button>
                                     </Link>
@@ -145,13 +145,13 @@ export default function Dashboard({
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-sm font-bold text-muted-foreground transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-secondary-foreground">
-                                                        {language
+                                                        {main_language
                                                             .substring(0, 2)
                                                             .toUpperCase()}
                                                     </div>
                                                     <ArrowRight className="h-5 w-5 text-muted-foreground transition-colors group-hover/btn:text-secondary-foreground" />
                                                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-sm font-bold text-muted-foreground transition-colors group-hover/btn:bg-white/20 group-hover/btn:text-secondary-foreground">
-                                                        {main_language
+                                                        {language
                                                             .substring(0, 2)
                                                             .toUpperCase()}
                                                     </div>
@@ -159,7 +159,7 @@ export default function Dashboard({
                                                 <ArrowRight className="h-5 w-5 translate-x-0 transition-transform group-hover/btn:translate-x-1" />
                                             </div>
                                             <p className="mt-2 text-xs font-medium text-muted-foreground transition-colors group-hover/btn:text-secondary-foreground/80">
-                                                {language} → {main_language}
+                                                {main_language} → {language}
                                             </p>
                                         </Button>
                                     </Link>
