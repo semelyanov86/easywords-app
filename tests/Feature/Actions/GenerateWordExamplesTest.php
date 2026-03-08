@@ -65,10 +65,10 @@ final class GenerateWordExamplesTest extends TestCase
 
         /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
-        $connector->shouldReceive('generateWordExamples') // @phpstan-ignore-line
-            ->once()
-            ->with('test', 'en')
-            ->andReturn($mockExamples);
+        $connector->shouldReceive('generateWordExamples')
+            ->once() // @phpstan-ignore method.notFound
+            ->with('test', 'en') // @phpstan-ignore method.nonObject
+            ->andReturn($mockExamples); // @phpstan-ignore method.nonObject
 
         $action = new GenerateWordExamples($connector);
 
@@ -141,10 +141,10 @@ final class GenerateWordExamplesTest extends TestCase
 
         /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
-        $connector->shouldReceive('generateWordExamples') // @phpstan-ignore-line
-            ->once()
-            ->with('test', 'en')
-            ->andReturn($invalidExamples);
+        $connector->shouldReceive('generateWordExamples')
+            ->once() // @phpstan-ignore method.notFound
+            ->with('test', 'en') // @phpstan-ignore method.nonObject
+            ->andReturn($invalidExamples); // @phpstan-ignore method.nonObject
 
         $action = new GenerateWordExamples($connector);
 
@@ -174,10 +174,10 @@ final class GenerateWordExamplesTest extends TestCase
 
         /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
-        $connector->shouldReceive('generateWordExamples') // @phpstan-ignore-line
-            ->once()
-            ->with('test', 'en')
-            ->andReturn($invalidExamples);
+        $connector->shouldReceive('generateWordExamples')
+            ->once() // @phpstan-ignore method.notFound
+            ->with('test', 'en') // @phpstan-ignore method.nonObject
+            ->andReturn($invalidExamples); // @phpstan-ignore method.nonObject
 
         $action = new GenerateWordExamples($connector);
 
@@ -206,10 +206,10 @@ final class GenerateWordExamplesTest extends TestCase
 
         /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
-        $connector->shouldReceive('generateWordExamples') // @phpstan-ignore-line
-            ->once()
-            ->with('test', 'en')
-            ->andReturn($invalidExamples);
+        $connector->shouldReceive('generateWordExamples')
+            ->once() // @phpstan-ignore method.notFound
+            ->with('test', 'en') // @phpstan-ignore method.nonObject
+            ->andReturn($invalidExamples); // @phpstan-ignore method.nonObject
 
         $action = new GenerateWordExamples($connector);
 

@@ -60,6 +60,7 @@ final class UserSettingsData extends Data
     /**
      * Преобразует данные в HTTP-ответ с правильным Content-Type для JSON:API.
      */
+    #[\Override]
     public function toResponse($request = null): JsonResponse
     {
         return response()->json(['data' => $this->toJsonArray()], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);

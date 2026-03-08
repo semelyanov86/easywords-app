@@ -169,10 +169,10 @@ final class WordTranslationControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
-            $mock->shouldReceive('translate') // @phpstan-ignore-line
-                ->once()
-                ->with('nonexistent', 'en')
-                ->andReturn('перевод');
+            $mock->shouldReceive('translate')
+                ->once() // @phpstan-ignore method.notFound
+                ->with('nonexistent', 'en') // @phpstan-ignore method.nonObject
+                ->andReturn('перевод'); // @phpstan-ignore method.nonObject
         });
 
         // Act
@@ -202,9 +202,9 @@ final class WordTranslationControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
-            $mock->shouldReceive('translate') // @phpstan-ignore-line
-                ->once()
-                ->andThrow(new \RuntimeException('API error'));
+            $mock->shouldReceive('translate')
+                ->once() // @phpstan-ignore method.notFound
+                ->andThrow(new \RuntimeException('API error')); // @phpstan-ignore method.nonObject
         });
 
         // Act
@@ -287,9 +287,9 @@ final class WordTranslationControllerTest extends TestCase
         $longTranslation = str_repeat('очень длинный перевод ', 5);
 
         $this->mock(WordTranslator::class, function (MockInterface $mock) use ($longTranslation): void {
-            $mock->shouldReceive('translate') // @phpstan-ignore-line
-                ->once()
-                ->andReturn($longTranslation);
+            $mock->shouldReceive('translate')
+                ->once() // @phpstan-ignore method.notFound
+                ->andReturn($longTranslation); // @phpstan-ignore method.nonObject
         });
 
         // Act

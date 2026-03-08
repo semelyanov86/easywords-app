@@ -63,6 +63,7 @@ final class WordStatisticsData extends Data
         ];
     }
 
+    #[\Override]
     public function toResponse($request = null): JsonResponse
     {
         return response()->json(['data' => $this->toJsonArray()], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);

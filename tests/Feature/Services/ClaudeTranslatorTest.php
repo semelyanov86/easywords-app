@@ -15,9 +15,9 @@ final class ClaudeTranslatorTest extends TestCase
     {
         /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
-        $mockClient->shouldReceive('sendJsonPrompt') // @phpstan-ignore-line
-            ->once()
-            ->andReturn(['result' => 'автомобиль']);
+        $mockClient->shouldReceive('sendJsonPrompt')
+            ->once() // @phpstan-ignore method.notFound
+            ->andReturn(['result' => 'автомобиль']); // @phpstan-ignore method.nonObject
 
         $translator = new ClaudeTranslator($mockClient);
 
@@ -30,12 +30,12 @@ final class ClaudeTranslatorTest extends TestCase
     {
         /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
-        $mockClient->shouldReceive('sendJsonPrompt') // @phpstan-ignore-line
-            ->once()
-            ->withArgs(fn (string $prompt): bool => str_contains($prompt, '"Haus"')
+        $mockClient->shouldReceive('sendJsonPrompt')
+            ->once() // @phpstan-ignore method.notFound
+            ->withArgs(fn (string $prompt): bool => str_contains($prompt, '"Haus"') // @phpstan-ignore method.nonObject
                     && str_contains($prompt, 'с de языка')
                     && str_contains($prompt, '/language-translate'))
-            ->andReturn(['result' => 'дом']);
+            ->andReturn(['result' => 'дом']); // @phpstan-ignore method.nonObject
 
         $translator = new ClaudeTranslator($mockClient);
 
@@ -48,9 +48,9 @@ final class ClaudeTranslatorTest extends TestCase
     {
         /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
-        $mockClient->shouldReceive('sendJsonPrompt') // @phpstan-ignore-line
-            ->once()
-            ->andReturn(['result' => '  перевод  ']);
+        $mockClient->shouldReceive('sendJsonPrompt')
+            ->once() // @phpstan-ignore method.notFound
+            ->andReturn(['result' => '  перевод  ']); // @phpstan-ignore method.nonObject
 
         $translator = new ClaudeTranslator($mockClient);
 

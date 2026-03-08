@@ -46,6 +46,7 @@ final class ExampleData extends Data
     /**
      * Возвращает JSON:API ответ.
      */
+    #[\Override]
     public function toResponse($request = null): JsonResponse
     {
         return response()->json(

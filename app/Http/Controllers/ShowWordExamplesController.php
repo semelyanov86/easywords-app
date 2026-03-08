@@ -7,6 +7,8 @@ namespace App\Http\Controllers;
 use App\Actions\GenerateWordExamples;
 use App\Models\User;
 use App\Models\Word;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -27,12 +29,12 @@ final class ShowWordExamplesController
      *
      * @param  Request  $request  HTTP-запрос
      * @param  int  $word  ID слова
-     * @return Response Inertia-ответ с примерами
+     * @return Response|RedirectResponse Inertia-ответ с примерами или редирект с ошибкой
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException если пользователь не премиум
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException если слово не найдено
      */
-    public function __invoke(Request $request, int $word): Response
+    public function __invoke(Request $request, int $word): Response|RedirectResponse
     {
         /** @var User $user */
         $user = auth()->user();
@@ -48,8 +50,14 @@ final class ShowWordExamplesController
             ->where('user_id', $user->id)
             ->firstOrFail();
 
-        // Генерируем или получаем существующие примеры
-        $examples = resolve(GenerateWordExamples::class)->handle($wordModel->id, $user->id);
+        try {
+            // Генерируем или получаем существующие примеры
+            $examples = resolve(GenerateWordExamples::class)->handle($wordModel->id, $user->id);
+        } catch (RequestException) {
+            return back()->with('error', 'Не удалось сгенерировать примеры. Сервис AI временно недоступен, попробуйте позже.');
+        } catch (\RuntimeException) {
+            return back()->with('error', 'Не удалось сгенерировать примеры. Попробуйте ещё раз.');
+        }
 
         return Inertia::render('Words/Examples', [
             'word' => [

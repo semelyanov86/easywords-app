@@ -50,6 +50,7 @@ final class ExtractedWordData extends Data
         ];
     }
 
+    #[\Override]
     public function toResponse($request = null): JsonResponse
     {
         return response()->json(

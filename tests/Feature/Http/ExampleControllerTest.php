@@ -74,10 +74,10 @@ final class ExampleControllerTest extends TestCase
             Mockery::mock(GenerateWordExamples::class, function ($mock) use ($word, $user, $mockExamples): void {
                 /** @var GenerateWordExamples&\Mockery\MockInterface $mockInstance */
                 $mockInstance = $mock;
-                $mockInstance->shouldReceive('handle') // @phpstan-ignore-line
-                    ->once()
-                    ->with($word->id, $user->id)
-                    ->andReturn(new \App\Data\ExampleData(
+                $mockInstance->shouldReceive('handle')
+                    ->once() // @phpstan-ignore method.notFound
+                    ->with($word->id, $user->id) // @phpstan-ignore method.nonObject
+                    ->andReturn(new \App\Data\ExampleData( // @phpstan-ignore method.nonObject
                         id: '112',
                         example_original: $mockExamples['example_original'],
                         example_translated: $mockExamples['example_translated']
@@ -166,10 +166,10 @@ final class ExampleControllerTest extends TestCase
             Mockery::mock(GenerateWordExamples::class, function ($mock) use ($word, $user): void {
                 /** @var GenerateWordExamples&\Mockery\MockInterface $mockInstance */
                 $mockInstance = $mock;
-                $mockInstance->shouldReceive('handle') // @phpstan-ignore-line
-                    ->once()
-                    ->with($word->id, $user->id)
-                    ->andThrow(new \RuntimeException('Test error'));
+                $mockInstance->shouldReceive('handle')
+                    ->once() // @phpstan-ignore method.notFound
+                    ->with($word->id, $user->id) // @phpstan-ignore method.nonObject
+                    ->andThrow(new \RuntimeException('Test error')); // @phpstan-ignore method.nonObject
             })
         );
 

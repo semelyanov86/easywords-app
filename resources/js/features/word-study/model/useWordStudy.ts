@@ -7,9 +7,11 @@ import {
     unlearned,
 } from '@/routes/words';
 import { router } from '@inertiajs/react';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 export function useWordStudy(wordId: number) {
+    const [navigating, setNavigating] = useState(false);
+
     const handleMarkLearned = useCallback(() => {
         router.post(markLearned(wordId).url, {}, { preserveScroll: true });
     }, [wordId]);
@@ -28,31 +30,47 @@ export function useWordStudy(wordId: number) {
         router.post(toggleStarred(wordId).url, {}, { preserveScroll: true });
     }, [wordId]);
 
-    const handleGoToPrev = useCallback((language: string, reverse: boolean) => {
-        router.get(
-            prev({
-                query: {
-                    language: language,
-                    reverse: reverse,
+    const handleGoToPrev = useCallback(
+        (language: string, reverse: boolean) => {
+            if (navigating) return;
+            setNavigating(true);
+            router.get(
+                prev({
+                    query: {
+                        language: language,
+                        reverse: reverse,
+                    },
+                }).url,
+                {},
+                {
+                    preserveScroll: true,
+                    onFinish: () => setNavigating(false),
                 },
-            }).url,
-            {},
-            { preserveScroll: true },
-        );
-    }, []);
+            );
+        },
+        [navigating],
+    );
 
-    const handleGoToNext = useCallback((language: string, reverse: boolean) => {
-        router.get(
-            next({
-                query: {
-                    language: language,
-                    reverse: reverse,
+    const handleGoToNext = useCallback(
+        (language: string, reverse: boolean) => {
+            if (navigating) return;
+            setNavigating(true);
+            router.get(
+                next({
+                    query: {
+                        language: language,
+                        reverse: reverse,
+                    },
+                }).url,
+                {},
+                {
+                    preserveScroll: true,
+                    onFinish: () => setNavigating(false),
                 },
-            }).url,
-            {},
-            { preserveScroll: true },
-        );
-    }, []);
+            );
+        },
+        [navigating],
+    );
 
     return {
         handleMarkLearned,
@@ -61,5 +79,6 @@ export function useWordStudy(wordId: number) {
         handleToggleStarred,
         handleGoToPrev,
         handleGoToNext,
+        navigating,
     };
 }

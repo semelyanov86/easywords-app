@@ -14,6 +14,7 @@ interface WordStudyActionsProps {
     t: TranslationStructure;
     wordId: number;
     hasPremium: boolean;
+    navigating?: boolean;
 }
 
 export function WordStudyActions({
@@ -27,6 +28,7 @@ export function WordStudyActions({
     t,
     wordId,
     hasPremium,
+    navigating = false,
 }: WordStudyActionsProps) {
     return (
         <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -61,7 +63,7 @@ export function WordStudyActions({
                 size="lg"
                 variant="outline"
                 onClick={onPrev}
-                disabled={!canGoPrev}
+                disabled={!canGoPrev || navigating}
                 className="transition-all duration-200 hover:scale-105 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
             >
                 ← {t.words.previous}
@@ -71,6 +73,7 @@ export function WordStudyActions({
                 size="lg"
                 variant="outline"
                 onClick={onNext}
+                disabled={navigating}
                 className="transition-all duration-200 hover:scale-105 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
             >
                 {t.words.next} →

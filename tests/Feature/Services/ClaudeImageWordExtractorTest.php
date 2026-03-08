@@ -23,11 +23,11 @@ final class ClaudeImageWordExtractorTest extends TestCase
 
         /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
-        $mockClient->shouldReceive('sendJsonPromptWithFile') // @phpstan-ignore-line
-            ->once()
-            ->withArgs(fn (string $prompt, UploadedFile $file): bool => str_contains($prompt, '/language-image-words')
+        $mockClient->shouldReceive('sendJsonPromptWithFile')
+            ->once() // @phpstan-ignore method.notFound
+            ->withArgs(fn (string $prompt, UploadedFile $file): bool => str_contains($prompt, '/language-image-words') // @phpstan-ignore method.nonObject
                     && $file === $image)
-            ->andReturn(['words' => $expectedWords]);
+            ->andReturn(['words' => $expectedWords]); // @phpstan-ignore method.nonObject
 
         $extractor = new ClaudeImageWordExtractor($mockClient);
 
@@ -42,10 +42,10 @@ final class ClaudeImageWordExtractorTest extends TestCase
 
         /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
-        $mockClient->shouldReceive('sendJsonPromptWithFile') // @phpstan-ignore-line
-            ->once()
-            ->withArgs(fn (string $prompt): bool => str_starts_with($prompt, '/language-image-words'))
-            ->andReturn(['words' => []]);
+        $mockClient->shouldReceive('sendJsonPromptWithFile')
+            ->once() // @phpstan-ignore method.notFound
+            ->withArgs(fn (string $prompt): bool => str_starts_with($prompt, '/language-image-words')) // @phpstan-ignore method.nonObject
+            ->andReturn(['words' => []]); // @phpstan-ignore method.nonObject
 
         $extractor = new ClaudeImageWordExtractor($mockClient);
 
@@ -58,10 +58,10 @@ final class ClaudeImageWordExtractorTest extends TestCase
 
         /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
-        $mockClient->shouldReceive('sendJsonPromptWithFile') // @phpstan-ignore-line
-            ->once()
-            ->withArgs(fn (string $prompt, UploadedFile $file): bool => $file === $image)
-            ->andReturn(['words' => [
+        $mockClient->shouldReceive('sendJsonPromptWithFile')
+            ->once() // @phpstan-ignore method.notFound
+            ->withArgs(fn (string $prompt, UploadedFile $file): bool => $file === $image) // @phpstan-ignore method.nonObject
+            ->andReturn(['words' => [ // @phpstan-ignore method.nonObject
                 ['original' => 'test', 'translation' => 'тест', 'language' => 'en'],
             ]]);
 

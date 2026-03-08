@@ -43,10 +43,10 @@ final class GetWordTranslationTest extends TestCase
     public function test_requests_translation_from_translator_if_word_not_found(): void
     {
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
-            $mock->shouldReceive('translate') // @phpstan-ignore-line
-                ->once()
-                ->with('testword', 'en')
-                ->andReturn('тестовый перевод');
+            $mock->shouldReceive('translate')
+                ->once() // @phpstan-ignore method.notFound
+                ->with('testword', 'en') // @phpstan-ignore method.nonObject
+                ->andReturn('тестовый перевод'); // @phpstan-ignore method.nonObject
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -59,9 +59,9 @@ final class GetWordTranslationTest extends TestCase
     public function test_removes_citation_marks_from_translation(): void
     {
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
-            $mock->shouldReceive('translate') // @phpstan-ignore-line
-                ->once()
-                ->andReturn('инвесторы[1][2][3]');
+            $mock->shouldReceive('translate')
+                ->once() // @phpstan-ignore method.notFound
+                ->andReturn('инвесторы[1][2][3]'); // @phpstan-ignore method.nonObject
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -74,9 +74,9 @@ final class GetWordTranslationTest extends TestCase
     public function test_removes_multiple_citation_marks_from_middle_of_text(): void
     {
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
-            $mock->shouldReceive('translate') // @phpstan-ignore-line
-                ->once()
-                ->andReturn('финансовые[1] инвесторы[2][3] и партнеры[10]');
+            $mock->shouldReceive('translate')
+                ->once() // @phpstan-ignore method.notFound
+                ->andReturn('финансовые[1] инвесторы[2][3] и партнеры[10]'); // @phpstan-ignore method.nonObject
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -92,9 +92,9 @@ final class GetWordTranslationTest extends TestCase
         $this->assertGreaterThan(100, mb_strlen($longTranslation));
 
         $this->mock(WordTranslator::class, function (MockInterface $mock) use ($longTranslation): void {
-            $mock->shouldReceive('translate') // @phpstan-ignore-line
-                ->once()
-                ->andReturn($longTranslation);
+            $mock->shouldReceive('translate')
+                ->once() // @phpstan-ignore method.notFound
+                ->andReturn($longTranslation); // @phpstan-ignore method.nonObject
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -110,9 +110,9 @@ final class GetWordTranslationTest extends TestCase
         $exactTranslation = str_repeat('а', 100);
 
         $this->mock(WordTranslator::class, function (MockInterface $mock) use ($exactTranslation): void {
-            $mock->shouldReceive('translate') // @phpstan-ignore-line
-                ->once()
-                ->andReturn($exactTranslation);
+            $mock->shouldReceive('translate')
+                ->once() // @phpstan-ignore method.notFound
+                ->andReturn($exactTranslation); // @phpstan-ignore method.nonObject
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -126,9 +126,9 @@ final class GetWordTranslationTest extends TestCase
     public function test_trims_whitespace_is_handled_by_translator(): void
     {
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
-            $mock->shouldReceive('translate') // @phpstan-ignore-line
-                ->once()
-                ->andReturn('перевод с пробелами');
+            $mock->shouldReceive('translate')
+                ->once() // @phpstan-ignore method.notFound
+                ->andReturn('перевод с пробелами'); // @phpstan-ignore method.nonObject
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -143,9 +143,9 @@ final class GetWordTranslationTest extends TestCase
         $longTranslation = str_repeat('слово[1] ', 20) . '[2][3][4]';
 
         $this->mock(WordTranslator::class, function (MockInterface $mock) use ($longTranslation): void {
-            $mock->shouldReceive('translate') // @phpstan-ignore-line
-                ->once()
-                ->andReturn($longTranslation);
+            $mock->shouldReceive('translate')
+                ->once() // @phpstan-ignore method.notFound
+                ->andReturn($longTranslation); // @phpstan-ignore method.nonObject
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -167,10 +167,10 @@ final class GetWordTranslationTest extends TestCase
         ]);
 
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
-            $mock->shouldReceive('translate') // @phpstan-ignore-line
-                ->once()
-                ->with('hello', 'en')
-                ->andReturn('другой перевод');
+            $mock->shouldReceive('translate')
+                ->once() // @phpstan-ignore method.notFound
+                ->with('hello', 'en') // @phpstan-ignore method.nonObject
+                ->andReturn('другой перевод'); // @phpstan-ignore method.nonObject
         });
 
         $action = resolve(GetWordTranslation::class);

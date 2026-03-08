@@ -28,9 +28,9 @@ final class ImageWordExtractorControllerTest extends TestCase
 
         /** @var ImageWordExtractor&\Mockery\MockInterface $mockExtractor */
         $mockExtractor = Mockery::mock(ImageWordExtractor::class);
-        $mockExtractor->shouldReceive('extractWords') // @phpstan-ignore-line
-            ->once()
-            ->andReturn([
+        $mockExtractor->shouldReceive('extractWords')
+            ->once() // @phpstan-ignore method.notFound
+            ->andReturn([ // @phpstan-ignore method.nonObject
                 ['original' => 'hello', 'translation' => 'привет', 'language' => 'en'],
                 ['original' => 'world', 'translation' => 'мир', 'language' => 'en'],
             ]);
@@ -232,9 +232,9 @@ final class ImageWordExtractorControllerTest extends TestCase
 
         /** @var ImageWordExtractor&\Mockery\MockInterface $mockExtractor */
         $mockExtractor = Mockery::mock(ImageWordExtractor::class);
-        $mockExtractor->shouldReceive('extractWords') // @phpstan-ignore-line
-            ->once()
-            ->andReturn([
+        $mockExtractor->shouldReceive('extractWords')
+            ->once() // @phpstan-ignore method.notFound
+            ->andReturn([ // @phpstan-ignore method.nonObject
                 ['original' => 'test', 'translation' => 'тест', 'language' => 'en'],
             ]);
 
@@ -262,9 +262,9 @@ final class ImageWordExtractorControllerTest extends TestCase
 
         /** @var ImageWordExtractor&\Mockery\MockInterface $mockExtractor */
         $mockExtractor = Mockery::mock(ImageWordExtractor::class);
-        $mockExtractor->shouldReceive('extractWords') // @phpstan-ignore-line
-            ->once()
-            ->andReturn([
+        $mockExtractor->shouldReceive('extractWords')
+            ->once() // @phpstan-ignore method.notFound
+            ->andReturn([ // @phpstan-ignore method.nonObject
                 ['original' => 'hallo', 'translation' => 'привет', 'language' => 'de'],
             ]);
 
@@ -304,9 +304,9 @@ final class ImageWordExtractorControllerTest extends TestCase
 
         /** @var ImageWordExtractor&\Mockery\MockInterface $mockExtractor */
         $mockExtractor = Mockery::mock(ImageWordExtractor::class);
-        $mockExtractor->shouldReceive('extractWords') // @phpstan-ignore-line
-            ->once()
-            ->andReturn([
+        $mockExtractor->shouldReceive('extractWords')
+            ->once() // @phpstan-ignore method.notFound
+            ->andReturn([ // @phpstan-ignore method.nonObject
                 ['original' => 'test', 'translation' => 'тест', 'language' => 'en'],
             ]);
 

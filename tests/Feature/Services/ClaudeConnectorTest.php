@@ -20,11 +20,11 @@ final class ClaudeConnectorTest extends TestCase
 
         /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
-        $mockClient->shouldReceive('sendJsonPrompt') // @phpstan-ignore-line
-            ->once()
-            ->withArgs(fn (string $prompt): bool => str_contains($prompt, '"hello"')
+        $mockClient->shouldReceive('sendJsonPrompt')
+            ->once() // @phpstan-ignore method.notFound
+            ->withArgs(fn (string $prompt): bool => str_contains($prompt, '"hello"') // @phpstan-ignore method.nonObject
                     && str_contains($prompt, 'en языке'))
-            ->andReturn($expectedResult);
+            ->andReturn($expectedResult); // @phpstan-ignore method.nonObject
 
         $connector = new ClaudeConnector($mockClient);
 
@@ -37,12 +37,12 @@ final class ClaudeConnectorTest extends TestCase
     {
         /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
-        $mockClient->shouldReceive('sendJsonPrompt') // @phpstan-ignore-line
-            ->once()
-            ->withArgs(fn (string $prompt): bool => str_contains($prompt, '"Haus"')
+        $mockClient->shouldReceive('sendJsonPrompt')
+            ->once() // @phpstan-ignore method.notFound
+            ->withArgs(fn (string $prompt): bool => str_contains($prompt, '"Haus"') // @phpstan-ignore method.nonObject
                     && str_contains($prompt, 'de языке')
                     && str_contains($prompt, '/language-examples'))
-            ->andReturn([
+            ->andReturn([ // @phpstan-ignore method.nonObject
                 'example_original' => ['a', 'b', 'c'],
                 'example_translated' => ['а', 'б', 'в'],
             ]);

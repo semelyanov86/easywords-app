@@ -33,6 +33,7 @@ final class ShortUserData extends Data
         ];
     }
 
+    #[\Override]
     public function toResponse($request = null): JsonResponse
     {
         return response()->json($this->toJsonArray(), Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);

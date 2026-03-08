@@ -88,6 +88,7 @@ export default function WordStudyPage({
         handleToggleStarred,
         handleGoToPrev,
         handleGoToNext,
+        navigating,
     } = useWordStudy(word.id);
 
     const isLearned = word.done_at !== null;
@@ -132,7 +133,7 @@ export default function WordStudyPage({
                     break;
                 case 'Backspace':
                     e.preventDefault();
-                    if (canGoPrev) {
+                    if (canGoPrev && !navigating) {
                         handleGoToPrev(word.language, meta?.reverse);
                     }
                     break;
@@ -142,13 +143,13 @@ export default function WordStudyPage({
                     break;
                 case 'ArrowLeft':
                     e.preventDefault();
-                    if (canGoPrev) {
+                    if (canGoPrev && !navigating) {
                         handleGoToPrev(word.language, meta?.reverse);
                     }
                     break;
                 case 'ArrowRight':
                     e.preventDefault();
-                    if (canGoNext) {
+                    if (canGoNext && !navigating) {
                         handleGoToNext(word.language, meta?.reverse);
                     }
                     break;
@@ -162,6 +163,7 @@ export default function WordStudyPage({
         isLearned,
         canGoPrev,
         canGoNext,
+        navigating,
         handleMarkLearned,
         handleMarkUnlearned,
         handleDelete,
@@ -331,6 +333,7 @@ export default function WordStudyPage({
                         t={t}
                         wordId={word.id}
                         hasPremium={user.has_premium ?? false}
+                        navigating={navigating}
                     />
 
                     {/* Keyboard shortcuts */}
