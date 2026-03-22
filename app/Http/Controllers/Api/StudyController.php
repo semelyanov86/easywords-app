@@ -14,6 +14,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Middleware;
+use App\Data\WordData;
+use App\Models\User;
 
 #[Middleware('auth:sanctum')]
 final class StudyController extends Controller
@@ -41,7 +43,7 @@ final class StudyController extends Controller
     #[Get('api/v1/words/start', name: 'api.v1.words.start')]
     public function start(StartStudyRequest $request, StartStudySession $startStudySession): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null) {
@@ -106,7 +108,7 @@ final class StudyController extends Controller
     #[Get('api/v1/words/next', name: 'api.v1.words.next')]
     public function next(NavigationRequest $request, GoToNextWord $goToNextWord): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null) {
@@ -124,7 +126,7 @@ final class StudyController extends Controller
             $result = $goToNextWord->handle($user, $request->validatedLanguage(), $request->validatedReverse());
 
             return response()->json([
-                'data' => \App\Data\WordData::from($result['word'])->toJsonArray(),
+                'data' => WordData::from($result['word'])->toJsonArray(),
                 'meta' => $result['meta'],
             ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
         } catch (\RuntimeException|\DomainException $e) {
@@ -161,7 +163,7 @@ final class StudyController extends Controller
     #[Get('api/v1/words/prev', name: 'api.v1.words.prev')]
     public function prev(NavigationRequest $request, GoToPrevWord $goToPrevWord): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null) {
@@ -179,7 +181,7 @@ final class StudyController extends Controller
             $result = $goToPrevWord->handle($user, $request->validatedLanguage(), $request->validatedReverse());
 
             return response()->json([
-                'data' => \App\Data\WordData::from($result['word'])->toJsonArray(),
+                'data' => WordData::from($result['word'])->toJsonArray(),
                 'meta' => $result['meta'],
             ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
         } catch (\RuntimeException|\DomainException $e) {

@@ -11,6 +11,7 @@ use App\Models\Word;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Data\WordData;
 
 final class GetUserWordsTest extends TestCase
 {
@@ -46,7 +47,7 @@ final class GetUserWordsTest extends TestCase
 
         $result = GetUserWords::make()->handle($user->id, 'DE');
 
-        /** @var array<int, \App\Data\WordData> $resultArray */
+        /** @var array<int, WordData> $resultArray */
         $resultArray = $result->all();
         $this->assertCount(1, $resultArray);
         $this->assertEquals('DE', $resultArray[0]->language);
@@ -84,7 +85,7 @@ final class GetUserWordsTest extends TestCase
 
         $result = GetUserWords::make()->handle($user->id, 'DE');
 
-        /** @var array<int, \App\Data\WordData> $resultArray */
+        /** @var array<int, WordData> $resultArray */
         $resultArray = $result->all();
         $this->assertCount(1, $resultArray);
         $this->assertNull($resultArray[0]->done_at);
@@ -158,7 +159,7 @@ final class GetUserWordsTest extends TestCase
 
         $result = GetUserWords::make()->handle($user->id, 'DE');
 
-        /** @var array<int, \App\Data\WordData> $resultArray */
+        /** @var array<int, WordData> $resultArray */
         $resultArray = $result->all();
         $this->assertCount(1, $resultArray);
         $this->assertFalse($resultArray[0]->from_sample);
@@ -197,7 +198,7 @@ final class GetUserWordsTest extends TestCase
 
         $result = GetUserWords::make()->handle($user->id, 'DE');
 
-        /** @var array<int, \App\Data\WordData> $resultArray */
+        /** @var array<int, WordData> $resultArray */
         $resultArray = $result->all();
         $this->assertCount(1, $resultArray);
         // Проверяем в базе данных, так как shared_by не включено в WordData
@@ -246,7 +247,7 @@ final class GetUserWordsTest extends TestCase
 
         $this->assertCount(3, $result);
 
-        /** @var array<int, \App\Data\WordData> $resultArray */
+        /** @var array<int, WordData> $resultArray */
         $resultArray = $result->all();
         $this->assertEquals($word3->id, $resultArray[0]->id);
         $this->assertEquals($word2->id, $resultArray[1]->id);
@@ -293,7 +294,7 @@ final class GetUserWordsTest extends TestCase
 
         $this->assertCount(3, $result);
 
-        /** @var array<int, \App\Data\WordData> $resultArray */
+        /** @var array<int, WordData> $resultArray */
         $resultArray = $result->all();
         $this->assertEquals($word1->id, $resultArray[0]->id);
         $this->assertEquals($word2->id, $resultArray[1]->id);
@@ -340,7 +341,7 @@ final class GetUserWordsTest extends TestCase
 
         $this->assertCount(3, $result);
 
-        /** @var array<int, \App\Data\WordData> $resultArray */
+        /** @var array<int, WordData> $resultArray */
         $resultArray = $result->all();
         $this->assertEquals($word2->id, $resultArray[0]->id);
         $this->assertEquals($word1->id, $resultArray[1]->id);

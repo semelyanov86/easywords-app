@@ -8,6 +8,7 @@ use App\Actions\UpdateUserSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 final class UpdateUserSettingTest extends TestCase
 {
@@ -54,7 +55,7 @@ final class UpdateUserSettingTest extends TestCase
 
     public function test_throws_exception_for_nonexistent_user(): void
     {
-        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        $this->expectException(ModelNotFoundException::class);
 
         UpdateUserSetting::make()->handle(99999, 'paginate', 50);
     }

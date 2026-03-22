@@ -33,6 +33,7 @@ use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Middleware;
 use Spatie\RouteAttributes\Attributes\Post;
 use Spatie\RouteAttributes\Attributes\Put;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 #[Middleware('auth:sanctum')]
 final class WordController extends Controller
@@ -54,7 +55,7 @@ final class WordController extends Controller
     #[Get('api/v1/words/with-filters', name: 'api.v1.words.filtered')]
     public function filtered(GetUserWordsWithFiltersRequest $request, GetUserWordsWithFilters $getUserWordsWithFilters): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null) {
@@ -102,7 +103,7 @@ final class WordController extends Controller
     #[Get('api/v1/words/search', name: 'api.v1.words.search')]
     public function search(SearchUserWordsRequest $request, SearchUserWords $searchUserWords): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null) {
@@ -143,7 +144,7 @@ final class WordController extends Controller
     #[Get('api/v1/words/{word}', name: 'api.v1.words.show')]
     public function show(int $word, GetWord $getWord): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null) {
@@ -166,7 +167,7 @@ final class WordController extends Controller
             return response()->json([
                 'data' => $wordData->toJsonArray(),
             ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
+        } catch (ModelNotFoundException) {
             return response()->json([
                 'errors' => [
                     [
@@ -191,7 +192,7 @@ final class WordController extends Controller
     #[Delete('api/v1/words/{word}', name: 'api.v1.words.destroy')]
     public function destroy(int $word, DeleteWord $deleteWord): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null) {
@@ -212,7 +213,7 @@ final class WordController extends Controller
             );
 
             return response()->json(null, Response::HTTP_NO_CONTENT, ['Content-Type' => 'application/vnd.api+json']);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
+        } catch (ModelNotFoundException) {
             return response()->json([
                 'errors' => [
                     [
@@ -239,7 +240,7 @@ final class WordController extends Controller
     #[Get('api/v1/random', name: 'api.v1.words.random')]
     public function getRandom(GetRandomWordsRequest $request, GetUserSettings $getSettings, GetUserRandomWords $getRandomWords): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null) {
@@ -280,7 +281,7 @@ final class WordController extends Controller
     #[Get('api/v1/words', name: 'api.v1.words.index')]
     public function index(GetUserWordsRequest $request, GetUserWords $getUserWords): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null) {
@@ -326,7 +327,7 @@ final class WordController extends Controller
     #[Post('api/v1/words', name: 'api.v1.words.store')]
     public function store(StoreWordRequest $request, CreateWord $createWord): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null) {
@@ -365,7 +366,7 @@ final class WordController extends Controller
     #[Post('api/v1/words/{word}/views', name: 'api.v1.words.views')]
     public function incrementViews(Word $word, IncrementWordViews $incrementViews): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null || $word->user_id !== $user->id) {
@@ -401,7 +402,7 @@ final class WordController extends Controller
     #[Put('api/v1/words/{word}/starred', name: 'api.v1.words.starred')]
     public function toggleStarred(Word $word, ToggleWordStarred $toggleStarred): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null || $word->user_id !== $user->id) {
@@ -440,7 +441,7 @@ final class WordController extends Controller
     #[Post('api/v1/words/{word}/learned', name: 'api.v1.words.learned')]
     public function markAsLearned(Word $word, MarkWordAsLearned $markAsLearned): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null || $word->user_id !== $user->id) {
@@ -477,7 +478,7 @@ final class WordController extends Controller
     #[Post('api/v1/words/share', name: 'api.v1.words.share')]
     public function share(ShareWordRequest $request, ShareWord $shareWord): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null) {

@@ -8,6 +8,8 @@ use App\Services\OpenAiTranslator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
+use Illuminate\Http\Client\Request;
+use Illuminate\Http\Client\RequestException;
 
 final class OpenAiTranslatorTest extends TestCase
 {
@@ -59,7 +61,7 @@ final class OpenAiTranslatorTest extends TestCase
 
         $translator->translate('test', 'de');
 
-        Http::assertSent(function (\Illuminate\Http\Client\Request $request): bool {
+        Http::assertSent(function (Request $request): bool {
             $data = $request->data();
 
             if (! isset($data['messages']) || ! is_array($data['messages'])) {
@@ -93,7 +95,7 @@ final class OpenAiTranslatorTest extends TestCase
 
         $translator->translate('helloworld', 'en');
 
-        Http::assertSent(function (\Illuminate\Http\Client\Request $request): bool {
+        Http::assertSent(function (Request $request): bool {
             $data = $request->data();
 
             if (! isset($data['messages']) || ! is_array($data['messages'])) {
@@ -138,7 +140,7 @@ final class OpenAiTranslatorTest extends TestCase
 
         $translator = new OpenAiTranslator();
 
-        $this->expectException(\Illuminate\Http\Client\RequestException::class);
+        $this->expectException(RequestException::class);
 
         $translator->translate('testword', 'en');
     }

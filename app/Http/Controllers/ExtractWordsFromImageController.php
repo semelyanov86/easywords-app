@@ -8,6 +8,9 @@ use App\Data\ExtractedWordData;
 use App\Http\Requests\WordImageExtractRequest;
 use App\Contracts\ImageWordExtractor;
 use Inertia\Inertia;
+use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Inertia\Response;
 
 /**
  * Контроллер для извлечения слов из изображений через web-интерфейс.
@@ -21,9 +24,9 @@ final class ExtractWordsFromImageController
     /**
      * Отображает страницу извлечения слов из изображения.
      */
-    public function index(): \Inertia\Response
+    public function index(): Response
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = auth()->user();
 
         return Inertia::render('Words/ExtractFromImage', [
@@ -40,13 +43,13 @@ final class ExtractWordsFromImageController
      * Результаты не сохраняются в базе данных.
      *
      * @param  ImageWordExtractor  $extractor  Сервис для извлечения слов из изображения
-     * @return \Inertia\Response Ответ с массивом слов для добавления
+     * @return Response Ответ с массивом слов для добавления
      */
-    public function extract(WordImageExtractRequest $request, ImageWordExtractor $extractor): \Inertia\Response
+    public function extract(WordImageExtractRequest $request, ImageWordExtractor $extractor): Response
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = auth()->user();
-        /** @var array{image: \Illuminate\Http\UploadedFile, language: string, target_language?: string} $validated */
+        /** @var array{image: UploadedFile, language: string, target_language?: string} $validated */
         $validated = $request->validated();
 
         $sourceLanguage = $validated['language'];

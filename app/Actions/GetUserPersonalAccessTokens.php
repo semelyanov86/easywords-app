@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Data\PersonalAccessTokenData;
 use Illuminate\Support\Collection;
+use App\Models\User;
 
 /**
  * Получает список всех личных токенов доступа пользователя.
@@ -23,7 +24,7 @@ final readonly class GetUserPersonalAccessTokens
      */
     public function handle(int $userId): Collection
     {
-        $user = \App\Models\User::findOrFail($userId);
+        $user = User::findOrFail($userId);
 
         return PersonalAccessTokenData::collect($user->tokens, Collection::class);
     }

@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\User;
 
 /**
  * Контроллер страницы настроек пользователя.
@@ -30,7 +31,7 @@ final class SettingsController
      */
     public function show(Request $request, GetUserSettings $getUserSettings): Response
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $request->user();
 
         return Inertia::render('settings/index', [
@@ -51,7 +52,7 @@ final class SettingsController
      */
     public function update(UpdateSettingsWebRequest $request): RedirectResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $request->user();
 
         /** @var array{paginate: int, main_language: string, show_starred: bool, known_enabled: bool, latest_first: bool, show_imported: bool, show_shared: bool, fresh_first: bool} $validated */

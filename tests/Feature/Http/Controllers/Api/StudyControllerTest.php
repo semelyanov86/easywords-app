@@ -9,6 +9,7 @@ use App\Models\Word;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Cache;
 
 final class StudyControllerTest extends TestCase
 {
@@ -111,9 +112,9 @@ final class StudyControllerTest extends TestCase
         // Создаем сессию вручную
         /** @var array<int> $wordIds */
         $wordIds = $words->pluck('id')->toArray();
-        \Illuminate\Support\Facades\Cache::put("words.start.DE.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.DE.{$user->id}", $wordIds[0]);
-        \Illuminate\Support\Facades\Cache::put("words.next.DE.{$user->id}", $wordIds[1]);
+        Cache::put("words.start.DE.{$user->id}", $wordIds);
+        Cache::put("words.current.DE.{$user->id}", $wordIds[0]);
+        Cache::put("words.next.DE.{$user->id}", $wordIds[1]);
 
         Sanctum::actingAs($user);
 
@@ -270,7 +271,7 @@ final class StudyControllerTest extends TestCase
 
         // Проверяем, что кэш содержит слова
         /** @var mixed $startCache */
-        $startCache = \Illuminate\Support\Facades\Cache::get("words.start.DE.{$user->id}");
+        $startCache = Cache::get("words.start.DE.{$user->id}");
         $this->assertIsArray($startCache);
         $this->assertCount(5, $startCache);
     }
@@ -381,10 +382,10 @@ final class StudyControllerTest extends TestCase
 
         // Создаем сессию
         $wordIds = [$word->id];
-        \Illuminate\Support\Facades\Cache::put("words.start.EN.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.EN.{$user->id}", $wordIds[0]);
-        \Illuminate\Support\Facades\Cache::put("words.next.EN.{$user->id}", null);
-        \Illuminate\Support\Facades\Cache::put("words.prev.EN.{$user->id}", null);
+        Cache::put("words.start.EN.{$user->id}", $wordIds);
+        Cache::put("words.current.EN.{$user->id}", $wordIds[0]);
+        Cache::put("words.next.EN.{$user->id}", null);
+        Cache::put("words.prev.EN.{$user->id}", null);
 
         Sanctum::actingAs($user);
 
@@ -432,10 +433,10 @@ final class StudyControllerTest extends TestCase
         $wordIds = $words->pluck('id')->toArray();
 
         // Создаем сессию
-        \Illuminate\Support\Facades\Cache::put("words.start.DE.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.DE.{$user->id}", $wordIds[0]);
-        \Illuminate\Support\Facades\Cache::put("words.next.DE.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.prev.DE.{$user->id}", null);
+        Cache::put("words.start.DE.{$user->id}", $wordIds);
+        Cache::put("words.current.DE.{$user->id}", $wordIds[0]);
+        Cache::put("words.next.DE.{$user->id}", $wordIds[1]);
+        Cache::put("words.prev.DE.{$user->id}", null);
 
         Sanctum::actingAs($user);
 
@@ -482,10 +483,10 @@ final class StudyControllerTest extends TestCase
         $wordIds = $words->pluck('id')->toArray();
 
         // Создаем сессию на последнем слове (next = null)
-        \Illuminate\Support\Facades\Cache::put("words.start.DE.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.DE.{$user->id}", $wordIds[2]);
-        \Illuminate\Support\Facades\Cache::put("words.next.DE.{$user->id}", null);
-        \Illuminate\Support\Facades\Cache::put("words.prev.DE.{$user->id}", $wordIds[1]);
+        Cache::put("words.start.DE.{$user->id}", $wordIds);
+        Cache::put("words.current.DE.{$user->id}", $wordIds[2]);
+        Cache::put("words.next.DE.{$user->id}", null);
+        Cache::put("words.prev.DE.{$user->id}", $wordIds[1]);
 
         Sanctum::actingAs($user);
 
@@ -507,7 +508,7 @@ final class StudyControllerTest extends TestCase
         $this->assertNotEquals($wordIds[2], $nextId);
 
         // Проверяем, что кэш обновлён с перемешанным порядком
-        $cachedStart = \Illuminate\Support\Facades\Cache::get("words.start.DE.{$user->id}");
+        $cachedStart = Cache::get("words.start.DE.{$user->id}");
         $this->assertIsArray($cachedStart);
         $this->assertEquals($wordIds[2], $cachedStart[0]); // Текущее слово первым
         $this->assertEquals($nextId, $cachedStart[1]); // Следующее слово вторым
@@ -526,7 +527,7 @@ final class StudyControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         // Создаем кэш с next, но без сессии
-        \Illuminate\Support\Facades\Cache::put("words.next.EN.{$user->id}", 999);
+        Cache::put("words.next.EN.{$user->id}", 999);
 
         $response = $this->getJson(route('api.v1.words.next', [
             'language' => 'EN',
@@ -567,10 +568,10 @@ final class StudyControllerTest extends TestCase
         $wordIds = $words->pluck('id')->toArray();
 
         // Создаем сессию
-        \Illuminate\Support\Facades\Cache::put("words.start.DE.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.DE.{$user->id}", $wordIds[0]);
-        \Illuminate\Support\Facades\Cache::put("words.next.DE.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.prev.DE.{$user->id}", null);
+        Cache::put("words.start.DE.{$user->id}", $wordIds);
+        Cache::put("words.current.DE.{$user->id}", $wordIds[0]);
+        Cache::put("words.next.DE.{$user->id}", $wordIds[1]);
+        Cache::put("words.prev.DE.{$user->id}", null);
 
         Sanctum::actingAs($user);
 
@@ -610,10 +611,10 @@ final class StudyControllerTest extends TestCase
         /** @var array<int> $wordIds */
         $wordIds = $words->pluck('id')->toArray();
 
-        \Illuminate\Support\Facades\Cache::put("words.start.EN.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.EN.{$user->id}", $wordIds[0]);
-        \Illuminate\Support\Facades\Cache::put("words.next.EN.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.prev.EN.{$user->id}", null);
+        Cache::put("words.start.EN.{$user->id}", $wordIds);
+        Cache::put("words.current.EN.{$user->id}", $wordIds[0]);
+        Cache::put("words.next.EN.{$user->id}", $wordIds[1]);
+        Cache::put("words.prev.EN.{$user->id}", null);
 
         Sanctum::actingAs($user);
 
@@ -656,10 +657,10 @@ final class StudyControllerTest extends TestCase
         /** @var array<int> $wordIds */
         $wordIds = $words->pluck('id')->toArray();
 
-        \Illuminate\Support\Facades\Cache::put("words.start.EN.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.EN.{$user->id}", $wordIds[0]);
-        \Illuminate\Support\Facades\Cache::put("words.next.EN.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.prev.EN.{$user->id}", null);
+        Cache::put("words.start.EN.{$user->id}", $wordIds);
+        Cache::put("words.current.EN.{$user->id}", $wordIds[0]);
+        Cache::put("words.next.EN.{$user->id}", $wordIds[1]);
+        Cache::put("words.prev.EN.{$user->id}", null);
 
         Sanctum::actingAs($user);
 
@@ -706,10 +707,10 @@ final class StudyControllerTest extends TestCase
         $wordIds = $words->pluck('id')->toArray();
 
         // Создаем сессию на втором слове
-        \Illuminate\Support\Facades\Cache::put("words.start.DE.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.DE.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.next.DE.{$user->id}", $wordIds[2]);
-        \Illuminate\Support\Facades\Cache::put("words.prev.DE.{$user->id}", $wordIds[0]);
+        Cache::put("words.start.DE.{$user->id}", $wordIds);
+        Cache::put("words.current.DE.{$user->id}", $wordIds[1]);
+        Cache::put("words.next.DE.{$user->id}", $wordIds[2]);
+        Cache::put("words.prev.DE.{$user->id}", $wordIds[0]);
 
         Sanctum::actingAs($user);
 
@@ -755,7 +756,7 @@ final class StudyControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         // Создаем кэш с prev, но без сессии
-        \Illuminate\Support\Facades\Cache::put("words.prev.EN.{$user->id}", 999);
+        Cache::put("words.prev.EN.{$user->id}", 999);
 
         $response = $this->getJson(route('api.v1.words.prev', [
             'language' => 'EN',
@@ -796,10 +797,10 @@ final class StudyControllerTest extends TestCase
         $wordIds = $words->pluck('id')->toArray();
 
         // Создаем сессию на втором слове
-        \Illuminate\Support\Facades\Cache::put("words.start.DE.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.DE.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.next.DE.{$user->id}", null);
-        \Illuminate\Support\Facades\Cache::put("words.prev.DE.{$user->id}", $wordIds[0]);
+        Cache::put("words.start.DE.{$user->id}", $wordIds);
+        Cache::put("words.current.DE.{$user->id}", $wordIds[1]);
+        Cache::put("words.next.DE.{$user->id}", null);
+        Cache::put("words.prev.DE.{$user->id}", $wordIds[0]);
 
         Sanctum::actingAs($user);
 
@@ -839,10 +840,10 @@ final class StudyControllerTest extends TestCase
         /** @var array<int> $wordIds */
         $wordIds = $words->pluck('id')->toArray();
 
-        \Illuminate\Support\Facades\Cache::put("words.start.EN.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.EN.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.next.EN.{$user->id}", null);
-        \Illuminate\Support\Facades\Cache::put("words.prev.EN.{$user->id}", $wordIds[0]);
+        Cache::put("words.start.EN.{$user->id}", $wordIds);
+        Cache::put("words.current.EN.{$user->id}", $wordIds[1]);
+        Cache::put("words.next.EN.{$user->id}", null);
+        Cache::put("words.prev.EN.{$user->id}", $wordIds[0]);
 
         Sanctum::actingAs($user);
 
@@ -885,10 +886,10 @@ final class StudyControllerTest extends TestCase
         /** @var array<int> $wordIds */
         $wordIds = $words->pluck('id')->toArray();
 
-        \Illuminate\Support\Facades\Cache::put("words.start.EN.{$user->id}", $wordIds);
-        \Illuminate\Support\Facades\Cache::put("words.current.EN.{$user->id}", $wordIds[1]);
-        \Illuminate\Support\Facades\Cache::put("words.next.EN.{$user->id}", null);
-        \Illuminate\Support\Facades\Cache::put("words.prev.EN.{$user->id}", $wordIds[0]);
+        Cache::put("words.start.EN.{$user->id}", $wordIds);
+        Cache::put("words.current.EN.{$user->id}", $wordIds[1]);
+        Cache::put("words.next.EN.{$user->id}", null);
+        Cache::put("words.prev.EN.{$user->id}", $wordIds[0]);
 
         Sanctum::actingAs($user);
 

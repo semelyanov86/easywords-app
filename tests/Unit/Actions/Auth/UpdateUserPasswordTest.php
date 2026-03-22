@@ -8,6 +8,8 @@ use App\Actions\Auth\UpdateUserPassword;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Тесты для action изменения пароля.
@@ -47,10 +49,10 @@ class UpdateUserPasswordTest extends TestCase
         $freshUser = $this->user->fresh();
         $this->assertNotNull($freshUser);
         $this->assertTrue(
-            \Illuminate\Support\Facades\Hash::check('newPassword456', $freshUser->password),
+            Hash::check('newPassword456', $freshUser->password),
         );
         $this->assertFalse(
-            \Illuminate\Support\Facades\Hash::check('oldPassword123', $freshUser->password),
+            Hash::check('oldPassword123', $freshUser->password),
         );
     }
 
@@ -60,7 +62,7 @@ class UpdateUserPasswordTest extends TestCase
     public function test_cannot_update_password_with_invalid_current_password(): void
     {
         $this->actingAs($this->user, 'sanctum');
-        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        $this->expectException(HttpException::class);
 
         $this->updateUserPassword->handle(
             currentPassword: 'wrongPassword',
@@ -73,7 +75,7 @@ class UpdateUserPasswordTest extends TestCase
      */
     public function test_cannot_update_password_without_authentication(): void
     {
-        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        $this->expectException(HttpException::class);
 
         $this->updateUserPassword->handle(
             currentPassword: 'oldPassword123',

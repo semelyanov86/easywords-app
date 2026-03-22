@@ -11,6 +11,8 @@ use App\Models\Word;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\TestCase;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Mockery\MockInterface;
 
 final class GenerateWordExamplesTest extends TestCase
 {
@@ -25,7 +27,7 @@ final class GenerateWordExamplesTest extends TestCase
             'example_translated' => ['Пример 1', 'Пример 2', 'Пример 3'],
         ]);
 
-        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        /** @var WordExampleGenerator&MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldNotReceive('generateWordExamples');
 
@@ -63,7 +65,7 @@ final class GenerateWordExamplesTest extends TestCase
             ],
         ];
 
-        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        /** @var WordExampleGenerator&MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldReceive('generateWordExamples')
             ->once() // @phpstan-ignore method.notFound
@@ -90,14 +92,14 @@ final class GenerateWordExamplesTest extends TestCase
         // Arrange
         $user = User::factory()->create();
 
-        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        /** @var WordExampleGenerator&MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldNotReceive('generateWordExamples');
 
         $action = new GenerateWordExamples($connector);
 
         // Expect
-        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        $this->expectException(ModelNotFoundException::class);
 
         // Act
         $action->handle(999, $user->id);
@@ -110,14 +112,14 @@ final class GenerateWordExamplesTest extends TestCase
         $user2 = User::factory()->create();
         $word = Word::factory()->for($user1)->create();
 
-        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        /** @var WordExampleGenerator&MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldNotReceive('generateWordExamples');
 
         $action = new GenerateWordExamples($connector);
 
         // Expect
-        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        $this->expectException(ModelNotFoundException::class);
 
         // Act
         $action->handle($word->id, $user2->id);
@@ -139,7 +141,7 @@ final class GenerateWordExamplesTest extends TestCase
             'example_translated' => ['Only one translation'],
         ];
 
-        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        /** @var WordExampleGenerator&MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldReceive('generateWordExamples')
             ->once() // @phpstan-ignore method.notFound
@@ -172,7 +174,7 @@ final class GenerateWordExamplesTest extends TestCase
             'example_translated' => ['Valid', 'Valid', 'Valid'],
         ];
 
-        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        /** @var WordExampleGenerator&MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldReceive('generateWordExamples')
             ->once() // @phpstan-ignore method.notFound
@@ -204,7 +206,7 @@ final class GenerateWordExamplesTest extends TestCase
             'example_original' => ['Valid', 'Valid', 'Valid'],
         ];
 
-        /** @var WordExampleGenerator&\Mockery\MockInterface $connector */
+        /** @var WordExampleGenerator&MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldReceive('generateWordExamples')
             ->once() // @phpstan-ignore method.notFound

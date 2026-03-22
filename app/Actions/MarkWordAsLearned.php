@@ -9,6 +9,7 @@ use App\Models\Word;
 use App\Support\StudySessionCache;
 use Carbon\CarbonImmutable;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Пометка слова как выученного.
@@ -29,7 +30,7 @@ final class MarkWordAsLearned
      * @param  CarbonImmutable|null  $doneAt  Время, когда слово было выучено (по умолчанию текущее время)
      * @return WordData Обновлённое слово в формате Data
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Если слово не найдено или не принадлежит пользователю
+     * @throws ModelNotFoundException Если слово не найдено или не принадлежит пользователю
      */
     public function handle(int $wordId, int $userId, ?CarbonImmutable $doneAt = null): WordData
     {

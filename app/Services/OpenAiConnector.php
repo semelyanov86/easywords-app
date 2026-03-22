@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Contracts\WordExampleGenerator;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\RequestException;
 
 /**
  * Коннектор для работы с OpenAI-совместимыми API.
@@ -41,7 +42,7 @@ class OpenAiConnector implements WordExampleGenerator
      * @param  string  $language  Язык слова (например: "en", "de", "es")
      * @return array{example_original: array<int, string>, example_translated: array<int, string>}
      *
-     * @throws \Illuminate\Http\Client\RequestException если запрос к API не удался
+     * @throws RequestException если запрос к API не удался
      * @throws \JsonException если не удалось декодировать JSON ответ
      */
     public function generateWordExamples(string $word, string $language): array

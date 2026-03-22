@@ -10,6 +10,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Middleware;
+use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Client\RequestException;
 
 #[Middleware('auth:sanctum')]
 final class ExampleController extends Controller
@@ -27,7 +30,7 @@ final class ExampleController extends Controller
     #[Get('api/v1/examples/{word}', name: 'api.v1.examples.show')]
     public function show(int $word, GenerateWordExamples $generateExamples): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null) {
@@ -50,7 +53,7 @@ final class ExampleController extends Controller
             return response()->json([
                 'data' => $exampleData->toJsonArray(),
             ], Response::HTTP_OK, ['Content-Type' => 'application/vnd.api+json']);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
+        } catch (ModelNotFoundException) {
             return response()->json([
                 'errors' => [
                     [
@@ -70,7 +73,7 @@ final class ExampleController extends Controller
                     ],
                 ],
             ], Response::HTTP_INTERNAL_SERVER_ERROR, ['Content-Type' => 'application/vnd.api+json']);
-        } catch (\Illuminate\Http\Client\RequestException) {
+        } catch (RequestException) {
             return response()->json([
                 'errors' => [
                     [

@@ -7,6 +7,7 @@ namespace App\Services;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\RequestException;
 
 /**
  * Переиспользуемый HTTP-клиент для Claude API Proxy.
@@ -39,7 +40,7 @@ class ClaudeApiClient
      * @param  string  $prompt  Промпт для отправки
      * @return array<string, mixed> Декодированный JSON из поля `result`
      *
-     * @throws \Illuminate\Http\Client\RequestException если запрос к API не удался
+     * @throws RequestException если запрос к API не удался
      * @throws \RuntimeException если ответ имеет некорректный формат
      */
     public function sendJsonPrompt(string $prompt): array
@@ -70,7 +71,7 @@ class ClaudeApiClient
      * @param  UploadedFile  $file  Файл для отправки
      * @return array<string, mixed> Декодированный JSON из поля `result`
      *
-     * @throws \Illuminate\Http\Client\RequestException если запрос к API не удался
+     * @throws RequestException если запрос к API не удался
      * @throws \RuntimeException если ответ имеет некорректный формат
      */
     public function sendJsonPromptWithFile(string $prompt, UploadedFile $file): array

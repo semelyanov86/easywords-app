@@ -22,7 +22,7 @@ final class WordFactory extends Factory
         if ($users && $users->isNotEmpty()) {
             $userId = $users->random();
         } else {
-            $userId = \App\Models\User::factory();
+            $userId = User::factory();
         }
 
         return [

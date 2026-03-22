@@ -7,6 +7,7 @@ namespace App\Actions;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Изменение пароля пользователя.
@@ -26,7 +27,7 @@ final class UpdateUserPassword
      * @param  string  $currentPassword  Текущий пароль
      * @param  string  $newPassword  Новый пароль
      *
-     * @throws \Illuminate\Validation\ValidationException Если текущий пароль неверный
+     * @throws ValidationException Если текущий пароль неверный
      */
     public function handle(int $userId, string $currentPassword, string $newPassword): void
     {
@@ -35,7 +36,7 @@ final class UpdateUserPassword
 
         // Проверяем текущий пароль
         if (! Hash::check($currentPassword, $user->password)) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 'current_password' => [__('The provided password does not match your current password.')],
             ]);
         }

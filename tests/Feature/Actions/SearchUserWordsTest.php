@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Word;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Data\WordData;
 
 final class SearchUserWordsTest extends TestCase
 {
@@ -34,7 +35,7 @@ final class SearchUserWordsTest extends TestCase
 
         // Assert
         $this->assertCount(1, $results);
-        $this->assertInstanceOf(\App\Data\WordData::class, $results[0]);
+        $this->assertInstanceOf(WordData::class, $results[0]);
         $this->assertEquals('hello', $results[0]->original);
         $this->assertEquals('привет', $results[0]->translated);
     }
@@ -59,7 +60,7 @@ final class SearchUserWordsTest extends TestCase
 
         // Assert
         $this->assertCount(1, $results);
-        $this->assertInstanceOf(\App\Data\WordData::class, $results[0]);
+        $this->assertInstanceOf(WordData::class, $results[0]);
         $this->assertEquals('hello', $results[0]->original);
         $this->assertEquals('привет', $results[0]->translated);
     }
@@ -114,9 +115,9 @@ final class SearchUserWordsTest extends TestCase
 
         // Assert
         $this->assertCount(2, $results);
-        $this->assertInstanceOf(\App\Data\WordData::class, $results[0]);
+        $this->assertInstanceOf(WordData::class, $results[0]);
         $this->assertEquals('hello', $results[0]->original);
-        $this->assertInstanceOf(\App\Data\WordData::class, $results[1]);
+        $this->assertInstanceOf(WordData::class, $results[1]);
         $this->assertEquals('help', $results[1]->original);
     }
 
@@ -145,11 +146,11 @@ final class SearchUserWordsTest extends TestCase
 
         // Assert
         $this->assertCount(1, $resultsUser1);
-        $this->assertInstanceOf(\App\Data\WordData::class, $resultsUser1[0]);
+        $this->assertInstanceOf(WordData::class, $resultsUser1[0]);
         $this->assertEquals($user1->id, $resultsUser1[0]->user_id);
 
         $this->assertCount(1, $resultsUser2);
-        $this->assertInstanceOf(\App\Data\WordData::class, $resultsUser2[0]);
+        $this->assertInstanceOf(WordData::class, $resultsUser2[0]);
         $this->assertEquals($user2->id, $resultsUser2[0]->user_id);
     }
 
@@ -217,7 +218,7 @@ final class SearchUserWordsTest extends TestCase
 
         // Assert
         $this->assertCount(1, $results);
-        $this->assertInstanceOf(\App\Data\WordData::class, $results[0]);
+        $this->assertInstanceOf(WordData::class, $results[0]);
         $this->assertEquals('hello', $results[0]->original);
         $this->assertEquals('привет', $results[0]->translated);
         $this->assertEquals('en', $results[0]->language);
@@ -239,7 +240,7 @@ final class SearchUserWordsTest extends TestCase
 
         // Assert
         $this->assertCount(1, $results);
-        $this->assertInstanceOf(\App\Data\WordData::class, $results[0]);
+        $this->assertInstanceOf(WordData::class, $results[0]);
         $this->assertEquals('café', $results[0]->original);
     }
 
@@ -259,7 +260,7 @@ final class SearchUserWordsTest extends TestCase
 
         // Assert
         $this->assertCount(1, $results);
-        $this->assertInstanceOf(\App\Data\WordData::class, $results[0]);
+        $this->assertInstanceOf(WordData::class, $results[0]);
         $this->assertEquals('こんにちは', $results[0]->translated);
     }
 
@@ -289,7 +290,7 @@ final class SearchUserWordsTest extends TestCase
 
         // Assert
         $this->assertCount(1, $results);
-        $this->assertInstanceOf(\App\Data\WordData::class, $results[0]);
+        $this->assertInstanceOf(WordData::class, $results[0]);
         $this->assertEquals($user->id, $results[0]->user_id);
     }
 }

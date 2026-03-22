@@ -9,6 +9,7 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
+use Illuminate\Http\Client\RequestException;
 
 final class OpenAiImageWordExtractorTest extends TestCase
 {
@@ -128,7 +129,7 @@ final class OpenAiImageWordExtractorTest extends TestCase
         $image = UploadedFile::fake()->image('test.jpg');
         $extractor = new OpenAiImageWordExtractor();
 
-        $this->expectException(\Illuminate\Http\Client\RequestException::class);
+        $this->expectException(RequestException::class);
 
         $extractor->extractWords($image, 'en');
     }

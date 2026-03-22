@@ -9,6 +9,7 @@ use App\Services\ClaudeImageWordExtractor;
 use Illuminate\Http\UploadedFile;
 use Mockery;
 use Tests\TestCase;
+use Mockery\MockInterface;
 
 final class ClaudeImageWordExtractorTest extends TestCase
 {
@@ -21,7 +22,7 @@ final class ClaudeImageWordExtractorTest extends TestCase
 
         $image = UploadedFile::fake()->image('test.jpg');
 
-        /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
+        /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPromptWithFile')
             ->once() // @phpstan-ignore method.notFound
@@ -40,7 +41,7 @@ final class ClaudeImageWordExtractorTest extends TestCase
     {
         $image = UploadedFile::fake()->image('photo.png');
 
-        /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
+        /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPromptWithFile')
             ->once() // @phpstan-ignore method.notFound
@@ -56,7 +57,7 @@ final class ClaudeImageWordExtractorTest extends TestCase
     {
         $image = UploadedFile::fake()->image('test.jpg');
 
-        /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
+        /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPromptWithFile')
             ->once() // @phpstan-ignore method.notFound

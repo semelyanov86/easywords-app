@@ -7,6 +7,7 @@ namespace App\Actions\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Auth\AuthenticationException;
 
 final class UpdateUserPassword
 {
@@ -18,7 +19,7 @@ final class UpdateUserPassword
      * @param  string  $currentPassword  Текущий пароль пользователя
      * @param  string  $newPassword  Новый пароль
      *
-     * @throws \Illuminate\Auth\AuthenticationException Если текущий пароль неверен
+     * @throws AuthenticationException Если текущий пароль неверен
      */
     public function handle(string $currentPassword, string $newPassword): void
     {

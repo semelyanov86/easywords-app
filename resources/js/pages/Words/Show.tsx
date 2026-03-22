@@ -36,6 +36,7 @@ interface StudyMeta {
     prev_id: number | null;
     current_index: number | null;
     reverse: boolean;
+    main_language: string;
 }
 
 interface WordStudyPageProps {
@@ -94,6 +95,13 @@ export default function WordStudyPage({
     const isLearned = word.done_at !== null;
     const canGoPrev = meta?.prev_id !== null && meta?.prev_id !== undefined;
     const canGoNext = meta?.next_id !== null && meta?.next_id !== undefined;
+    const isReverse = meta?.reverse ?? false;
+    const mainLanguage = meta?.main_language?.toUpperCase() ?? 'RU';
+
+    const frontLanguage = isReverse
+        ? mainLanguage
+        : word.language.toUpperCase();
+    const backLanguage = isReverse ? word.language.toUpperCase() : mainLanguage;
 
     const handleShare = () => {
         shareForm.setData('user_id', selectedUserId);
@@ -188,7 +196,7 @@ export default function WordStudyPage({
                         {word.original}
                     </p>
                     <p className="text-primary-600 dark:text-primary-400 text-lg font-medium md:text-2xl">
-                        {word.language.toUpperCase()}
+                        {frontLanguage}
                     </p>
                     {isLearned && (
                         <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
@@ -243,7 +251,7 @@ export default function WordStudyPage({
                         {word.translated}
                     </p>
                     <p className="text-primary-600 dark:text-primary-400 text-lg font-medium md:text-2xl">
-                        RU
+                        {backLanguage}
                     </p>
                     {isLearned && (
                         <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">

@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Middleware;
 use Spatie\RouteAttributes\Attributes\Post;
+use App\Actions\GetUserSettings;
+use App\Actions\UpdateUserSetting;
+use App\Models\User;
 
 /**
  * Контроллер для работы с настройками пользователя.
@@ -29,10 +32,10 @@ final class UserSettingsController extends Controller
     #[Get('api/v1/settings', name: 'api.user-settings.index')]
     public function index(): JsonResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
-        $settingsData = \App\Actions\GetUserSettings::make()->handle($user->id);
+        $settingsData = GetUserSettings::make()->handle($user->id);
 
         return $settingsData->toResponse();
     }
@@ -46,7 +49,7 @@ final class UserSettingsController extends Controller
     #[Post('api/v1/settings', name: 'api.user-settings.update')]
     public function update(UpdateSettingRequest $request): JsonResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         $settingName = $request->string('name')->toString();
@@ -54,7 +57,7 @@ final class UserSettingsController extends Controller
         /** @var mixed $settingValue */
         $settingValue = $request->input('value');
 
-        $settingsData = \App\Actions\UpdateUserSetting::make()->handle(
+        $settingsData = UpdateUserSetting::make()->handle(
             $user->id,
             $settingName,
             $settingValue,

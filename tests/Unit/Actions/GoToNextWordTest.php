@@ -134,7 +134,7 @@ final class GoToNextWordTest extends TestCase
         $this->assertIsArray($cachedStart);
         $this->assertCount(5, $cachedStart);
         // Проверяем, что все уникальные ID остались
-        $this->assertCount(5, array_unique($cachedStart));
+        $this->assertCount(5, array_unique(array_filter($cachedStart, is_int(...))));
 
         // Проверяем, что первый элемент - текущее слово
         $this->assertEquals($wordIds[4], $cachedStart[0]);

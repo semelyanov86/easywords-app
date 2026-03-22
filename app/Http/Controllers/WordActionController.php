@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\User;
 
 /**
  * Контроллер для действий с словами.
@@ -35,7 +36,7 @@ final class WordActionController
      */
     public function markLearned(Request $request, MarkWordAsLearned $markWordAsLearned, int $id): RedirectResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         try {
@@ -49,7 +50,7 @@ final class WordActionController
 
     public function markUnlearned(Word $word): RedirectResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         $action = resolve(MarkWordUnlearned::class);
@@ -66,7 +67,7 @@ final class WordActionController
      */
     public function delete(Request $request, DeleteWord $deleteWord, int $id): RedirectResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         try {
@@ -86,7 +87,7 @@ final class WordActionController
      */
     public function toggleStarred(Request $request, ToggleWordStarred $toggleWordStarred, int $id): RedirectResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         try {
@@ -112,16 +113,16 @@ final class WordActionController
             'user_id' => ['required', 'integer', 'exists:users,id'],
         ]);
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
-        $word = \App\Models\Word::query()
+        $word = Word::query()
             ->where('id', $id)
             ->where('user_id', $user->id)
             ->firstOrFail();
 
-        /** @var \App\Models\User $targetUser */
-        $targetUser = \App\Models\User::query()->findOrFail($validated['user_id']);
+        /** @var User $targetUser */
+        $targetUser = User::query()->findOrFail($validated['user_id']);
 
         try {
             $shareWord->handle($word, $targetUser, $user);
@@ -139,7 +140,7 @@ final class WordActionController
      */
     public function goToNext(NextWordRequest $request, GoToNextWord $goToNextWord): Response|RedirectResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         try {
@@ -153,6 +154,8 @@ final class WordActionController
         }
         $nextId = $result['word']->id;
 
+        $settings = $user->getSettingsValue();
+
         return Inertia::render('Words/Show', [
             'word' => $result['word'],
             'user' => $user,
@@ -163,6 +166,7 @@ final class WordActionController
                 'current_index' => $result['meta']['current_index'],
                 'language' => $request->string('language')->toString(),
                 'reverse' => $request->boolean('reverse'),
+                'main_language' => $settings['main_language'],
             ],
         ]);
     }
@@ -174,11 +178,13 @@ final class WordActionController
      */
     public function goToPrev(NextWordRequest $request, GoToPrevWord $goToPrevWord): Response
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         $result = $goToPrevWord->handle($user, $request->string('language')->toString(), $request->boolean('reverse'));
         $prevId = $result['word']->id;
+
+        $settings = $user->getSettingsValue();
 
         return Inertia::render('Words/Show', [
             'word' => $result['word'],
@@ -190,6 +196,7 @@ final class WordActionController
                 'current_index' => $result['meta']['current_index'],
                 'language' => $request->string('language')->toString(),
                 'reverse' => $request->boolean('reverse'),
+                'main_language' => $settings['main_language'],
             ],
         ]);
     }

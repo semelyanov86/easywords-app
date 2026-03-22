@@ -9,6 +9,7 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
+use Illuminate\Http\Client\RequestException;
 
 final class ClaudeApiClientTest extends TestCase
 {
@@ -72,7 +73,7 @@ final class ClaudeApiClientTest extends TestCase
 
         $client = new ClaudeApiClient();
 
-        $this->expectException(\Illuminate\Http\Client\RequestException::class);
+        $this->expectException(RequestException::class);
 
         $client->sendJsonPrompt('Test prompt');
     }
@@ -128,7 +129,7 @@ final class ClaudeApiClientTest extends TestCase
         $file = UploadedFile::fake()->image('test.jpg');
         $client = new ClaudeApiClient();
 
-        $this->expectException(\Illuminate\Http\Client\RequestException::class);
+        $this->expectException(RequestException::class);
 
         $client->sendJsonPromptWithFile('Test prompt', $file);
     }

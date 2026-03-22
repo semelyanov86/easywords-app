@@ -7,6 +7,9 @@ namespace App\Http\Controllers;
 use App\Actions\SearchUserWords;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Data\WordData;
+use App\Models\User;
+use Inertia\Response;
 
 /**
  * Контроллер для поиска слов пользователя.
@@ -24,17 +27,17 @@ final class WordSearchController
      *
      * @param  Request  $request  HTTP запрос с параметром 'q' (поисковый запрос)
      * @param  SearchUserWords  $searchUserWords  Action для поиска слов
-     * @return \Inertia\Response Ответ Inertia со страницей поиска
+     * @return Response Ответ Inertia со страницей поиска
      */
-    public function __invoke(Request $request, SearchUserWords $searchUserWords): \Inertia\Response
+    public function __invoke(Request $request, SearchUserWords $searchUserWords): Response
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = auth()->user();
 
         /** @var ?string $query */
         $query = $request->input('q', '');
 
-        /** @var array<int, \App\Data\WordData> $results */
+        /** @var array<int, WordData> $results */
         $results = $searchUserWords->handle($user->id, $query);
 
         return Inertia::render('Words/Search', [

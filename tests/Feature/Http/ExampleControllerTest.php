@@ -11,6 +11,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use App\Data\ExampleData;
+use Mockery\MockInterface;
 
 final class ExampleControllerTest extends TestCase
 {
@@ -72,12 +74,12 @@ final class ExampleControllerTest extends TestCase
         $this->app->instance(
             GenerateWordExamples::class,
             Mockery::mock(GenerateWordExamples::class, function ($mock) use ($word, $user, $mockExamples): void {
-                /** @var GenerateWordExamples&\Mockery\MockInterface $mockInstance */
+                /** @var GenerateWordExamples&MockInterface $mockInstance */
                 $mockInstance = $mock;
                 $mockInstance->shouldReceive('handle')
                     ->once() // @phpstan-ignore method.notFound
                     ->with($word->id, $user->id) // @phpstan-ignore method.nonObject
-                    ->andReturn(new \App\Data\ExampleData( // @phpstan-ignore method.nonObject
+                    ->andReturn(new ExampleData( // @phpstan-ignore method.nonObject
                         id: '112',
                         example_original: $mockExamples['example_original'],
                         example_translated: $mockExamples['example_translated']
@@ -164,7 +166,7 @@ final class ExampleControllerTest extends TestCase
         $this->app->instance(
             GenerateWordExamples::class,
             Mockery::mock(GenerateWordExamples::class, function ($mock) use ($word, $user): void {
-                /** @var GenerateWordExamples&\Mockery\MockInterface $mockInstance */
+                /** @var GenerateWordExamples&MockInterface $mockInstance */
                 $mockInstance = $mock;
                 $mockInstance->shouldReceive('handle')
                     ->once() // @phpstan-ignore method.notFound

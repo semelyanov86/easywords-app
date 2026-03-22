@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Middleware;
+use App\Models\User;
 
 #[Middleware('auth:sanctum')]
 final class StatisticsController extends Controller
@@ -33,7 +34,7 @@ final class StatisticsController extends Controller
     #[Get('api/v1/statistics', name: 'api.v1.statistics')]
     public function statistics(GetUserStatistics $getUserStatistics): JsonResponse
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = auth('sanctum')->user();
 
         if ($user === null) {

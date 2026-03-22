@@ -8,6 +8,7 @@ use App\Actions\Auth\AuthenticateUser;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Тесты для action аутентификации пользователя.
@@ -44,7 +45,7 @@ class AuthenticateUserTest extends TestCase
         $this->assertNotEmpty($token->plainTextToken);
         $this->assertNotNull($token->accessToken->tokenable);
         $tokenable = $token->accessToken->tokenable;
-        $this->assertInstanceOf(\App\Models\User::class, $tokenable);
+        $this->assertInstanceOf(User::class, $tokenable);
         $this->assertEquals($this->user->id, $tokenable->id);
         $this->assertEquals('api-token', $token->accessToken->name);
     }
@@ -54,7 +55,7 @@ class AuthenticateUserTest extends TestCase
      */
     public function test_cannot_authenticate_with_invalid_email(): void
     {
-        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        $this->expectException(HttpException::class);
 
         $this->authenticateUser->handle(
             email: 'nonexistent@example.com',
@@ -67,7 +68,7 @@ class AuthenticateUserTest extends TestCase
      */
     public function test_cannot_authenticate_with_invalid_password(): void
     {
-        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        $this->expectException(HttpException::class);
 
         $this->authenticateUser->handle(
             email: $this->user->email,

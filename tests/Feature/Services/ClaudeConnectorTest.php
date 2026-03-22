@@ -8,6 +8,7 @@ use App\Services\ClaudeApiClient;
 use App\Services\ClaudeConnector;
 use Mockery;
 use Tests\TestCase;
+use Mockery\MockInterface;
 
 final class ClaudeConnectorTest extends TestCase
 {
@@ -18,7 +19,7 @@ final class ClaudeConnectorTest extends TestCase
             'example_translated' => ['Литературный пример', 'Афоризм', 'Разговорный пример'],
         ];
 
-        /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
+        /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPrompt')
             ->once() // @phpstan-ignore method.notFound
@@ -35,7 +36,7 @@ final class ClaudeConnectorTest extends TestCase
 
     public function test_prompt_contains_word_and_language(): void
     {
-        /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
+        /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPrompt')
             ->once() // @phpstan-ignore method.notFound

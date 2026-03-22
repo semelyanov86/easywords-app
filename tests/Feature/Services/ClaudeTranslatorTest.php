@@ -8,12 +8,13 @@ use App\Services\ClaudeApiClient;
 use App\Services\ClaudeTranslator;
 use Mockery;
 use Tests\TestCase;
+use Mockery\MockInterface;
 
 final class ClaudeTranslatorTest extends TestCase
 {
     public function test_translates_word_via_claude_api_client(): void
     {
-        /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
+        /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPrompt')
             ->once() // @phpstan-ignore method.notFound
@@ -28,7 +29,7 @@ final class ClaudeTranslatorTest extends TestCase
 
     public function test_prompt_contains_word_and_language(): void
     {
-        /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
+        /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPrompt')
             ->once() // @phpstan-ignore method.notFound
@@ -46,7 +47,7 @@ final class ClaudeTranslatorTest extends TestCase
 
     public function test_trims_whitespace_from_result(): void
     {
-        /** @var ClaudeApiClient&\Mockery\MockInterface $mockClient */
+        /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPrompt')
             ->once() // @phpstan-ignore method.notFound

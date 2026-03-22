@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Word;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 final class IncrementWordViewsTest extends TestCase
 {
@@ -38,7 +39,7 @@ final class IncrementWordViewsTest extends TestCase
 
     public function test_throws_exception_if_word_not_found(): void
     {
-        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        $this->expectException(ModelNotFoundException::class);
 
         $user = User::factory()->create();
         $action = new IncrementWordViews();
@@ -51,7 +52,7 @@ final class IncrementWordViewsTest extends TestCase
 
     public function test_throws_exception_if_word_belongs_to_different_user(): void
     {
-        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        $this->expectException(ModelNotFoundException::class);
 
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();

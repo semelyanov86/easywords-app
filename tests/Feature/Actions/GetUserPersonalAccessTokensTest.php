@@ -8,6 +8,8 @@ use App\Actions\GetUserPersonalAccessTokens;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 final class GetUserPersonalAccessTokensTest extends TestCase
 {
@@ -80,7 +82,7 @@ final class GetUserPersonalAccessTokensTest extends TestCase
 
     public function test_throws_exception_for_non_existent_user(): void
     {
-        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        $this->expectException(ModelNotFoundException::class);
 
         $action = new GetUserPersonalAccessTokens();
         $action->handle(999999);
@@ -97,8 +99,8 @@ final class GetUserPersonalAccessTokensTest extends TestCase
         $tokenData = $tokens->first();
 
         $this->assertNotNull($tokenData);
-        $this->assertInstanceOf(\Carbon\CarbonImmutable::class, $tokenData->created_at);
-        $this->assertInstanceOf(\Carbon\CarbonImmutable::class, $tokenData->updated_at);
+        $this->assertInstanceOf(CarbonImmutable::class, $tokenData->created_at);
+        $this->assertInstanceOf(CarbonImmutable::class, $tokenData->updated_at);
     }
 
     public function test_last_used_at_is_carbon_instance(): void
@@ -112,6 +114,6 @@ final class GetUserPersonalAccessTokensTest extends TestCase
         $tokenData = $tokens->first();
         $this->assertNotNull($tokenData);
 
-        $this->assertInstanceOf(\Carbon\CarbonImmutable::class, $tokenData->last_used_at);
+        $this->assertInstanceOf(CarbonImmutable::class, $tokenData->last_used_at);
     }
 }

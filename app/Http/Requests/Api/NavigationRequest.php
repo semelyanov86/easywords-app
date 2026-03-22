@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Валидация запроса для навигации по словам (next/prev).
@@ -16,7 +20,7 @@ final class NavigationRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return \Illuminate\Support\Facades\Auth::check();
+        return Auth::check();
     }
 
     /**
@@ -41,13 +45,13 @@ final class NavigationRequest extends FormRequest
     }
 
     #[\Override]
-    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator): void
+    protected function failedValidation(Validator $validator): void
     {
-        throw new \Illuminate\Validation\ValidationException(
+        throw new ValidationException(
             $validator,
             response()->json([
                 'errors' => $validator->errors(),
-            ], \Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY, ['Content-Type' => 'application/vnd.api+json'])
+            ], Response::HTTP_UNPROCESSABLE_ENTITY, ['Content-Type' => 'application/vnd.api+json'])
         );
     }
 }

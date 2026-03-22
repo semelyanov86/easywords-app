@@ -8,6 +8,8 @@ use App\Actions\StartStudySession;
 use App\Http\Requests\NextWordRequest;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
+use App\Models\User;
+use Inertia\Response;
 
 /**
  * Контроллер для запуска сессии изучения слов.
@@ -26,8 +28,8 @@ final readonly class StartStudyController
     public function __invoke(
         NextWordRequest $request,
         StartStudySession $startStudySession,
-    ): \Inertia\Response|RedirectResponse {
-        /** @var \App\Models\User $user */
+    ): Response|RedirectResponse {
+        /** @var User $user */
         $user = auth()->user();
 
         $settings = $user->getSettingsValue();
@@ -54,6 +56,7 @@ final readonly class StartStudyController
                 'current_index' => $sessionData['current_index'],
                 'language' => $request->string('language')->toString(),
                 'reverse' => $request->boolean('reverse'),
+                'main_language' => $settings['main_language'],
             ],
         ]);
     }

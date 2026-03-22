@@ -7,6 +7,7 @@ namespace App\Actions;
 use App\Data\WordData;
 use App\Models\Word;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Увеличение счётчика просмотров слова.
@@ -26,7 +27,7 @@ final class IncrementWordViews
      * @param  int  $userId  ID пользователя-владельца (для проверки прав)
      * @return WordData Обновлённое слово в формате Data
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Если слово не найдено или не принадлежит пользователю
+     * @throws ModelNotFoundException Если слово не найдено или не принадлежит пользователю
      */
     public function handle(int $wordId, int $userId): WordData
     {

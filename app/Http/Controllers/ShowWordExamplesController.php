@@ -12,6 +12,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Контроллер для отображения AI-генерируемых примеров использования слова.
@@ -31,8 +33,8 @@ final class ShowWordExamplesController
      * @param  int  $word  ID слова
      * @return Response|RedirectResponse Inertia-ответ с примерами или редирект с ошибкой
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException если пользователь не премиум
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException если слово не найдено
+     * @throws AuthorizationException если пользователь не премиум
+     * @throws ModelNotFoundException если слово не найдено
      */
     public function __invoke(Request $request, int $word): Response|RedirectResponse
     {

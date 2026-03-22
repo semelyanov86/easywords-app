@@ -9,6 +9,7 @@ use App\Http\Requests\UpdatePasswordRequest;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\User;
 
 /**
  * Контроллер для управления паролем пользователя.
@@ -22,7 +23,7 @@ final class PasswordController
      */
     public function edit(): Response
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = auth()->user();
 
         return Inertia::render('password/Edit', [
@@ -37,7 +38,7 @@ final class PasswordController
      */
     public function updatePassword(UpdatePasswordRequest $request, UpdateUserPassword $updatePassword): RedirectResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = auth()->user();
 
         $updatePassword->handle(

@@ -6,6 +6,9 @@ namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Запрос на шаринг слова с другим пользователем.
@@ -35,13 +38,13 @@ final class ShareWordRequest extends FormRequest
     }
 
     #[\Override]
-    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator): void
+    protected function failedValidation(Validator $validator): void
     {
-        throw new \Illuminate\Validation\ValidationException(
+        throw new ValidationException(
             $validator,
             response()->json([
                 'errors' => $validator->errors(),
-            ], \Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY)
+            ], Response::HTTP_UNPROCESSABLE_ENTITY)
         );
     }
 }

@@ -52,7 +52,7 @@ final class UserSettingsInfolist
                     ->label('Languages list')
                     ->getStateUsing(fn (User $user) => $user->settings()->get('languages_list'))
                     ->badge()
-                    ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', $state) : $state),
+                    ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', array_filter($state, is_string(...))) : $state),
                 IconEntry::make('settings.starred_enabled')
                     ->label('Starred enabled')
                     ->getStateUsing(fn (User $user) => $user->settings()->get('starred_enabled'))

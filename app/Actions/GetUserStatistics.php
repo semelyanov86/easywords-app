@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Word;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Support\Facades\Date;
 
 /**
  * Получение статистики пользователя.
@@ -108,7 +109,7 @@ final readonly class GetUserStatistics
         $currentDate = today();
 
         foreach ($distinctDates as $dateString) {
-            $date = \Illuminate\Support\Facades\Date::parse($dateString);
+            $date = Date::parse($dateString);
 
             if ($date->isSameDay($currentDate)) {
                 $streak++;

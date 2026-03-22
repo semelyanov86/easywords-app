@@ -6,6 +6,9 @@ namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Request для обновления конкретной настройки пользователя.
@@ -55,13 +58,13 @@ final class UpdateSettingRequest extends FormRequest
      * Настройка валидатора для JSON API ответов.
      */
     #[\Override]
-    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator): void
+    protected function failedValidation(Validator $validator): void
     {
-        throw new \Illuminate\Validation\ValidationException(
+        throw new ValidationException(
             $validator,
             response()->json([
                 'errors' => $validator->errors(),
-            ], \Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY)
+            ], Response::HTTP_UNPROCESSABLE_ENTITY)
         );
     }
 }

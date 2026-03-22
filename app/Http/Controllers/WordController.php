@@ -11,6 +11,9 @@ use App\Actions\IncrementWordViews;
 use App\Http\Requests\StoreWordWebRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Inertia\Response;
 
 /**
  * Контроллер для управления словами через web-интерфейс.
@@ -24,9 +27,9 @@ final class WordController
      *
      * Передает список доступных языков из настроек пользователя.
      */
-    public function create(GetUserSettings $getUserSettings): \Inertia\Response
+    public function create(GetUserSettings $getUserSettings): Response
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = auth()->user();
 
         $settings = $getUserSettings->handle($user->id);
@@ -43,12 +46,12 @@ final class WordController
      * Создает слово с привязкой к авторизованному пользователю.
      * Возвращает созданное слово для отображения успешного уведомления.
      */
-    public function store(StoreWordWebRequest $request, CreateWord $createWord, GetUserSettings $getUserSettings): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function store(StoreWordWebRequest $request, CreateWord $createWord, GetUserSettings $getUserSettings): JsonResponse|Response
     {
         /** @var array{original: string, translated: string, language: string} $validated */
         $validated = $request->validated();
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = auth()->user();
 
         $wordData = $createWord->handle(
@@ -82,9 +85,9 @@ final class WordController
      * удалить, добавить в избранное и поделиться с другим пользователем.
      * Принимает опциональные мета-данные для навигации между словами.
      */
-    public function show(Request $request, GetWord $getWord, IncrementWordViews $increment, int $id): \Inertia\Response
+    public function show(Request $request, GetWord $getWord, IncrementWordViews $increment, int $id): Response
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = auth()->user();
 
         $word = $getWord->handle($id, $user->id);

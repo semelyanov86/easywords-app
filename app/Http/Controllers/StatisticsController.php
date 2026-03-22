@@ -8,6 +8,7 @@ use App\Actions\GetUserStatistics;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\User;
 
 /**
  * Контроллер страницы персональной статистики пользователя.
@@ -25,7 +26,7 @@ final class StatisticsController
      */
     public function __invoke(Request $request): Response
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = auth()->user();
         $statistics = GetUserStatistics::run($request->user());
 

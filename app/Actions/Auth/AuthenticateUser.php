@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\NewAccessToken;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Auth\AuthenticationException;
 
 final class AuthenticateUser
 {
@@ -20,7 +21,7 @@ final class AuthenticateUser
      * @param  string  $password  Пароль пользователя
      * @return NewAccessToken Созданный токен
      *
-     * @throws \Illuminate\Auth\AuthenticationException Если учетные данные неверны
+     * @throws AuthenticationException Если учетные данные неверны
      */
     public function handle(string $email, string $password): NewAccessToken
     {

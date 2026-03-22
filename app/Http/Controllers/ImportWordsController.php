@@ -8,6 +8,7 @@ use App\Actions\GetUserSettings;
 use App\Actions\ImportSamplesToWords;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 /**
  * Контроллер для импорта sample слов в словарь пользователя.
@@ -30,7 +31,7 @@ final class ImportWordsController
      */
     public function __invoke(GetUserSettings $getUserSettings): RedirectResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         $settings = $getUserSettings->handle($user->id);

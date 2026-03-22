@@ -7,6 +7,7 @@ namespace App\Actions;
 use App\Data\WordData;
 use App\Models\Word;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Получение слова по ID с проверкой прав доступа.
@@ -25,7 +26,7 @@ final readonly class GetWord
      * @param  int  $wordId  ID слова
      * @param  int  $userId  ID пользователя для проверки прав
      * @return WordData Data-объект слова
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException если слово не найдено или не принадлежит пользователю
+     * @throws ModelNotFoundException если слово не найдено или не принадлежит пользователю
      */
     public function handle(int $wordId, int $userId): WordData
     {

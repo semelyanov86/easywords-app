@@ -8,6 +8,7 @@ use App\Actions\GetUserSettings;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 final class GetUserSettingsTest extends TestCase
 {
@@ -42,7 +43,7 @@ final class GetUserSettingsTest extends TestCase
 
     public function test_throws_exception_for_nonexistent_user(): void
     {
-        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        $this->expectException(ModelNotFoundException::class);
 
         GetUserSettings::make()->handle(99999);
     }

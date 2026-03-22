@@ -8,6 +8,7 @@ use App\Contracts\WordExampleGenerator;
 use App\Data\ExampleData;
 use App\Models\Word;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Генерация примеров использования слова через AI.
@@ -29,7 +30,7 @@ class GenerateWordExamples
      * @param  int  $userId  ID пользователя для проверки прав
      * @return ExampleData Data-объект с примерами
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException если слово не найдено или не принадлежит пользователю
+     * @throws ModelNotFoundException если слово не найдено или не принадлежит пользователю
      * @throws \RuntimeException если генерация примеров не удалась
      */
     public function handle(int $wordId, int $userId): ExampleData

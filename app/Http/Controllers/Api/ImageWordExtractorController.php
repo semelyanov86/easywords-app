@@ -12,6 +12,7 @@ use App\Contracts\ImageWordExtractor;
 use Illuminate\Http\JsonResponse;
 use Spatie\RouteAttributes\Attributes\Middleware;
 use Spatie\RouteAttributes\Attributes\Post;
+use Illuminate\Http\UploadedFile;
 
 /**
  * Контроллер для извлечения слов из изображений.
@@ -38,7 +39,7 @@ final class ImageWordExtractorController extends Controller
         ExtractWordsFromImageRequest $request,
         ImageWordExtractor $extractor
     ): JsonResponse {
-        /** @var array{image: \Illuminate\Http\UploadedFile, language: string, target_language?: string} $validated */
+        /** @var array{image: UploadedFile, language: string, target_language?: string} $validated */
         $validated = $request->validated();
 
         $sourceLanguage = $validated['language'];

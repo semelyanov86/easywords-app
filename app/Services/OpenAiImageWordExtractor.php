@@ -8,6 +8,7 @@ use App\Contracts\ImageWordExtractor;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\RequestException;
 
 /**
  * Сервис для извлечения слов из изображений через OpenAI-совместимый API.
@@ -36,7 +37,7 @@ final readonly class OpenAiImageWordExtractor implements ImageWordExtractor
     /**
      * {@inheritDoc}
      *
-     * @throws \Illuminate\Http\Client\RequestException если запрос к API не удался
+     * @throws RequestException если запрос к API не удался
      * @throws \JsonException если не удалось декодировать JSON ответ
      */
     public function extractWords(

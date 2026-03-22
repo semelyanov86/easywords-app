@@ -11,6 +11,7 @@ use Illuminate\Http\UploadedFile;
 use Laravel\Sanctum\Sanctum;
 use Mockery;
 use Tests\TestCase;
+use Mockery\MockInterface;
 
 final class ImageWordExtractorControllerTest extends TestCase
 {
@@ -26,7 +27,7 @@ final class ImageWordExtractorControllerTest extends TestCase
 
         $image = UploadedFile::fake()->image('test.jpg');
 
-        /** @var ImageWordExtractor&\Mockery\MockInterface $mockExtractor */
+        /** @var ImageWordExtractor&MockInterface $mockExtractor */
         $mockExtractor = Mockery::mock(ImageWordExtractor::class);
         $mockExtractor->shouldReceive('extractWords')
             ->once() // @phpstan-ignore method.notFound
@@ -230,7 +231,7 @@ final class ImageWordExtractorControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        /** @var ImageWordExtractor&\Mockery\MockInterface $mockExtractor */
+        /** @var ImageWordExtractor&MockInterface $mockExtractor */
         $mockExtractor = Mockery::mock(ImageWordExtractor::class);
         $mockExtractor->shouldReceive('extractWords')
             ->once() // @phpstan-ignore method.notFound
@@ -260,7 +261,7 @@ final class ImageWordExtractorControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        /** @var ImageWordExtractor&\Mockery\MockInterface $mockExtractor */
+        /** @var ImageWordExtractor&MockInterface $mockExtractor */
         $mockExtractor = Mockery::mock(ImageWordExtractor::class);
         $mockExtractor->shouldReceive('extractWords')
             ->once() // @phpstan-ignore method.notFound
@@ -302,7 +303,7 @@ final class ImageWordExtractorControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        /** @var ImageWordExtractor&\Mockery\MockInterface $mockExtractor */
+        /** @var ImageWordExtractor&MockInterface $mockExtractor */
         $mockExtractor = Mockery::mock(ImageWordExtractor::class);
         $mockExtractor->shouldReceive('extractWords')
             ->once() // @phpstan-ignore method.notFound

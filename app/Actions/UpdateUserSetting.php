@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Data\UserSettingsData;
 
 /**
  * Обновление конкретной настройки пользователя.
@@ -24,9 +25,9 @@ final class UpdateUserSetting
      * @param  int  $userId  ID пользователя
      * @param  string  $settingName  Имя настройки
      * @param  mixed  $settingValue  Новое значение настройки
-     * @return \App\Data\UserSettingsData Data-объект со всеми настройками пользователя после обновления
+     * @return UserSettingsData Data-объект со всеми настройками пользователя после обновления
      */
-    public function handle(int $userId, string $settingName, mixed $settingValue): \App\Data\UserSettingsData
+    public function handle(int $userId, string $settingName, mixed $settingValue): UserSettingsData
     {
         /** @var User $user */
         $user = User::query()->findOrFail($userId);

@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Тесты для Action обновления пароля пользователя.
@@ -79,7 +80,7 @@ final class UpdateUserPasswordTest extends TestCase
         $action = new UpdateUserPassword();
 
         // Expect
-        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        $this->expectException(ModelNotFoundException::class);
 
         // Act
         $action->handle(

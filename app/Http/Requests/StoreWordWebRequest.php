@@ -7,6 +7,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Unique;
 
 /**
  * Request для валидации создания слова через web-интерфейс.
@@ -28,7 +29,7 @@ final class StoreWordWebRequest extends FormRequest
      * Проверяет, что оригинальное слово уникально для текущего пользователя
      * и выбранного языка.
      *
-     * @return array<string, array<int, string|\Illuminate\Validation\Rules\Unique>>
+     * @return array<string, array<int, string|Unique>>
      */
     public function rules(): array
     {

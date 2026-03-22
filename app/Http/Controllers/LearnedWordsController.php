@@ -7,6 +7,8 @@ namespace App\Http\Controllers;
 use App\Actions\GetUserWordsWithFilters;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Models\User;
+use Inertia\Response;
 
 /**
  * Контроллер для отображения списка выученных слов пользователя.
@@ -24,9 +26,9 @@ final class LearnedWordsController
      *
      * @param  GetUserWordsWithFilters  $getUserWordsWithFilters  Action для получения слов с фильтрами
      */
-    public function __invoke(GetUserWordsWithFilters $getUserWordsWithFilters): \Inertia\Response
+    public function __invoke(GetUserWordsWithFilters $getUserWordsWithFilters): Response
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         $words = $getUserWordsWithFilters->handle($user->id, ['done' => 'true']);

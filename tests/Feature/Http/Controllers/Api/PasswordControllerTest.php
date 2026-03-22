@@ -7,6 +7,7 @@ namespace Tests\Feature\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Тесты для контроллера изменения пароля.
@@ -48,7 +49,7 @@ final class PasswordControllerTest extends TestCase
         $freshUser = $this->user->fresh();
         $this->assertNotNull($freshUser);
         $this->assertTrue(
-            \Illuminate\Support\Facades\Hash::check('newPassword456', $freshUser->password),
+            Hash::check('newPassword456', $freshUser->password),
         );
     }
 
@@ -72,10 +73,10 @@ final class PasswordControllerTest extends TestCase
         $freshUser = $this->user->fresh();
         $this->assertNotNull($freshUser);
         $this->assertFalse(
-            \Illuminate\Support\Facades\Hash::check('newPassword456', $freshUser->password),
+            Hash::check('newPassword456', $freshUser->password),
         );
         $this->assertTrue(
-            \Illuminate\Support\Facades\Hash::check('oldPassword123', $freshUser->password),
+            Hash::check('oldPassword123', $freshUser->password),
         );
     }
 

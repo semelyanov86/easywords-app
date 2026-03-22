@@ -6,6 +6,9 @@ namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Запрос для запуска сессии изучения слов.
@@ -52,13 +55,13 @@ final class StartStudyRequest extends FormRequest
     }
 
     #[\Override]
-    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator): void
+    protected function failedValidation(Validator $validator): void
     {
-        throw new \Illuminate\Validation\ValidationException(
+        throw new ValidationException(
             $validator,
             response()->json([
                 'errors' => $validator->errors(),
-            ], \Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY, ['Content-Type' => 'application/vnd.api+json'])
+            ], Response::HTTP_UNPROCESSABLE_ENTITY, ['Content-Type' => 'application/vnd.api+json'])
         );
     }
 }

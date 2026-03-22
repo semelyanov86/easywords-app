@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Models\Word;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Удаление слова с проверкой прав доступа.
@@ -23,7 +24,7 @@ final readonly class DeleteWord
      *
      * @param  int  $wordId  ID слова
      * @param  int  $userId  ID пользователя для проверки прав
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException если слово не найдено или не принадлежит пользователю
+     * @throws ModelNotFoundException если слово не найдено или не принадлежит пользователю
      */
     public function handle(int $wordId, int $userId): void
     {

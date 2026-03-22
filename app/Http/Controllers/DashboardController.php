@@ -7,6 +7,8 @@ namespace App\Http\Controllers;
 use App\Actions\GetUserSettings;
 use App\Actions\GetUserStatistics;
 use Inertia\Inertia;
+use App\Models\User;
+use Inertia\Response;
 
 /**
  * Контроллер для отображения главной страницы приложения (dashboard).
@@ -22,9 +24,9 @@ final class DashboardController
      * Возвращает Inertia-ответ с данными пользователя и его настройками.
      * На странице отображаются кнопки для выбора направления изучения языков.
      */
-    public function __invoke(GetUserSettings $getUserSettings, GetUserStatistics $getUserStatistics): \Inertia\Response
+    public function __invoke(GetUserSettings $getUserSettings, GetUserStatistics $getUserStatistics): Response
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = auth()->user();
 
         return Inertia::render('dashboard', [

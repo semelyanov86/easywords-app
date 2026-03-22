@@ -29,14 +29,14 @@ final readonly class ImportSamplesToWords
     use AsAction;
 
     /**
-     * @return \Illuminate\Support\Collection<int, WordData>
+     * @return Collection<int, WordData>
      */
-    public function handle(User $user, string $language): \Illuminate\Support\Collection
+    public function handle(User $user, string $language): Collection
     {
         $exists = Sample::where('language', $language)->exists();
         abort_if(! $exists, Response::HTTP_NOT_FOUND, 'Language Not Found');
         $samples = Sample::where('language', $language)->get();
-        /** @var array<int, \App\Models\Word> $wordsArray */
+        /** @var array<int, Word> $wordsArray */
         $wordsArray = [];
 
         foreach ($samples as $sample) {

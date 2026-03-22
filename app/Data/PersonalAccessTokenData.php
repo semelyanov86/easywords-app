@@ -40,7 +40,7 @@ final class PersonalAccessTokenData extends Data
             name: $token->name,
             tokenable_type: $token->tokenable_type,
             tokenable_id: $token->tokenable_id,
-            abilities: is_array($token->abilities) ? implode(', ', $token->abilities) : '*',
+            abilities: is_array($token->abilities) ? implode(', ', array_filter($token->abilities, is_string(...))) : '*',
             last_used_at: CarbonImmutable::parse($token->last_used_at),
             created_at: CarbonImmutable::parse($token->created_at),
             updated_at: CarbonImmutable::parse($token->updated_at),

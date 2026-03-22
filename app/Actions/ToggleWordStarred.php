@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Models\Word;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Переключение статуса избранного у слова.
@@ -25,7 +26,7 @@ final class ToggleWordStarred
      * @param  int  $userId  ID пользователя-владельца (для проверки прав)
      * @return bool Новое значение starred (true или false)
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Если слово не найдено или не принадлежит пользователю
+     * @throws ModelNotFoundException Если слово не найдено или не принадлежит пользователю
      */
     public function handle(int $wordId, int $userId): bool
     {
