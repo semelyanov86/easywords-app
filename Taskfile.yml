@@ -253,7 +253,7 @@ tasks:
 
   ssh:
     desc: "Connect to server via ssh"
-    cmd: "ssh -t sergey@91.98.153.146 'cd /var/www/llm.praxisconcierge.de && exec $SHELL -l'"
+    cmd: "ssh -t sergey@easywordsapp.ru 'cd /var/www/easywords && exec $SHELL -l'"
 
   context:
     desc: "Generate context files for LLM"

@@ -40,10 +40,7 @@ final readonly class StudySessionCache
      */
     public function getCurrentId(int $userId, string $language): ?int
     {
-        /** @var int|null $currentId */
-        $currentId = cache()->get($this->key('current', $userId, $language));
-
-        return $currentId;
+        return $this->readId($this->key('current', $userId, $language));
     }
 
     /**
@@ -51,10 +48,7 @@ final readonly class StudySessionCache
      */
     public function getNextId(int $userId, string $language): ?int
     {
-        /** @var int|null $nextId */
-        $nextId = cache()->get($this->key('next', $userId, $language));
-
-        return $nextId;
+        return $this->readId($this->key('next', $userId, $language));
     }
 
     /**
@@ -62,10 +56,7 @@ final readonly class StudySessionCache
      */
     public function getPrevId(int $userId, string $language): ?int
     {
-        /** @var int|null $prevId */
-        $prevId = cache()->get($this->key('prev', $userId, $language));
-
-        return $prevId;
+        return $this->readId($this->key('prev', $userId, $language));
     }
 
     /**
@@ -195,5 +186,24 @@ final readonly class StudySessionCache
     public function key(string $type, int $userId, string $language): string
     {
         return "words.{$type}.{$language}.{$userId}";
+    }
+
+    /**
+     * Redis cache store не сериализует numeric-значения, поэтому int может
+     * вернуться как string — приводим к int явно.
+     */
+    private function readId(string $key): ?int
+    {
+        $value = cache()->get($key);
+
+        if (is_int($value)) {
+            return $value;
+        }
+
+        if (is_string($value) && ctype_digit($value)) {
+            return (int) $value;
+        }
+
+        return null;
     }
 }
