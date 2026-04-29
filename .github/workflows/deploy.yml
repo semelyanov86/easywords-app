@@ -14,40 +14,16 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      DEPLOY_SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
+      DEPLOY_SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
+      DEPLOY_SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT }}
+      SITE_USER: site_easywords
+      RELEASE_DIR: /var/www/easywords/current
+      PHP_FPM_SERVICE: php8.5-fpm
+      QUEUE_GROUP: queue-easywords
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          tools: composer:v2
-
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --no-progress --optimize-autoloader --no-scripts
-
-      - name: Prepare .env for artisan
-        run: |
-          cp .env.example .env
-          php artisan key:generate --ansi
-
-      - name: Generate Wayfinder types
-        run: php artisan wayfinder:generate --with-form
-
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: npm
-
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
-
       - name: Setup SSH agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -55,39 +31,49 @@ jobs:
 
       - name: Add server to known_hosts
         run: |
-          set -e
+          set -euo pipefail
           mkdir -p ~/.ssh
-          PORT="${{ secrets.DEPLOY_SSH_PORT }}"
-          if [ -z "$PORT" ]; then PORT=22; fi
-          ssh-keyscan -p "$PORT" -H "${{ secrets.DEPLOY_SSH_HOST }}" >> ~/.ssh/known_hosts
+          PORT="${DEPLOY_SSH_PORT:-22}"
+          ssh-keyscan -p "$PORT" -H "$DEPLOY_SSH_HOST" >> ~/.ssh/known_hosts
 
-      - name: Pull code on server
+      - name: Build & release on server
         run: |
-          set -e
-          PORT="${{ secrets.DEPLOY_SSH_PORT }}"
-          if [ -z "$PORT" ]; then PORT=22; fi
-          ssh -p "$PORT" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" << 'EOF'
-            set -e
-            cd ~/cards
-            git pull
-          EOF
+          set -euo pipefail
+          PORT="${DEPLOY_SSH_PORT:-22}"
+          ssh -p "$PORT" "$DEPLOY_SSH_USER@$DEPLOY_SSH_HOST" \
+              "sudo -u $SITE_USER -H RELEASE_DIR=$RELEASE_DIR bash -se" <<'REMOTE'
+            set -euo pipefail
+            cd "$RELEASE_DIR"
 
-      - name: Upload built assets (public/build)
-        run: |
-          set -e
-          PORT="${{ secrets.DEPLOY_SSH_PORT }}"
-          if [ -z "$PORT" ]; then PORT=22; fi
-          rsync -az --delete -e "ssh -p $PORT" public/build/ "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:~/cards/public/build/"
+            php artisan down --render="errors::503" --retry=15 || true
 
-      - name: Run artisan commands
+            git fetch --prune origin
+            git reset --hard origin/main
+
+            composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader
+
+            php artisan migrate --force
+
+            php artisan optimize:clear
+
+            php artisan wayfinder:generate --with-form
+
+            npm ci --no-audit --no-fund
+            npm run build
+
+            php artisan optimize
+            php artisan event:cache
+
+            php artisan up
+          REMOTE
+
+      - name: Reload PHP-FPM and queue workers
         run: |
-          set -e
-          PORT="${{ secrets.DEPLOY_SSH_PORT }}"
-          if [ -z "$PORT" ]; then PORT=22; fi
-          ssh -p "$PORT" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" << 'EOF'
-            set -e
-            cd ~/cards
-            /opt/php85/bin/php artisan migrate --force
-            /opt/php85/bin/php artisan cache:clear
-            /opt/php85/bin/php artisan config:clear
-          EOF
+          set -euo pipefail
+          PORT="${DEPLOY_SSH_PORT:-22}"
+          ssh -p "$PORT" "$DEPLOY_SSH_USER@$DEPLOY_SSH_HOST" \
+              "PHP_FPM_SERVICE=$PHP_FPM_SERVICE QUEUE_GROUP=$QUEUE_GROUP bash -se" <<'REMOTE'
+            set -euo pipefail
+            sudo systemctl reload "$PHP_FPM_SERVICE"
+            sudo supervisorctl restart "$QUEUE_GROUP:*"
+          REMOTE
