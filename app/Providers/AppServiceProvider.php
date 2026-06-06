@@ -13,6 +13,9 @@ use App\Services\ClaudeTranslator;
 use App\Services\OpenAiConnector;
 use App\Services\OpenAiImageWordExtractor;
 use App\Services\OpenAiTranslator;
+use App\Services\PolzaConnector;
+use App\Services\PolzaImageWordExtractor;
+use App\Services\PolzaTranslator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
 
             return match ($provider) {
                 'claude' => $this->app->make(ClaudeConnector::class),
+                'polza' => $this->app->make(PolzaConnector::class),
                 default => $this->app->make(OpenAiConnector::class),
             };
         });
@@ -39,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
 
             return match ($provider) {
                 'claude' => $this->app->make(ClaudeTranslator::class),
+                'polza' => $this->app->make(PolzaTranslator::class),
                 default => $this->app->make(OpenAiTranslator::class),
             };
         });
@@ -49,6 +54,7 @@ class AppServiceProvider extends ServiceProvider
 
             return match ($provider) {
                 'claude' => $this->app->make(ClaudeImageWordExtractor::class),
+                'polza' => $this->app->make(PolzaImageWordExtractor::class),
                 default => $this->app->make(OpenAiImageWordExtractor::class),
             };
         });

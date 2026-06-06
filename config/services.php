@@ -51,6 +51,22 @@ return [
         'timeout' => env('CLAUDE_API_TIMEOUT', 120),
     ],
 
+    'polza' => [
+        'url' => env('POLZA_API_URL', 'https://polza.ai/api/v1'),
+        'key' => env('POLZA_AI_KEY'),
+        'timeout' => env('POLZA_TIMEOUT', 120),
+        'models' => [
+            'translate' => env('POLZA_MODEL_TRANSLATE', 'google/gemini-3.1-flash-lite'),
+            'examples' => env('POLZA_MODEL_EXAMPLES', 'openai/gpt-5.4-mini'),
+            'image' => env('POLZA_MODEL_IMAGE', 'google/gemini-3.1-flash-lite'),
+        ],
+        'temperature' => [
+            'translate' => env('POLZA_TEMPERATURE_TRANSLATE', '0.3'),
+            'examples' => env('POLZA_TEMPERATURE_EXAMPLES'),
+            'image' => env('POLZA_TEMPERATURE_IMAGE', '0.2'),
+        ],
+    ],
+
     'ai' => [
         'provider' => env('AI_PROVIDER', 'openai'),
     ],

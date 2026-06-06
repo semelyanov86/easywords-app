@@ -13,6 +13,9 @@ use App\Services\ClaudeTranslator;
 use App\Services\OpenAiConnector;
 use App\Services\OpenAiImageWordExtractor;
 use App\Services\OpenAiTranslator;
+use App\Services\PolzaConnector;
+use App\Services\PolzaImageWordExtractor;
+use App\Services\PolzaTranslator;
 use Tests\TestCase;
 
 final class AppServiceProviderTest extends TestCase
@@ -38,6 +41,19 @@ final class AppServiceProviderTest extends TestCase
         $resolved = $this->app->make(WordExampleGenerator::class);
 
         $this->assertInstanceOf(ClaudeConnector::class, $resolved);
+    }
+
+    public function test_resolves_polza_connector_when_configured(): void
+    {
+        config([
+            'services.ai.provider' => 'polza',
+            'services.polza.url' => 'https://polza.test/api/v1',
+            'services.polza.key' => 'test-key',
+        ]);
+
+        $resolved = $this->app->make(WordExampleGenerator::class);
+
+        $this->assertInstanceOf(PolzaConnector::class, $resolved);
     }
 
     public function test_defaults_to_openai_for_unknown_provider(): void
@@ -72,6 +88,19 @@ final class AppServiceProviderTest extends TestCase
         $this->assertInstanceOf(ClaudeTranslator::class, $resolved);
     }
 
+    public function test_resolves_polza_translator_when_configured(): void
+    {
+        config([
+            'services.ai.provider' => 'polza',
+            'services.polza.url' => 'https://polza.test/api/v1',
+            'services.polza.key' => 'test-key',
+        ]);
+
+        $resolved = $this->app->make(WordTranslator::class);
+
+        $this->assertInstanceOf(PolzaTranslator::class, $resolved);
+    }
+
     public function test_defaults_to_openai_translator_for_unknown_provider(): void
     {
         config(['services.ai.provider' => 'unknown']);
@@ -102,6 +131,19 @@ final class AppServiceProviderTest extends TestCase
         $resolved = $this->app->make(ImageWordExtractor::class);
 
         $this->assertInstanceOf(ClaudeImageWordExtractor::class, $resolved);
+    }
+
+    public function test_resolves_polza_image_word_extractor_when_configured(): void
+    {
+        config([
+            'services.ai.provider' => 'polza',
+            'services.polza.url' => 'https://polza.test/api/v1',
+            'services.polza.key' => 'test-key',
+        ]);
+
+        $resolved = $this->app->make(ImageWordExtractor::class);
+
+        $this->assertInstanceOf(PolzaImageWordExtractor::class, $resolved);
     }
 
     public function test_defaults_to_openai_image_word_extractor_for_unknown_provider(): void
