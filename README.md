@@ -161,6 +161,8 @@ task type-check
 task all
 ```
 
+For AI features you need external claude server or subscription to polza.
+
 ### API Development
 
 All routes are defined using PHP 8 attributes via `spatie/laravel-route-attributes`:
