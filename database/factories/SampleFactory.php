@@ -18,7 +18,7 @@ final class SampleFactory extends Factory
     public function definition(): array
     {
         return [
-            'original' => $this->faker->word(),
+            'original' => $this->faker->unique()->word(),
             'translated' => $this->faker->word(),
             'language' => $this->faker->randomElement(['EN', 'DE', 'FR', 'ES']),
             'created_at' => Carbon::now(),
