@@ -30,3 +30,5 @@ yarn-error.log
 /var
 /.phplint.cache
 /.task
+rr
+.rr.yaml

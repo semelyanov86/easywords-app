@@ -14,13 +14,16 @@
         "inertiajs/inertia-laravel": "^3.0",
         "laravel/fortify": "^1.38.0",
         "laravel/framework": "^13.0",
+        "laravel/octane": "^2.19",
         "laravel/sanctum": "^4.3.3",
         "laravel/tinker": "^3.0",
         "laravel/wayfinder": "^0.1.21",
         "lorisleiva/laravel-actions": "^2.11.0",
         "spatie/laravel-data": "^4.23.0",
         "spatie/laravel-ray": "^1.43.9",
-        "spatie/laravel-route-attributes": "^1.28.0"
+        "spatie/laravel-route-attributes": "^1.28.0",
+        "spiral/roadrunner-cli": "^2.6.0",
+        "spiral/roadrunner-http": "^3.3.0"
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.9.1",
