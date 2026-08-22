@@ -5,21 +5,23 @@
         "opencode",
         "claude_code"
     ],
+    "cloud": false,
     "guidelines": true,
-    "herd_mcp": false,
     "mcp": true,
-    "nightwatch_mcp": false,
+    "nightwatch": false,
     "packages": [
         "filament/filament",
-        "laravel/fortify",
-        "spatie/laravel-ray"
+        "spatie/laravel-ray",
+        "lorisleiva/laravel-actions"
     ],
     "sail": false,
     "skills": [
+        "fortify-development",
+        "laravel-best-practices",
         "wayfinder-development",
         "inertia-react-development",
         "tailwindcss-development",
-        "developing-with-fortify",
+        "laravel-actions",
         "debugging-output-and-previewing-html-using-ray"
     ]
 }
