@@ -25,10 +25,10 @@ final class ClaudeImageWordExtractorTest extends TestCase
         /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPromptWithFile')
-            ->once() // @phpstan-ignore method.notFound
-            ->withArgs(fn (string $prompt, UploadedFile $file): bool => str_contains($prompt, '/language-image-words') // @phpstan-ignore method.nonObject
+            ->once()
+            ->withArgs(fn (string $prompt, UploadedFile $file): bool => str_contains($prompt, '/language-image-words')
                     && $file === $image)
-            ->andReturn(['words' => $expectedWords]); // @phpstan-ignore method.nonObject
+            ->andReturn(['words' => $expectedWords]);
 
         $extractor = new ClaudeImageWordExtractor($mockClient);
 
@@ -44,9 +44,9 @@ final class ClaudeImageWordExtractorTest extends TestCase
         /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPromptWithFile')
-            ->once() // @phpstan-ignore method.notFound
-            ->withArgs(fn (string $prompt): bool => str_starts_with($prompt, '/language-image-words')) // @phpstan-ignore method.nonObject
-            ->andReturn(['words' => []]); // @phpstan-ignore method.nonObject
+            ->once()
+            ->withArgs(fn (string $prompt): bool => str_starts_with($prompt, '/language-image-words'))
+            ->andReturn(['words' => []]);
 
         $extractor = new ClaudeImageWordExtractor($mockClient);
 
@@ -60,9 +60,9 @@ final class ClaudeImageWordExtractorTest extends TestCase
         /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPromptWithFile')
-            ->once() // @phpstan-ignore method.notFound
-            ->withArgs(fn (string $prompt, UploadedFile $file): bool => $file === $image) // @phpstan-ignore method.nonObject
-            ->andReturn(['words' => [ // @phpstan-ignore method.nonObject
+            ->once()
+            ->withArgs(fn (string $prompt, UploadedFile $file): bool => $file === $image)
+            ->andReturn(['words' => [
                 ['original' => 'test', 'translation' => 'тест', 'language' => 'en'],
             ]]);
 

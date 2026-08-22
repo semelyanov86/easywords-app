@@ -152,7 +152,7 @@ final class GoToNextWordTest extends TestCase
         Cache::put('words.next.' . self::LANGUAGE . ".{$this->user->id}", $word->id);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Study session not found');
+        $this->expectExceptionMessageIsOrContains('Study session not found');
 
         $this->action->handle($this->user, self::LANGUAGE);
     }
@@ -169,7 +169,7 @@ final class GoToNextWordTest extends TestCase
         Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", null);
 
         $this->expectException(\DomainException::class);
-        $this->expectExceptionMessage('Сессия закончена, начните новую');
+        $this->expectExceptionMessageIsOrContains('Сессия закончена, начните новую');
 
         $this->action->handle($this->user, self::LANGUAGE);
     }

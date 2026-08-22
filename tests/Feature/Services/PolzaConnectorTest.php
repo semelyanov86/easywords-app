@@ -27,8 +27,8 @@ final class PolzaConnectorTest extends TestCase
         /** @var PolzaApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(PolzaApiClient::class);
         $mockClient->shouldReceive('chat')
-            ->once() // @phpstan-ignore method.notFound
-            ->andReturn(json_encode([ // @phpstan-ignore method.nonObject
+            ->once()
+            ->andReturn(json_encode([
                 'example_original' => ['one', 'two', 'three'],
                 'example_translated' => ['один', 'два', 'три'],
             ], JSON_THROW_ON_ERROR));
@@ -44,8 +44,8 @@ final class PolzaConnectorTest extends TestCase
         /** @var PolzaApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(PolzaApiClient::class);
         $mockClient->shouldReceive('chat')
-            ->once() // @phpstan-ignore method.notFound
-            ->andReturnUsing(function (string $model, array $messages, ?array $responseFormat, float|int|string|null $temperature): string { // @phpstan-ignore method.nonObject
+            ->once()
+            ->andReturnUsing(function (string $model, array $messages, ?array $responseFormat, float|int|string|null $temperature): string {
                 $this->assertSame('examples-model', $model);
                 $this->assertNull($temperature);
 

@@ -170,9 +170,9 @@ final class WordTranslationControllerTest extends TestCase
 
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
             $mock->shouldReceive('translate')
-                ->once() // @phpstan-ignore method.notFound
-                ->with('nonexistent', 'en') // @phpstan-ignore method.nonObject
-                ->andReturn('перевод'); // @phpstan-ignore method.nonObject
+                ->once()
+                ->with('nonexistent', 'en')
+                ->andReturn('перевод');
         });
 
         // Act
@@ -203,8 +203,8 @@ final class WordTranslationControllerTest extends TestCase
 
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
             $mock->shouldReceive('translate')
-                ->once() // @phpstan-ignore method.notFound
-                ->andThrow(new \RuntimeException('API error')); // @phpstan-ignore method.nonObject
+                ->once()
+                ->andThrow(new \RuntimeException('API error'));
         });
 
         // Act
@@ -288,8 +288,8 @@ final class WordTranslationControllerTest extends TestCase
 
         $this->mock(WordTranslator::class, function (MockInterface $mock) use ($longTranslation): void {
             $mock->shouldReceive('translate')
-                ->once() // @phpstan-ignore method.notFound
-                ->andReturn($longTranslation); // @phpstan-ignore method.nonObject
+                ->once()
+                ->andReturn($longTranslation);
         });
 
         // Act

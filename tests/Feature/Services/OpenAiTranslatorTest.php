@@ -156,7 +156,7 @@ final class OpenAiTranslatorTest extends TestCase
         $translator = new OpenAiTranslator();
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Invalid response format from OpenAI API');
+        $this->expectExceptionMessageIsOrContains('Invalid response format from OpenAI API');
 
         $translator->translate('testword', 'en');
     }

@@ -30,8 +30,8 @@ final class ImageWordExtractorControllerTest extends TestCase
         /** @var ImageWordExtractor&MockInterface $mockExtractor */
         $mockExtractor = Mockery::mock(ImageWordExtractor::class);
         $mockExtractor->shouldReceive('extractWords')
-            ->once() // @phpstan-ignore method.notFound
-            ->andReturn([ // @phpstan-ignore method.nonObject
+            ->once()
+            ->andReturn([
                 ['original' => 'hello', 'translation' => 'привет', 'language' => 'en'],
                 ['original' => 'world', 'translation' => 'мир', 'language' => 'en'],
             ]);
@@ -234,8 +234,8 @@ final class ImageWordExtractorControllerTest extends TestCase
         /** @var ImageWordExtractor&MockInterface $mockExtractor */
         $mockExtractor = Mockery::mock(ImageWordExtractor::class);
         $mockExtractor->shouldReceive('extractWords')
-            ->once() // @phpstan-ignore method.notFound
-            ->andReturn([ // @phpstan-ignore method.nonObject
+            ->once()
+            ->andReturn([
                 ['original' => 'test', 'translation' => 'тест', 'language' => 'en'],
             ]);
 
@@ -264,8 +264,8 @@ final class ImageWordExtractorControllerTest extends TestCase
         /** @var ImageWordExtractor&MockInterface $mockExtractor */
         $mockExtractor = Mockery::mock(ImageWordExtractor::class);
         $mockExtractor->shouldReceive('extractWords')
-            ->once() // @phpstan-ignore method.notFound
-            ->andReturn([ // @phpstan-ignore method.nonObject
+            ->once()
+            ->andReturn([
                 ['original' => 'hallo', 'translation' => 'привет', 'language' => 'de'],
             ]);
 
@@ -306,8 +306,8 @@ final class ImageWordExtractorControllerTest extends TestCase
         /** @var ImageWordExtractor&MockInterface $mockExtractor */
         $mockExtractor = Mockery::mock(ImageWordExtractor::class);
         $mockExtractor->shouldReceive('extractWords')
-            ->once() // @phpstan-ignore method.notFound
-            ->andReturn([ // @phpstan-ignore method.nonObject
+            ->once()
+            ->andReturn([
                 ['original' => 'test', 'translation' => 'тест', 'language' => 'en'],
             ]);
 

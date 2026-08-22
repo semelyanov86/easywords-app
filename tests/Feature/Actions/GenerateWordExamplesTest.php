@@ -68,9 +68,9 @@ final class GenerateWordExamplesTest extends TestCase
         /** @var WordExampleGenerator&MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldReceive('generateWordExamples')
-            ->once() // @phpstan-ignore method.notFound
-            ->with('test', 'en') // @phpstan-ignore method.nonObject
-            ->andReturn($mockExamples); // @phpstan-ignore method.nonObject
+            ->once()
+            ->with('test', 'en')
+            ->andReturn($mockExamples);
 
         $action = new GenerateWordExamples($connector);
 
@@ -144,15 +144,15 @@ final class GenerateWordExamplesTest extends TestCase
         /** @var WordExampleGenerator&MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldReceive('generateWordExamples')
-            ->once() // @phpstan-ignore method.notFound
-            ->with('test', 'en') // @phpstan-ignore method.nonObject
-            ->andReturn($invalidExamples); // @phpstan-ignore method.nonObject
+            ->once()
+            ->with('test', 'en')
+            ->andReturn($invalidExamples);
 
         $action = new GenerateWordExamples($connector);
 
         // Expect
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Invalid examples structure: each field must contain exactly 3 examples');
+        $this->expectExceptionMessageIsOrContains('Invalid examples structure: each field must contain exactly 3 examples');
 
         // Act
         $action->handle($word->id, $user->id);
@@ -177,15 +177,15 @@ final class GenerateWordExamplesTest extends TestCase
         /** @var WordExampleGenerator&MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldReceive('generateWordExamples')
-            ->once() // @phpstan-ignore method.notFound
-            ->with('test', 'en') // @phpstan-ignore method.nonObject
-            ->andReturn($invalidExamples); // @phpstan-ignore method.nonObject
+            ->once()
+            ->with('test', 'en')
+            ->andReturn($invalidExamples);
 
         $action = new GenerateWordExamples($connector);
 
         // Expect
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Invalid example_original[0]: must be non-empty string');
+        $this->expectExceptionMessageIsOrContains('Invalid example_original[0]: must be non-empty string');
 
         // Act
         $action->handle($word->id, $user->id);
@@ -209,15 +209,15 @@ final class GenerateWordExamplesTest extends TestCase
         /** @var WordExampleGenerator&MockInterface $connector */
         $connector = Mockery::mock(WordExampleGenerator::class);
         $connector->shouldReceive('generateWordExamples')
-            ->once() // @phpstan-ignore method.notFound
-            ->with('test', 'en') // @phpstan-ignore method.nonObject
-            ->andReturn($invalidExamples); // @phpstan-ignore method.nonObject
+            ->once()
+            ->with('test', 'en')
+            ->andReturn($invalidExamples);
 
         $action = new GenerateWordExamples($connector);
 
         // Expect
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Invalid examples structure: missing required fields');
+        $this->expectExceptionMessageIsOrContains('Invalid examples structure: missing required fields');
 
         // Act
         $action->handle($word->id, $user->id);

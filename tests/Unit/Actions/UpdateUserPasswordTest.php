@@ -57,7 +57,7 @@ final class UpdateUserPasswordTest extends TestCase
 
         // Expect
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('The provided password does not match your current password.');
+        $this->expectExceptionMessageIsOrContains('The provided password does not match your current password.');
 
         // Act
         $action->handle(

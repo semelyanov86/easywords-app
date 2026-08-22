@@ -7,7 +7,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
-use Glorand\Model\Settings\Traits\HasSettingsField;
+use Glorand\Model\Settings\Traits\HasSettings;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -22,7 +22,7 @@ class User extends Authenticatable implements FilamentUser
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 
-    use HasSettingsField;
+    use HasSettings;
     use Notifiable;
     use TwoFactorAuthenticatable;
 
@@ -54,6 +54,21 @@ class User extends Authenticatable implements FilamentUser
         'languages_list' => 'array',
         'starred_enabled' => 'bool',
         'default_language' => 'string',
+    ];
+
+    protected string $settingsDriver = 'field';
+
+    /**
+     * Ensure the settings column is always present on the model's attributes.
+     *
+     * laravel-model-settings v9 refuses to read or write settings when the
+     * column is missing from the loaded attributes, which is the case for any
+     * instance built by User::create() without passing settings explicitly.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'settings' => null,
     ];
 
     /**

@@ -146,7 +146,7 @@ final class OpenAiImageWordExtractorTest extends TestCase
         $extractor = new OpenAiImageWordExtractor();
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Invalid response format from OpenAI API');
+        $this->expectExceptionMessageIsOrContains('Invalid response format from OpenAI API');
 
         $extractor->extractWords($image, 'en');
     }

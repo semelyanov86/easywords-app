@@ -31,9 +31,9 @@ final class ShowWordExamplesControllerTest extends TestCase
 
         /** @var Response&MockInterface $mockResponse */
         $mockResponse = Mockery::mock(Response::class);
-        $mockResponse->shouldReceive('status')->andReturn(500); // @phpstan-ignore method.notFound
-        $mockResponse->shouldReceive('body')->andReturn('{"error":"claude did not return valid JSON"}'); // @phpstan-ignore method.notFound
-        $mockResponse->shouldReceive('toPsrResponse')->andReturn(new \GuzzleHttp\Psr7\Response(500)); // @phpstan-ignore method.notFound
+        $mockResponse->shouldReceive('status')->andReturn(500);
+        $mockResponse->shouldReceive('body')->andReturn('{"error":"claude did not return valid JSON"}');
+        $mockResponse->shouldReceive('toPsrResponse')->andReturn(new \GuzzleHttp\Psr7\Response(500));
 
         $this->app->instance(
             GenerateWordExamples::class,
@@ -41,9 +41,9 @@ final class ShowWordExamplesControllerTest extends TestCase
                 /** @var GenerateWordExamples&MockInterface $mockInstance */
                 $mockInstance = $mock;
                 $mockInstance->shouldReceive('handle')
-                    ->once() // @phpstan-ignore method.notFound
-                    ->with($word->id, $user->id) // @phpstan-ignore method.nonObject
-                    ->andThrow(new RequestException($mockResponse)); // @phpstan-ignore method.nonObject
+                    ->once()
+                    ->with($word->id, $user->id)
+                    ->andThrow(new RequestException($mockResponse));
             })
         );
 
@@ -70,9 +70,9 @@ final class ShowWordExamplesControllerTest extends TestCase
                 /** @var GenerateWordExamples&MockInterface $mockInstance */
                 $mockInstance = $mock;
                 $mockInstance->shouldReceive('handle')
-                    ->once() // @phpstan-ignore method.notFound
-                    ->with($word->id, $user->id) // @phpstan-ignore method.nonObject
-                    ->andThrow(new \RuntimeException('Invalid examples structure')); // @phpstan-ignore method.nonObject
+                    ->once()
+                    ->with($word->id, $user->id)
+                    ->andThrow(new \RuntimeException('Invalid examples structure'));
             })
         );
 
