@@ -27,8 +27,8 @@ final class PolzaTranslatorTest extends TestCase
         /** @var PolzaApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(PolzaApiClient::class);
         $mockClient->shouldReceive('chat')
-            ->once() // @phpstan-ignore method.notFound
-            ->andReturn('  дом  '); // @phpstan-ignore method.nonObject
+            ->once()
+            ->andReturn('  дом  ');
 
         $translator = new PolzaTranslator($mockClient);
 
@@ -40,8 +40,8 @@ final class PolzaTranslatorTest extends TestCase
         /** @var PolzaApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(PolzaApiClient::class);
         $mockClient->shouldReceive('chat')
-            ->once() // @phpstan-ignore method.notFound
-            ->andReturnUsing(function (string $model, array $messages, ?array $responseFormat, float|int|string|null $temperature): string { // @phpstan-ignore method.nonObject
+            ->once()
+            ->andReturnUsing(function (string $model, array $messages, ?array $responseFormat, float|int|string|null $temperature): string {
                 $this->assertSame('translate-model', $model);
                 $this->assertNull($responseFormat);
                 $this->assertSame('0.3', $temperature);

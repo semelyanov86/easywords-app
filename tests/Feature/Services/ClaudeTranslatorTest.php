@@ -17,8 +17,8 @@ final class ClaudeTranslatorTest extends TestCase
         /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPrompt')
-            ->once() // @phpstan-ignore method.notFound
-            ->andReturn(['result' => 'автомобиль']); // @phpstan-ignore method.nonObject
+            ->once()
+            ->andReturn(['result' => 'автомобиль']);
 
         $translator = new ClaudeTranslator($mockClient);
 
@@ -32,11 +32,11 @@ final class ClaudeTranslatorTest extends TestCase
         /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPrompt')
-            ->once() // @phpstan-ignore method.notFound
-            ->withArgs(fn (string $prompt): bool => str_contains($prompt, '"Haus"') // @phpstan-ignore method.nonObject
+            ->once()
+            ->withArgs(fn (string $prompt): bool => str_contains($prompt, '"Haus"')
                     && str_contains($prompt, 'с de языка')
                     && str_contains($prompt, '/language-translate'))
-            ->andReturn(['result' => 'дом']); // @phpstan-ignore method.nonObject
+            ->andReturn(['result' => 'дом']);
 
         $translator = new ClaudeTranslator($mockClient);
 
@@ -50,8 +50,8 @@ final class ClaudeTranslatorTest extends TestCase
         /** @var ClaudeApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(ClaudeApiClient::class);
         $mockClient->shouldReceive('sendJsonPrompt')
-            ->once() // @phpstan-ignore method.notFound
-            ->andReturn(['result' => '  перевод  ']); // @phpstan-ignore method.nonObject
+            ->once()
+            ->andReturn(['result' => '  перевод  ']);
 
         $translator = new ClaudeTranslator($mockClient);
 

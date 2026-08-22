@@ -77,9 +77,9 @@ final class ExampleControllerTest extends TestCase
                 /** @var GenerateWordExamples&MockInterface $mockInstance */
                 $mockInstance = $mock;
                 $mockInstance->shouldReceive('handle')
-                    ->once() // @phpstan-ignore method.notFound
-                    ->with($word->id, $user->id) // @phpstan-ignore method.nonObject
-                    ->andReturn(new ExampleData( // @phpstan-ignore method.nonObject
+                    ->once()
+                    ->with($word->id, $user->id)
+                    ->andReturn(new ExampleData(
                         id: '112',
                         example_original: $mockExamples['example_original'],
                         example_translated: $mockExamples['example_translated']
@@ -169,9 +169,9 @@ final class ExampleControllerTest extends TestCase
                 /** @var GenerateWordExamples&MockInterface $mockInstance */
                 $mockInstance = $mock;
                 $mockInstance->shouldReceive('handle')
-                    ->once() // @phpstan-ignore method.notFound
-                    ->with($word->id, $user->id) // @phpstan-ignore method.nonObject
-                    ->andThrow(new \RuntimeException('Test error')); // @phpstan-ignore method.nonObject
+                    ->once()
+                    ->with($word->id, $user->id)
+                    ->andThrow(new \RuntimeException('Test error'));
             })
         );
 

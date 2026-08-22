@@ -44,9 +44,9 @@ final class GetWordTranslationTest extends TestCase
     {
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
             $mock->shouldReceive('translate')
-                ->once() // @phpstan-ignore method.notFound
-                ->with('testword', 'en') // @phpstan-ignore method.nonObject
-                ->andReturn('тестовый перевод'); // @phpstan-ignore method.nonObject
+                ->once()
+                ->with('testword', 'en')
+                ->andReturn('тестовый перевод');
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -60,8 +60,8 @@ final class GetWordTranslationTest extends TestCase
     {
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
             $mock->shouldReceive('translate')
-                ->once() // @phpstan-ignore method.notFound
-                ->andReturn('инвесторы[1][2][3]'); // @phpstan-ignore method.nonObject
+                ->once()
+                ->andReturn('инвесторы[1][2][3]');
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -75,8 +75,8 @@ final class GetWordTranslationTest extends TestCase
     {
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
             $mock->shouldReceive('translate')
-                ->once() // @phpstan-ignore method.notFound
-                ->andReturn('финансовые[1] инвесторы[2][3] и партнеры[10]'); // @phpstan-ignore method.nonObject
+                ->once()
+                ->andReturn('финансовые[1] инвесторы[2][3] и партнеры[10]');
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -93,8 +93,8 @@ final class GetWordTranslationTest extends TestCase
 
         $this->mock(WordTranslator::class, function (MockInterface $mock) use ($longTranslation): void {
             $mock->shouldReceive('translate')
-                ->once() // @phpstan-ignore method.notFound
-                ->andReturn($longTranslation); // @phpstan-ignore method.nonObject
+                ->once()
+                ->andReturn($longTranslation);
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -111,8 +111,8 @@ final class GetWordTranslationTest extends TestCase
 
         $this->mock(WordTranslator::class, function (MockInterface $mock) use ($exactTranslation): void {
             $mock->shouldReceive('translate')
-                ->once() // @phpstan-ignore method.notFound
-                ->andReturn($exactTranslation); // @phpstan-ignore method.nonObject
+                ->once()
+                ->andReturn($exactTranslation);
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -127,8 +127,8 @@ final class GetWordTranslationTest extends TestCase
     {
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
             $mock->shouldReceive('translate')
-                ->once() // @phpstan-ignore method.notFound
-                ->andReturn('перевод с пробелами'); // @phpstan-ignore method.nonObject
+                ->once()
+                ->andReturn('перевод с пробелами');
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -144,8 +144,8 @@ final class GetWordTranslationTest extends TestCase
 
         $this->mock(WordTranslator::class, function (MockInterface $mock) use ($longTranslation): void {
             $mock->shouldReceive('translate')
-                ->once() // @phpstan-ignore method.notFound
-                ->andReturn($longTranslation); // @phpstan-ignore method.nonObject
+                ->once()
+                ->andReturn($longTranslation);
         });
 
         $action = resolve(GetWordTranslation::class);
@@ -168,9 +168,9 @@ final class GetWordTranslationTest extends TestCase
 
         $this->mock(WordTranslator::class, function (MockInterface $mock): void {
             $mock->shouldReceive('translate')
-                ->once() // @phpstan-ignore method.notFound
-                ->with('hello', 'en') // @phpstan-ignore method.nonObject
-                ->andReturn('другой перевод'); // @phpstan-ignore method.nonObject
+                ->once()
+                ->with('hello', 'en')
+                ->andReturn('другой перевод');
         });
 
         $action = resolve(GetWordTranslation::class);

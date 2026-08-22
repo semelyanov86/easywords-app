@@ -28,8 +28,8 @@ final class PolzaImageWordExtractorTest extends TestCase
         /** @var PolzaApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(PolzaApiClient::class);
         $mockClient->shouldReceive('chat')
-            ->once() // @phpstan-ignore method.notFound
-            ->andReturn(json_encode([ // @phpstan-ignore method.nonObject
+            ->once()
+            ->andReturn(json_encode([
                 'words' => [
                     ['original' => 'Haus', 'translation' => 'дом', 'language' => 'de'],
                     ['original' => 'Buch', 'translation' => 'книга', 'language' => 'de'],
@@ -50,8 +50,8 @@ final class PolzaImageWordExtractorTest extends TestCase
         /** @var PolzaApiClient&MockInterface $mockClient */
         $mockClient = Mockery::mock(PolzaApiClient::class);
         $mockClient->shouldReceive('chat')
-            ->once() // @phpstan-ignore method.notFound
-            ->andReturnUsing(function (string $model, array $messages, ?array $responseFormat, float|int|string|null $temperature): string { // @phpstan-ignore method.nonObject
+            ->once()
+            ->andReturnUsing(function (string $model, array $messages, ?array $responseFormat, float|int|string|null $temperature): string {
                 $this->assertSame('image-model', $model);
                 $this->assertSame('0.2', $temperature);
 
