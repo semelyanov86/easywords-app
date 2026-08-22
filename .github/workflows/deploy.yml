@@ -20,6 +20,7 @@ jobs:
       DEPLOY_SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT }}
       SITE_USER: site_easywords
       RELEASE_DIR: /var/www/easywords/current
+      OCTANE_SERVICE: octane-easywords
       PHP_FPM_SERVICE: php8.5-fpm
       QUEUE_GROUP: queue-easywords
 
@@ -67,13 +68,25 @@ jobs:
             php artisan up
           REMOTE
 
-      - name: Reload PHP-FPM and queue workers
+      - name: Reload Octane, PHP-FPM and queue workers
         run: |
           set -euo pipefail
           PORT="${DEPLOY_SSH_PORT:-22}"
           ssh -p "$PORT" "$DEPLOY_SSH_USER@$DEPLOY_SSH_HOST" \
-              "PHP_FPM_SERVICE=$PHP_FPM_SERVICE QUEUE_GROUP=$QUEUE_GROUP bash -se" <<'REMOTE'
+              "OCTANE_SERVICE=$OCTANE_SERVICE PHP_FPM_SERVICE=$PHP_FPM_SERVICE QUEUE_GROUP=$QUEUE_GROUP bash -se" <<'REMOTE'
             set -euo pipefail
+            # The site serves through Octane/RoadRunner since 2026-08-22, and a
+            # RoadRunner worker keeps the booted application — code and the
+            # cached config from `artisan optimize` above — in memory until it
+            # is told to reload. Without this the deploy above lands on disk
+            # while every request keeps being answered by the previous release.
+            # ExecReload on the unit is `artisan octane:reload`, which drains
+            # workers gracefully, so there is no downtime and no need to
+            # restart the service.
+            sudo systemctl reload "$OCTANE_SERVICE"
+            # The php-fpm pool is no longer in the request path (nginx proxies
+            # to RoadRunner) but still exists as a fallback and for CLI work,
+            # so keep its opcache in sync too.
             sudo systemctl reload "$PHP_FPM_SERVICE"
             sudo supervisorctl restart "$QUEUE_GROUP:*"
           REMOTE
