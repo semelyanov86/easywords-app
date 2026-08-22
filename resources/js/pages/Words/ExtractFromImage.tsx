@@ -51,8 +51,13 @@ export default function ExtractFromImagePage({
         words || [],
     );
 
+    // Re-seeds the locally mutable word list whenever a new extraction arrives.
+    // eslint-plugin-react-hooks 7.1 flags this via react-hooks/set-state-in-effect;
+    // the idiomatic replacement is React's "adjust state during render" pattern,
+    // which is a behavioural refactor and deliberately out of scope here.
     useEffect(() => {
         if (words) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setDisplayedWords(words);
         }
     }, [words]);

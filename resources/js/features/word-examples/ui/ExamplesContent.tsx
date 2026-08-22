@@ -49,7 +49,7 @@ export function ExamplesContent({
             </div>
 
             {/* Examples list */}
-            <div className="scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent hover:scrollbar-thumb-primary/50 max-h-[280px] flex-1 space-y-2 overflow-y-auto pr-1 md:max-h-[350px] md:space-y-3 md:pr-2">
+            <div className="max-h-[280px] flex-1 scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent space-y-2 overflow-y-auto pr-1 hover:scrollbar-thumb-primary/50 md:max-h-[350px] md:space-y-3 md:pr-2">
                 {examples.map((example, index) => (
                     <ExampleCard
                         key={index}
