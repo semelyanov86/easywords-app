@@ -28,7 +28,8 @@ return static function (RectorConfig $rectorConfig): void {
         LaravelSetList::LARAVEL_100,
         LaravelLevelSetList::UP_TO_LARAVEL_110,
         LaravelLevelSetList::UP_TO_LARAVEL_120,
+        LaravelLevelSetList::UP_TO_LARAVEL_130_WITHOUT_ATTRIBUTES,
         LaravelSetList::LARAVEL_CODE_QUALITY,
-        PHPUnitSetList::PHPUNIT_100,
+        PHPUnitSetList::COMPOSER_BASED,
     ]);
 };

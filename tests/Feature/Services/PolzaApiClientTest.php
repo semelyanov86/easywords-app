@@ -101,7 +101,7 @@ final class PolzaApiClientTest extends TestCase
         Http::fake([self::ENDPOINT => Http::response(['choices' => []])]);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Invalid response format from Polza API');
+        $this->expectExceptionMessageIsOrContains('Invalid response format from Polza API');
 
         new PolzaApiClient()->chat('m', [['role' => 'user', 'content' => 'hi']]);
     }

@@ -60,7 +60,7 @@ final class ClaudeApiClientTest extends TestCase
         $client = new ClaudeApiClient();
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Invalid response format from Claude API: missing "result" field');
+        $this->expectExceptionMessageIsOrContains('Invalid response format from Claude API: missing "result" field');
 
         $client->sendJsonPrompt('Test prompt');
     }
@@ -115,7 +115,7 @@ final class ClaudeApiClientTest extends TestCase
         $client = new ClaudeApiClient();
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Invalid response format from Claude API: missing "result" field');
+        $this->expectExceptionMessageIsOrContains('Invalid response format from Claude API: missing "result" field');
 
         $client->sendJsonPromptWithFile('Test prompt', $file);
     }

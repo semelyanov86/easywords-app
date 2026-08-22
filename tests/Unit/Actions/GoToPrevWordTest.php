@@ -117,7 +117,7 @@ final class GoToPrevWordTest extends TestCase
         Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", null);
 
         $this->expectException(\DomainException::class);
-        $this->expectExceptionMessage('Нельзя найти следующий идентификатор слова. Начните сессию заново');
+        $this->expectExceptionMessageIsOrContains('Нельзя найти следующий идентификатор слова. Начните сессию заново');
 
         $this->action->handle($this->user, self::LANGUAGE);
     }
@@ -130,7 +130,7 @@ final class GoToPrevWordTest extends TestCase
         Cache::put('words.prev.' . self::LANGUAGE . ".{$this->user->id}", $word->id);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Study session not found');
+        $this->expectExceptionMessageIsOrContains('Study session not found');
 
         $this->action->handle($this->user, self::LANGUAGE);
     }

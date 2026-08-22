@@ -152,7 +152,7 @@ final class GenerateWordExamplesTest extends TestCase
 
         // Expect
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Invalid examples structure: each field must contain exactly 3 examples');
+        $this->expectExceptionMessageIsOrContains('Invalid examples structure: each field must contain exactly 3 examples');
 
         // Act
         $action->handle($word->id, $user->id);
@@ -185,7 +185,7 @@ final class GenerateWordExamplesTest extends TestCase
 
         // Expect
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Invalid example_original[0]: must be non-empty string');
+        $this->expectExceptionMessageIsOrContains('Invalid example_original[0]: must be non-empty string');
 
         // Act
         $action->handle($word->id, $user->id);
@@ -217,7 +217,7 @@ final class GenerateWordExamplesTest extends TestCase
 
         // Expect
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Invalid examples structure: missing required fields');
+        $this->expectExceptionMessageIsOrContains('Invalid examples structure: missing required fields');
 
         // Act
         $action->handle($word->id, $user->id);
