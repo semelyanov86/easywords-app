@@ -16,6 +16,7 @@ use App\Services\OpenAiTranslator;
 use App\Services\PolzaConnector;
 use App\Services\PolzaImageWordExtractor;
 use App\Services\PolzaTranslator;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,36 +27,36 @@ class AppServiceProvider extends ServiceProvider
     #[\Override]
     public function register(): void
     {
-        $this->app->bind(function (): WordExampleGenerator {
+        $this->app->bind(function (Application $app): WordExampleGenerator {
             /** @var string $provider */
             $provider = config('services.ai.provider', 'openai');
 
             return match ($provider) {
-                'claude' => $this->app->make(ClaudeConnector::class),
-                'polza' => $this->app->make(PolzaConnector::class),
-                default => $this->app->make(OpenAiConnector::class),
+                'claude' => $app->make(ClaudeConnector::class),
+                'polza' => $app->make(PolzaConnector::class),
+                default => $app->make(OpenAiConnector::class),
             };
         });
 
-        $this->app->bind(function (): WordTranslator {
+        $this->app->bind(function (Application $app): WordTranslator {
             /** @var string $provider */
             $provider = config('services.ai.provider', 'openai');
 
             return match ($provider) {
-                'claude' => $this->app->make(ClaudeTranslator::class),
-                'polza' => $this->app->make(PolzaTranslator::class),
-                default => $this->app->make(OpenAiTranslator::class),
+                'claude' => $app->make(ClaudeTranslator::class),
+                'polza' => $app->make(PolzaTranslator::class),
+                default => $app->make(OpenAiTranslator::class),
             };
         });
 
-        $this->app->bind(function (): ImageWordExtractor {
+        $this->app->bind(function (Application $app): ImageWordExtractor {
             /** @var string $provider */
             $provider = config('services.ai.provider', 'openai');
 
             return match ($provider) {
-                'claude' => $this->app->make(ClaudeImageWordExtractor::class),
-                'polza' => $this->app->make(PolzaImageWordExtractor::class),
-                default => $this->app->make(OpenAiImageWordExtractor::class),
+                'claude' => $app->make(ClaudeImageWordExtractor::class),
+                'polza' => $app->make(PolzaImageWordExtractor::class),
+                default => $app->make(OpenAiImageWordExtractor::class),
             };
         });
     }
