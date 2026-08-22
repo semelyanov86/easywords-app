@@ -11,7 +11,7 @@
         "php": "^8.4",
         "filament/filament": "^4.12.6",
         "glorand/laravel-model-settings": "^8.0.4",
-        "inertiajs/inertia-laravel": "^2.0.25",
+        "inertiajs/inertia-laravel": "^3.0",
         "laravel/fortify": "^1.38.0",
         "laravel/framework": "^13.0",
         "laravel/sanctum": "^4.3.3",
