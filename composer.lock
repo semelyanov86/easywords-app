@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4b8ee4f5f7b86f6a414d6edbe6fbd154",
+    "content-hash": "5a1c0dcee5d042016b98399be49de203",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -1702,33 +1702,33 @@
         },
         {
             "name": "glorand/laravel-model-settings",
-            "version": "8.0.4",
+            "version": "9.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glorand/laravel-model-settings.git",
-                "reference": "83166ed91ad697216096f306fff5dbf7d0a3d86b"
+                "reference": "9f27e78215fe7d02e45304059976d06c5f75b51d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glorand/laravel-model-settings/zipball/83166ed91ad697216096f306fff5dbf7d0a3d86b",
-                "reference": "83166ed91ad697216096f306fff5dbf7d0a3d86b",
+                "url": "https://api.github.com/repos/glorand/laravel-model-settings/zipball/9f27e78215fe7d02e45304059976d06c5f75b51d",
+                "reference": "9f27e78215fe7d02e45304059976d06c5f75b51d",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "illuminate/cache": "^10.0|^11.0|^12.0|^13.0",
-                "illuminate/config": "^10.0|^11.0|^12.0|^13.0",
-                "illuminate/console": "^10.0|^11.0|^12.0|^13.0",
-                "illuminate/database": "^10.0|^11.0|^12.0|^13.0",
-                "illuminate/filesystem": "^10.0|^11.0|^12.0|^13.0",
-                "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
-                "php": "^8.1"
+                "illuminate/cache": "^12.0|^13.0",
+                "illuminate/config": "^12.0|^13.0",
+                "illuminate/console": "^12.0|^13.0",
+                "illuminate/database": "^12.0|^13.0",
+                "illuminate/filesystem": "^12.0|^13.0",
+                "illuminate/support": "^12.0|^13.0",
+                "php": "^8.2"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.14",
                 "josiasmontag/laravel-redis-mock": "^1.2",
-                "orchestra/testbench": "^8.0|^9.0|^10.0|^11.0",
-                "phpunit/phpunit": "^10.5|^11.0|^12.5.12"
+                "orchestra/testbench": "^10.0|^11.0",
+                "phpunit/phpunit": "^11.0|^12.5.12"
             },
             "suggest": {
                 "predis/predis": "Required to use settings with Redis"
@@ -1766,9 +1766,9 @@
             ],
             "support": {
                 "issues": "https://github.com/glorand/laravel-model-settings/issues",
-                "source": "https://github.com/glorand/laravel-model-settings/tree/8.0.4"
+                "source": "https://github.com/glorand/laravel-model-settings/tree/9.0.2"
             },
-            "time": "2026-04-13T13:50:34+00:00"
+            "time": "2026-07-22T20:37:32+00:00"
         },
         {
             "name": "graham-campbell/result-type",
